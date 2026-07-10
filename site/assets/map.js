@@ -48,6 +48,7 @@
   var cellCache = {};          // "x_y" -> array of [code, lon, lat, angle]
   var cellPending = {};        // "x_y" -> Promise
   var iconAvailable = null;    // Set of site codes ("TS_115") with SVGs
+  var iconAspect = {};         // site code -> width/height ratio of its SVG
   var signLayer = L.layerGroup().addTo(map);
   var clusterLayer = L.layerGroup().addTo(map);
   var signMarkers = {};        // marker key -> Leaflet marker (diffed on render)
@@ -63,10 +64,13 @@
       refresh();
     });
 
-  fetch('index.json')
+  // Cropped marker icons (built by scripts/build_map_icons.py) and their
+  // width/height aspect ratios.
+  fetch('map-icons/index.json')
     .then(function (r) { return r.json(); })
-    .then(function (items) {
-      iconAvailable = new Set(items.map(function (it) { return it.code; }));
+    .then(function (aspects) {
+      iconAspect = aspects;
+      iconAvailable = new Set(Object.keys(aspects));
       refresh();
     });
 
@@ -197,7 +201,7 @@
     var sc = siteCode(code);
     var hasIcon = iconAvailable && iconAvailable.has(sc);
     var h = '<div class="sign-popup">';
-    if (hasIcon) h += '<img src="svgs/' + sc + '.svg" alt="' + code + '">';
+    if (hasIcon) h += '<img src="map-icons/' + sc + '.svg" alt="' + code + '">';
     h += '<div class="code">' + code + '</div>';
     h += '<div class="meta">' + (angle != null
       ? 'Facing ' + angle + '&deg; <span class="dir" style="transform:rotate(' +
@@ -217,7 +221,11 @@
     var marker;
     if (useIcons && iconAvailable && iconAvailable.has(sc)) {
       var size = iconSize(zoom);
-      var html = '<div class="sign-plate"><img src="svgs/' + sc + '.svg" alt=""></div>';
+      // Size the plate to the sign's real proportions (clamped so extreme
+      // panels don't dominate); `size` is the height.
+      var ar = Math.max(0.4, Math.min(2.5, iconAspect[sc] || 1));
+      var w = Math.round(size * ar);
+      var html = '<div class="sign-plate"><img src="map-icons/' + sc + '.svg" alt=""></div>';
       if (angle != null) {
         html += '<div class="tick-wrap" style="transform:rotate(' + angle +
                 'deg)"><div class="sign-tick"></div></div>';
@@ -226,8 +234,8 @@
         icon: L.divIcon({
           className: 'sign-marker',
           html: html,
-          iconSize: [size, size],
-          iconAnchor: [size / 2, size / 2]
+          iconSize: [w, size],
+          iconAnchor: [w / 2, size / 2]
         })
       });
     } else {
