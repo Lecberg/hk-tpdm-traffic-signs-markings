@@ -18,6 +18,15 @@ doubled or overlapping lines**, correct at any zoom level in AutoCAD.
 > road markings, and click **SVG** or **DXF** on any card. No install, no
 > conversion — the DXFs are pre-generated with this very tool.
 >
+> ### 🗺️ Or explore the signs on a map
+>
+> Every one of Hong Kong's ~157,000 surveyed traffic signs, at its real
+> location — zoom in to see the actual sign faces, click one to download it:
+>
+> **https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html**
+>
+> [![The traffic signs map: real sign faces at their surveyed positions around Mong Kok](docs/map-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
+>
 > You only need the converter below if you want to convert **your own**
 > SVG files (or rebuild the collection with different tolerances).
 
@@ -129,10 +138,7 @@ Hong Kong at their real locations, rendered with this repo's TPDM sign SVGs
 as markers. Zoom in past level 15 to see signs as dots, past 17 to see the
 actual sign faces; click any sign for its code, facing angle, and SVG/DXF
 downloads. Supports `#zoom/lat/lng` deep links and filtering by code.
-
-**Try it live: https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html**
-
-[![The traffic signs map: real sign faces at their surveyed positions around Mong Kok](docs/map-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
+(See the screenshot and live link at the top of this README.)
 
 Data sources (both free, open data):
 
