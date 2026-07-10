@@ -4,6 +4,23 @@ Converts SVG traffic signs / road markings into DXF that arrives **already
 colored** — every shape is a solid fill with a clean outline, with **no
 doubled or overlapping lines**, correct at any zoom level in AutoCAD.
 
+> ### 🚦 Just need the sign files? Skip the converter.
+>
+> We have already sorted out **all 1,327 Hong Kong TPDM-standard traffic
+> signs and road markings** and converted every one of them for you.
+> Browse, search, and download any sign as **SVG or CAD-ready DXF** here:
+>
+> **https://lecberg.github.io/hk-tpdm-signs/**
+>
+> Search by code (e.g. `TS 101`, `RM 1032`), filter by traffic signs vs
+> road markings, and click **SVG** or **DXF** on any card. No install, no
+> conversion — the DXFs are pre-generated with this very tool.
+>
+> You only need the converter below if you want to convert **your own**
+> SVG files (or rebuild the collection with different tolerances).
+
+## How the converter works
+
 Instead of translating SVG paths one-by-one (the cause of doubled lines in
 generic converters), it repaints the drawing the way the SVG renders:
 
@@ -21,24 +38,33 @@ generic converters), it repaints the drawing the way the SVG renders:
    small white shapes (characters) keep white outlines so text stays legible
    when zoomed far out.
 
-## Install
+## Using the converter
+
+### Step 0 — Install (once)
+
+Requires Python 3.10+. From the project folder:
 
 ```
 pip install -e .
 ```
 
-## Web interface (easiest)
+### Option A — Web interface (easiest)
 
-Double-click **`start_converter.bat`** — a local server starts and your
-browser opens at `http://127.0.0.1:8517`. Drop an SVG, click
-**Convert & Download**, and the DXF downloads. Advanced options (tolerances,
-scale) are in the collapsible panel. Everything runs locally;
-files never leave your PC. (Equivalent command: `python -m svg2dxf.webapp`.)
+1. Double-click **`start_converter.bat`** (or run `python -m svg2dxf.webapp`).
+   A local server starts and your browser opens at `http://127.0.0.1:8517`.
+2. Drag an SVG file onto the page (or click to browse).
+3. Click **Convert & Download** — the DXF downloads to your browser's
+   download folder.
+4. Need to tweak? Open the collapsible **Advanced options** panel to adjust
+   curve tolerance, snap tolerance, or scale before converting.
 
-## Command line
+Everything runs locally; files never leave your PC.
+
+### Option B — Command line (single files or whole folders)
 
 ```
 svg2dxf sign.svg                    # -> sign.dxf next to the input
+svg2dxf sign.svg -o out/sign.dxf    # choose the output path
 svg2dxf signs_folder/ -o out/       # batch convert every .svg in a folder
 ```
 
@@ -55,6 +81,13 @@ Options:
 Standalone stroked lines (no fill — e.g. road-marking centerlines) are kept
 as open polylines on `STROKE_<color>` layers.
 
+### Opening the result in CAD
+
+Open the DXF in AutoCAD (or any DXF-capable CAD): every colored region is a
+solid HATCH plus a closed outline in the same true color, so the sign looks
+right immediately at any zoom. Entities carry their own colors, so you can
+move them onto your own layers without changing their appearance.
+
 Need DWG? Batch-convert the DXF output with the free
 [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter).
 
@@ -70,9 +103,11 @@ shapes, and filled paths with micro-gaps.
 
 ## Download site (`site/`)
 
-A static gallery of all TPDM signs (`svgs/`) with direct SVG / DXF downloads
-— searchable by code, filterable by traffic signs vs road markings. No
-server logic; deployable to any static host (GitHub Pages, Cloudflare Pages).
+The source of the hosted gallery above: a fully static page (no server
+logic) listing every SVG in `svgs/` with per-file SVG / DXF downloads,
+code search, and traffic-sign / road-marking filters. It deploys to GitHub
+Pages automatically via `.github/workflows/pages.yml` whenever a commit
+touches `site/`.
 
 Regenerate after changing `svgs/` or the converter:
 
