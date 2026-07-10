@@ -12,6 +12,8 @@ doubled or overlapping lines**, correct at any zoom level in AutoCAD.
 >
 > **https://lecberg.github.io/hk-tpdm-traffic-signs-markings/**
 >
+> [![The download site: searchable grid of sign cards with SVG and DXF buttons](docs/site-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)
+>
 > Search by code (e.g. `TS 101`, `RM 1032`), filter by traffic signs vs
 > road markings, and click **SVG** or **DXF** on any card. No install, no
 > conversion — the DXFs are pre-generated with this very tool.
