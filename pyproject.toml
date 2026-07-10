@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "svg2dxf"
+version = "0.1.0"
+description = "Convert SVG traffic signs / road markings to clean, fill-ready DXF"
+requires-python = ">=3.9"
+dependencies = [
+    "svgelements>=1.9",
+    "shapely>=2.0",
+    "ezdxf>=1.1",
+    "flask>=3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+svg2dxf = "svg2dxf.cli:main"
+svg2dxf-web = "svg2dxf.webapp:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+svg2dxf = ["static/*.html"]

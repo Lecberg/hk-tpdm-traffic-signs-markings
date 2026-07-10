@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <!-- no-entry sign drawn the "messy" way converters choke on:
+       stacked full-size discs, fill+stroke combos, shared edges -->
+  <circle cx="300" cy="300" r="290" fill="#ffffff" stroke="#999999" stroke-width="4"/>
+  <circle cx="300" cy="300" r="270" fill="#c1121f" stroke="#c1121f" stroke-width="2"/>
+  <rect x="90" y="255" width="420" height="90" rx="10" fill="#ffffff"/>
+</svg>

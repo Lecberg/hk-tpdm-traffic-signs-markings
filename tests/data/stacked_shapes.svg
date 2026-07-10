@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- background rect fully hidden under the foreground rect: its geometry
+       must not appear in the DXF -->
+  <rect x="10" y="10" width="80" height="80" fill="#003087"/>
+  <rect x="10" y="10" width="80" height="80" fill="#c1121f"/>
+</svg>
