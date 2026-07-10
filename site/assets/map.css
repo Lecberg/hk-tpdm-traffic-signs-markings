@@ -15,53 +15,149 @@
 
 #map { flex: 1; min-height: 0; background: var(--bg); }
 
+/* ---- cluster bubbles (zoom < 15) ---- */
+
+.cluster-bubble-wrap { background: none; border: none; }
+
+.cluster-bubble {
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, .35);
+  color: #fff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: .78rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  animation: marker-in .18s ease-out;
+  transition: transform .12s ease-out;
+}
+
+.cluster-bubble:hover { transform: scale(1.08); }
+
+/* ---- sign markers (zoom >= 17) ---- */
+
 .sign-marker {
   background: none;
   border: none;
+  animation: marker-in .18s ease-out;
 }
 
-.sign-marker img {
+.sign-plate {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid rgba(16, 24, 40, .18);
+  border-radius: 4px;
+  padding: 2px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, .35);
+}
+
+.sign-plate img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45));
+  display: block;
 }
 
-.zoom-hint {
+/* Direction tick: a small triangle on the edge of the icon, rotated by the
+   sign's facing bearing (the wrapper rotates around the icon center). */
+.tick-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sign-tick {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  margin-left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 6px solid var(--sign-red, #c1121f);
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, .9));
+}
+
+@keyframes marker-in {
+  from { opacity: 0; transform: scale(.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---- tooltip ---- */
+
+.sign-tip {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  padding: 2px 7px;
   background: var(--card);
   color: var(--ink);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 8px 14px;
-  font-size: .9rem;
-  font-family: inherit;
 }
 
-.sign-popup { text-align: center; font-family: inherit; }
+.sign-tip::before { display: none; }
+
+/* ---- popup ---- */
+
+.sign-popup { text-align: center; font-family: inherit; min-width: 150px; }
 
 .sign-popup img {
-  max-width: 140px;
-  max-height: 120px;
+  max-width: 180px;
+  max-height: 150px;
   display: block;
-  margin: 0 auto 6px;
+  margin: 2px auto 8px;
 }
 
-.sign-popup .code { font-weight: 600; font-size: 1rem; }
+.sign-popup .code { font-weight: 600; font-size: 1.05rem; }
 
-.sign-popup .meta { color: var(--muted); font-size: .82rem; margin: 2px 0 6px; }
+.sign-popup .meta {
+  color: var(--muted);
+  font-size: .82rem;
+  margin: 3px 0 9px;
+}
+
+.sign-popup .dir {
+  display: inline-block;
+  font-size: .7rem;
+  color: var(--accent);
+  vertical-align: 1px;
+}
 
 .sign-popup .dl a {
+  display: inline-block;
+  padding: 5px 16px;
+  margin: 0 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
   color: var(--accent);
   text-decoration: none;
-  font-size: .88rem;
-  margin: 0 5px;
+  font-size: .85rem;
+  font-weight: 600;
 }
 
-.sign-popup .dl a:hover { text-decoration: underline; }
+.sign-popup .dl a:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---- dark mode ---- */
 
 @media (prefers-color-scheme: dark) {
   .leaflet-container { background: #12151b; }
+
+  /* The government basemap only comes in a light style — dim it so it
+     doesn't glare next to the dark chrome. */
+  .leaflet-tile-pane { filter: brightness(.82) saturate(.9) contrast(1.02); }
+
+  .sign-plate { border-color: rgba(0, 0, 0, .45); }
+
   .leaflet-popup-content-wrapper, .leaflet-popup-tip {
     background: var(--card);
     color: var(--ink);

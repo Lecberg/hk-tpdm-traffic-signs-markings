@@ -2,14 +2,18 @@
  * Sign locations come from the Transport Department's Digitized Traffic Aids
  * Drawings dataset (Traffic Sign Abbreviation points), pre-processed into
  * per-cell JSON by scripts/build_map_data.py.
+ *
+ * Zoom tiers: 10-12 cluster bubbles from per-cell counts (no data fetch),
+ * 13-14 cluster bubbles binned from real points, 15-16 dots, 17+ sign SVGs.
  */
 (function () {
   'use strict';
 
-  var MIN_SIGN_ZOOM = 15;   // below this, signs are hidden (too many)
+  var DOT_ZOOM = 15;        // below this, cluster bubbles
+  var BIN_ZOOM = 13;        // from this zoom, clusters are binned real points
   var ICON_ZOOM = 17;       // at/above this, draw SVG icons instead of dots
   var MAX_ICONS = 600;      // icon markers are DOM nodes — cap them
-  var ICON_SIZE = 26;
+  var BIN_PX = 96;          // screen-pixel bin size for zoom 13-14 clusters
 
   // #zoom/lat/lng deep links, e.g. map.html#17/22.3193/114.1694
   var view = { center: [22.3193, 114.1694], zoom: 12 };
@@ -45,6 +49,8 @@
   var cellPending = {};        // "x_y" -> Promise
   var iconAvailable = null;    // Set of site codes ("TS_115") with SVGs
   var signLayer = L.layerGroup().addTo(map);
+  var clusterLayer = L.layerGroup().addTo(map);
+  var signMarkers = {};        // marker key -> Leaflet marker (diffed on render)
   var filterText = '';
 
   // ---- data loading -------------------------------------------------------
@@ -92,34 +98,7 @@
     return keys;
   }
 
-  // ---- rendering ----------------------------------------------------------
-
-  function siteCode(code) {
-    // dataset "TS115" -> site "TS_115"
-    return code.indexOf('TS') === 0 ? 'TS_' + code.slice(2) : code;
-  }
-
-  function popupHtml(code, angle) {
-    var sc = siteCode(code);
-    var hasIcon = iconAvailable && iconAvailable.has(sc);
-    var h = '<div class="sign-popup">';
-    if (hasIcon) h += '<img src="svgs/' + sc + '.svg" alt="' + code + '">';
-    h += '<div class="code">' + code + '</div>';
-    h += '<div class="meta">' + (angle != null ? 'Facing ' + angle + '&deg;' : 'TPDM traffic sign') + '</div>';
-    if (hasIcon) {
-      h += '<div class="dl"><a href="svgs/' + sc + '.svg" download>SVG</a>' +
-           '<a href="dxfs/' + sc + '.dxf" download>DXF</a></div>';
-    }
-    h += '</div>';
-    return h;
-  }
-
-  function render() {
-    signLayer.clearLayers();
-    var zoom = map.getZoom();
-    hint.update();
-    if (zoom < MIN_SIGN_ZOOM) { setStatus(''); return; }
-
+  function visibleRows() {
     var bounds = map.getBounds().pad(0.05);
     var rows = [];
     visibleCellKeys().forEach(function (key) {
@@ -131,32 +110,167 @@
         if (bounds.contains([r[2], r[1]])) rows.push(r);
       }
     });
+    return rows;
+  }
 
-    var useIcons = zoom >= ICON_ZOOM && rows.length <= MAX_ICONS;
+  // ---- cluster bubbles (zoom < 15) ---------------------------------------
+
+  function compactCount(n) {
+    if (n < 1000) return String(n);
+    var k = (n / 1000).toFixed(n < 10000 ? 1 : 0).replace(/\.0$/, '');
+    return k + 'k';
+  }
+
+  function bubbleMarker(lat, lon, count) {
+    var d = Math.round(Math.min(64, 24 + Math.sqrt(count) * 0.45));
+    var marker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        className: 'cluster-bubble-wrap',
+        html: '<div class="cluster-bubble" style="width:' + d + 'px;height:' + d +
+              'px;line-height:' + d + 'px">' + compactCount(count) + '</div>',
+        iconSize: [d, d],
+        iconAnchor: [d / 2, d / 2]
+      }),
+      keyboard: false
+    });
+    marker.on('click', function () {
+      map.setView([lat, lon], Math.min(map.getZoom() + 2, 16));
+    });
+    return marker;
+  }
+
+  // Zoom 10-12: one bubble per data cell, from precomputed counts.
+  function renderCellBubbles() {
+    clusterLayer.clearLayers();
+    var b = map.getBounds().pad(0.1);
+    var total = 0;
+    Object.keys(cellIndex).forEach(function (key) {
+      var xy = key.split('_');
+      var lon = (Number(xy[0]) + 0.5) * cellSize;
+      var lat = (Number(xy[1]) + 0.5) * cellSize;
+      if (!b.contains([lat, lon])) return;
+      total += cellIndex[key];
+      clusterLayer.addLayer(bubbleMarker(lat, lon, cellIndex[key]));
+    });
+    setStatus(total
+      ? compactCount(total) + ' signs in view' +
+        (filterText ? ' — zoom in to apply the filter' : '')
+      : '');
+  }
+
+  // Zoom 13-14: bin the real points into screen-pixel cells.
+  function renderBinnedBubbles() {
+    clusterLayer.clearLayers();
+    var zoom = map.getZoom();
+    var bins = {};   // "bx_by" -> {count, latSum, lonSum}
+    var rows = visibleRows();
     rows.forEach(function (r) {
-      var code = r[0], lon = r[1], lat = r[2], angle = r[3];
-      var marker;
-      var sc = siteCode(code);
-      if (useIcons && iconAvailable && iconAvailable.has(sc)) {
-        marker = L.marker([lat, lon], {
-          icon: L.divIcon({
-            className: 'sign-marker',
-            html: '<img src="svgs/' + sc + '.svg" alt="">',
-            iconSize: [ICON_SIZE, ICON_SIZE],
-            iconAnchor: [ICON_SIZE / 2, ICON_SIZE / 2]
-          })
-        });
-      } else {
-        marker = L.circleMarker([lat, lon], {
-          radius: useIcons ? 5 : 3.5,
-          color: '#ffffff',
-          weight: 1,
-          fillColor: '#c1121f',
-          fillOpacity: 0.9
-        });
+      var p = map.project([r[2], r[1]], zoom);
+      var key = Math.floor(p.x / BIN_PX) + '_' + Math.floor(p.y / BIN_PX);
+      var bin = bins[key] || (bins[key] = { count: 0, latSum: 0, lonSum: 0 });
+      bin.count++;
+      bin.latSum += r[2];
+      bin.lonSum += r[1];
+    });
+    Object.keys(bins).forEach(function (key) {
+      var bin = bins[key];
+      clusterLayer.addLayer(
+        bubbleMarker(bin.latSum / bin.count, bin.lonSum / bin.count, bin.count));
+    });
+    setStatus(rows.length
+      ? compactCount(rows.length) + ' signs in view'
+      : (filterText ? 'No signs match "' + filterText + '" here' : ''));
+  }
+
+  // ---- sign markers (zoom >= 15) ------------------------------------------
+
+  function siteCode(code) {
+    // dataset "TS115" -> site "TS_115"
+    return code.indexOf('TS') === 0 ? 'TS_' + code.slice(2) : code;
+  }
+
+  function iconSize(zoom) {
+    return zoom >= 19 ? 34 : zoom >= 18 ? 28 : 22;
+  }
+
+  function popupHtml(code, angle) {
+    var sc = siteCode(code);
+    var hasIcon = iconAvailable && iconAvailable.has(sc);
+    var h = '<div class="sign-popup">';
+    if (hasIcon) h += '<img src="svgs/' + sc + '.svg" alt="' + code + '">';
+    h += '<div class="code">' + code + '</div>';
+    h += '<div class="meta">' + (angle != null
+      ? 'Facing ' + angle + '&deg; <span class="dir" style="transform:rotate(' +
+        angle + 'deg)">&#9650;</span>'
+      : 'TPDM traffic sign') + '</div>';
+    if (hasIcon) {
+      h += '<div class="dl"><a href="svgs/' + sc + '.svg" download>SVG</a>' +
+           '<a href="dxfs/' + sc + '.dxf" download>DXF</a></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function makeMarker(r, useIcons, zoom) {
+    var code = r[0], lon = r[1], lat = r[2], angle = r[3];
+    var sc = siteCode(code);
+    var marker;
+    if (useIcons && iconAvailable && iconAvailable.has(sc)) {
+      var size = iconSize(zoom);
+      var html = '<div class="sign-plate"><img src="svgs/' + sc + '.svg" alt=""></div>';
+      if (angle != null) {
+        html += '<div class="tick-wrap" style="transform:rotate(' + angle +
+                'deg)"><div class="sign-tick"></div></div>';
       }
-      marker.bindPopup(popupHtml(code, angle));
-      signLayer.addLayer(marker);
+      marker = L.marker([lat, lon], {
+        icon: L.divIcon({
+          className: 'sign-marker',
+          html: html,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2]
+        })
+      });
+    } else {
+      marker = L.circleMarker([lat, lon], {
+        radius: useIcons ? 5 : zoom >= 16 ? 4.5 : 3,
+        color: '#ffffff',
+        weight: 1,
+        fillColor: '#c1121f',
+        fillOpacity: 0.9
+      });
+    }
+    marker.bindPopup(popupHtml(code, angle));
+    marker.bindTooltip(code, { direction: 'top', className: 'sign-tip' });
+    return marker;
+  }
+
+  function renderSigns() {
+    clusterLayer.clearLayers();
+    var zoom = map.getZoom();
+    var rows = visibleRows();
+    var useIcons = zoom >= ICON_ZOOM && rows.length <= MAX_ICONS;
+
+    // Diff against what's already on the map so panning doesn't flash:
+    // only markers entering/leaving the view are touched. Keys encode the
+    // render mode and size, so tier changes replace everything naturally.
+    var mode = (useIcons ? 'i' + iconSize(zoom) : 'd' + (zoom >= 16 ? 1 : 0));
+    var wanted = {};
+    rows.forEach(function (r) {
+      wanted[mode + '|' + r[0] + '|' + r[1] + '|' + r[2]] = r;
+    });
+
+    Object.keys(signMarkers).forEach(function (key) {
+      if (!wanted[key]) {
+        signLayer.removeLayer(signMarkers[key]);
+        delete signMarkers[key];
+      }
+    });
+    Object.keys(wanted).forEach(function (key) {
+      if (!signMarkers[key]) {
+        var marker = makeMarker(wanted[key], useIcons, zoom);
+        signMarkers[key] = marker;
+        signLayer.addLayer(marker);
+      }
     });
 
     setStatus(rows.length
@@ -164,33 +278,35 @@
       : (filterText ? 'No signs match "' + filterText + '" here' : ''));
   }
 
+  function clearSigns() {
+    signLayer.clearLayers();
+    signMarkers = {};
+  }
+
+  // ---- render dispatch -----------------------------------------------------
+
+  function render() {
+    var zoom = map.getZoom();
+    if (zoom < BIN_ZOOM) {
+      clearSigns();
+      renderCellBubbles();
+    } else if (zoom < DOT_ZOOM) {
+      clearSigns();
+      renderBinnedBubbles();
+    } else {
+      renderSigns();
+    }
+  }
+
   function refresh() {
-    if (map.getZoom() < MIN_SIGN_ZOOM) { render(); return; }
-    var keys = visibleCellKeys();
-    var missing = keys.filter(function (k) { return !cellCache[k]; });
+    if (map.getZoom() < BIN_ZOOM) { render(); return; }
+    var missing = visibleCellKeys().filter(function (k) { return !cellCache[k]; });
     if (!missing.length) { render(); return; }
     setStatus('Loading signs…');
     Promise.all(missing.map(loadCell)).then(render);
   }
 
   function setStatus(text) { statusEl.textContent = text; }
-
-  // ---- zoom hint control --------------------------------------------------
-
-  var HintControl = L.Control.extend({
-    onAdd: function () {
-      this._div = L.DomUtil.create('div', 'zoom-hint');
-      this.update();
-      return this._div;
-    },
-    update: function () {
-      if (!this._div) return;
-      this._div.style.display = map.getZoom() < MIN_SIGN_ZOOM ? '' : 'none';
-      this._div.textContent = 'Zoom in to see traffic signs';
-    }
-  });
-  var hint = new HintControl({ position: 'topright' });
-  hint.addTo(map);
 
   // ---- events -------------------------------------------------------------
 
@@ -201,12 +317,16 @@
     refresh();
   });
 
+  // Debug/console handle (also lets tests drive the map).
+  window._signsMap = map;
+
   var filterTimer;
   filterEl.addEventListener('input', function () {
     clearTimeout(filterTimer);
     filterTimer = setTimeout(function () {
       filterText = filterEl.value.trim().toLowerCase();
-      render();
+      clearSigns();   // filter changes what a key means — rebuild
+      refresh();
     }, 150);
   });
 })();
