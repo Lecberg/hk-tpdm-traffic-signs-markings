@@ -149,3 +149,13 @@ python scripts/build_map_data.py doc.kml site/map-data
 
 This regenerates `site/map-data/` — per-grid-cell JSON files the map page
 loads lazily as you pan, so the full 157k-point dataset never loads at once.
+
+Marker icons come from `site/map-icons/` — copies of the sign SVGs cropped
+to their content bounding box (the gallery SVGs share a TPDM drawing-sheet
+canvas with lots of whitespace, which would render tiny on the map).
+Regenerate them after changing `svgs/`:
+
+```
+python scripts/build_map_icons.py          # only new/changed files
+python scripts/build_map_icons.py --force  # redo everything
+```
