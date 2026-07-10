@@ -121,3 +121,41 @@ python scripts/build_site.py --force  # reconvert everything
 ```
 
 Preview locally: `python -m http.server 8618 --directory site`
+
+## Traffic signs map (`site/map.html`)
+
+An interactive Leaflet map showing all ~157,000 surveyed traffic signs in
+Hong Kong at their real locations, rendered with this repo's TPDM sign SVGs
+as markers. Zoom in past level 15 to see signs as dots, past 17 to see the
+actual sign faces; click any sign for its code, facing angle, and SVG/DXF
+downloads. Supports `#zoom/lat/lng` deep links and filtering by code.
+
+Data sources (both free, open data):
+
+- **Sign locations**: Transport Department, [Traffic Aids Drawings (2nd
+  generation)](https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2)
+  — the `DTAD_TS_ABV_PT` layer (traffic sign abbreviation points), updated
+  monthly.
+- **Basemap**: Lands Department map tiles via the
+  [CSDI portal](https://portal.csdi.gov.hk/).
+
+To refresh the sign locations after a dataset update:
+
+```
+curl -LO https://static.data.gov.hk/td/traffic-aids-drawings-v2/DTAD_TS_ABV_PT.kmz
+unzip DTAD_TS_ABV_PT.kmz doc.kml
+python scripts/build_map_data.py doc.kml site/map-data
+```
+
+This regenerates `site/map-data/` — per-grid-cell JSON files the map page
+loads lazily as you pan, so the full 157k-point dataset never loads at once.
+
+Marker icons come from `site/map-icons/` — copies of the sign SVGs cropped
+to their content bounding box (the gallery SVGs share a TPDM drawing-sheet
+canvas with lots of whitespace, which would render tiny on the map).
+Regenerate them after changing `svgs/`:
+
+```
+python scripts/build_map_icons.py          # only new/changed files
+python scripts/build_map_icons.py --force  # redo everything
+```
