@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HK Traffic Signs Map — TPDM Signs at Their Real Locations</title>
+<meta name="description" content="Interactive map of Hong Kong traffic signs at their surveyed locations, from the Transport Department's Digitized Traffic Aids Drawings open data.">
+<link rel="stylesheet" href="assets/vendor/leaflet.css">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/map.css">
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+</head>
+<body class="map-page">
+<header class="site-header map-header">
+  <div class="header-inner">
+    <div class="brand">
+      <a href="index.html" class="home-link" title="Back to sign library">
+        <img src="assets/icon.svg" alt="" class="logo" width="40" height="40">
+      </a>
+      <div>
+        <h1>HK Traffic Signs Map</h1>
+        <p class="subtitle">Every surveyed traffic sign in Hong Kong — zoom in to explore</p>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="filter" type="search" placeholder="Filter by code, e.g. 115…" autocomplete="off" aria-label="Filter signs by code">
+      <a class="tab back-link" href="index.html">Sign library</a>
+    </div>
+    <p id="status" class="count" aria-live="polite"></p>
+  </div>
+</header>
+
+<div id="map" role="application" aria-label="Map of Hong Kong traffic signs"></div>
+
+<script src="assets/vendor/leaflet.js"></script>
+<script src="assets/map.js"></script>
+</body>
+</html>
