@@ -130,6 +130,10 @@ as markers. Zoom in past level 15 to see signs as dots, past 17 to see the
 actual sign faces; click any sign for its code, facing angle, and SVG/DXF
 downloads. Supports `#zoom/lat/lng` deep links and filtering by code.
 
+**Try it live: https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html**
+
+[![The traffic signs map: real sign faces at their surveyed positions around Mong Kok](docs/map-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
+
 Data sources (both free, open data):
 
 - **Sign locations**: Transport Department, [Traffic Aids Drawings (2nd
