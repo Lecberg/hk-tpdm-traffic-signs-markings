@@ -15,6 +15,19 @@
   var rendered = 0;   // how many of `filtered` are in the DOM
   var cat = "ALL";
 
+  // Deep links: index.html?cat=TS|RM&q=115 preselects a tab and search.
+  var params = new URLSearchParams(location.search);
+  var paramCat = (params.get("cat") || "").toUpperCase();
+  if (paramCat === "TS" || paramCat === "RM") {
+    cat = paramCat;
+    tabs.forEach(function (t) {
+      var active = t.dataset.cat === cat;
+      t.classList.toggle("active", active);
+      t.setAttribute("aria-selected", String(active));
+    });
+  }
+  if (params.get("q")) searchBox.value = params.get("q");
+
   fetch("index.json")
     .then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);

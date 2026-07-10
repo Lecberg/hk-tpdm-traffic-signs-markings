@@ -18,6 +18,14 @@ doubled or overlapping lines**, correct at any zoom level in AutoCAD.
 > road markings, and click **SVG** or **DXF** on any card. No install, no
 > conversion — the DXFs are pre-generated with this very tool.
 >
+> The collection spans every TPDM category — a taste (click to browse each):
+>
+> | [![Regulatory signs: STOP, GIVE WAY, mandatory arrows, prohibitions](docs/library-regulatory.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/?cat=TS) | [![Warning signs: red triangles for junctions, bends, signals](docs/library-warning.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/?q=TS%204) |
+> |---|---|
+> | **Regulatory** — stop, give way, mandatory, prohibition | **Warning** — junctions, bends, narrowing, signals |
+> | [![Restriction plates: no-stopping and metered-parking panels](docs/library-restriction.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/?q=TS%202) | [![Supplementary plates: bilingual English and Chinese text panels](docs/library-plates.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/?q=TS%207) |
+> | **Restriction zones** — no-stopping, metered parking | **Supplementary plates** — bilingual text panels |
+>
 > ### 🗺️ Or explore the signs on a map
 >
 > Every one of Hong Kong's ~157,000 surveyed traffic signs, at its real
