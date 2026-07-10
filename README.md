@@ -10,7 +10,7 @@ doubled or overlapping lines**, correct at any zoom level in AutoCAD.
 > signs and road markings** and converted every one of them for you.
 > Browse, search, and download any sign as **SVG or CAD-ready DXF** here:
 >
-> **https://lecberg.github.io/hk-tpdm-signs/**
+> **https://lecberg.github.io/hk-tpdm-traffic-signs-markings/**
 >
 > Search by code (e.g. `TS 101`, `RM 1032`), filter by traffic signs vs
 > road markings, and click **SVG** or **DXF** on any card. No install, no
