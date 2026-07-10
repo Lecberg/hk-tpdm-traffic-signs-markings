@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "svg2dxf-web",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "flask", "--app", "svg2dxf.webapp", "run", "--port", "8517"],
+      "port": 8517
+    },
+    {
+      "name": "site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8618", "--directory", "site"],
+      "port": 8618
+    }
+  ]
+}

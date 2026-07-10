@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HK TPDM Traffic Signs &amp; Road Markings — SVG / DXF Downloads</title>
+<meta name="description" content="Browse and download Hong Kong TPDM-standard traffic signs and road markings as SVG or CAD-ready DXF files.">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23c1121f'/><circle cx='50' cy='50' r='34' fill='white'/></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <h1>HK Traffic Signs &amp; Road Markings</h1>
+    <p class="subtitle">TPDM-standard drawings — download as SVG or CAD-ready DXF</p>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search by code, e.g. TS 101 or 1032…" autocomplete="off" aria-label="Search by code">
+      <nav class="tabs" role="tablist" aria-label="Category filter">
+        <button class="tab active" data-cat="ALL" role="tab" aria-selected="true">All</button>
+        <button class="tab" data-cat="TS" role="tab" aria-selected="false">Traffic signs</button>
+        <button class="tab" data-cat="RM" role="tab" aria-selected="false">Road markings</button>
+      </nav>
+    </div>
+    <p id="count" class="count" aria-live="polite"></p>
+  </div>
+</header>
+
+<main>
+  <div id="grid" class="grid" aria-busy="true"></div>
+  <p id="empty" class="empty" hidden>No signs match your search.</p>
+  <p id="sentinel" class="sentinel" aria-hidden="true"></p>
+</main>
+
+<footer class="site-footer">
+  <p>Drawings follow the Hong Kong <abbr title="Transport Planning and Design Manual">TPDM</abbr>
+  standard (Transport Department). Provided for reference and drafting convenience —
+  verify against the current TPDM before use in works submissions.</p>
+  <p>DXF files are pre-generated with svg2dxf:
+  solid color fills with clean outlines, ready for AutoCAD.</p>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

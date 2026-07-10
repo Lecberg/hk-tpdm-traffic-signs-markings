@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- prohibition-sign style: white disk on red disk; the shared circle edge
+       must come out coincident, red must become a true annulus -->
+  <circle cx="50" cy="50" r="45" fill="#c1121f"/>
+  <circle cx="50" cy="50" r="33" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SVG → DXF Converter</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #ffffff; --text: #1c2430; --muted: #64707f;
+    --accent: #1f6feb; --accent-hover: #1a5fd0; --border: #d8dee6;
+    --ok: #1a7f37; --err: #c1121f; --drop-bg: #eef3fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181e; --card: #1d232c; --text: #e6ebf2; --muted: #94a0af;
+      --accent: #3b82f6; --accent-hover: #5a95f7; --border: #333d4b;
+      --ok: #4ade80; --err: #f87171; --drop-bg: #202a38;
+    }
+  }
+  * { box-sizing: border-box; }
+  :root { interpolate-size: allow-keywords; } /* lets block-size animate to auto */
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text);
+    font: 15px/1.5 "Segoe UI", system-ui, sans-serif; padding: 24px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; width: 100%; max-width: 520px; box-shadow: 0 8px 30px rgba(0,0,0,.08);
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; font-size: 13px; }
+  #drop {
+    border: 2px dashed var(--border); border-radius: 10px; background: var(--drop-bg);
+    padding: 28px 16px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  #drop.dragover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--drop-bg)); }
+  #drop .hint { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  #preview { max-width: 140px; max-height: 140px; margin: 10px auto 0; display: none;
+             background: #fff; border-radius: 8px; padding: 6px; border: 1px solid var(--border); }
+  #fname { font-weight: 600; word-break: break-all; }
+  details { margin: 18px 0 0; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--muted);
+            list-style: none; user-select: none; transition: color .2s; }
+  summary:hover { color: var(--accent); }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: '▸'; display: inline-block; margin-right: 8px;
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  /* smooth expand/collapse of the panel body (Chrome/Edge; instant elsewhere) */
+  details::details-content {
+    block-size: 0; opacity: 0; overflow-y: clip;
+    transition: block-size .35s cubic-bezier(.4, 0, .2, 1),
+                opacity .3s ease .05s,
+                content-visibility .35s allow-discrete;
+  }
+  details[open]::details-content { block-size: auto; opacity: 1; }
+  .opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0; }
+  .opt label { flex: 1; }
+  .opt small { display: block; color: var(--muted); font-size: 12px; }
+  .opt input[type=number] { width: 90px; padding: 6px 8px; border: 1px solid var(--border);
+      border-radius: 6px; background: var(--bg); color: var(--text); }
+  .opt input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); }
+  #reset { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+  #convert {
+    margin-top: 20px; width: 100%; padding: 13px; font-size: 16px; font-weight: 600;
+    color: #fff; background: var(--accent); border: none; border-radius: 10px; cursor: pointer;
+    transition: background .15s;
+  }
+  #convert:hover:not(:disabled) { background: var(--accent-hover); }
+  #convert:disabled { opacity: .45; cursor: not-allowed; }
+  #status { margin-top: 14px; font-size: 14px; min-height: 21px; text-align: center; }
+  #status.ok { color: var(--ok); }
+  #status.err { color: var(--err); }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>SVG → DXF Converter</h1>
+  <p class="sub">Traffic signs &amp; road markings — clean, fill-ready DXF with no doubled lines. Runs locally; files never leave this PC.</p>
+
+  <div id="drop">
+    <div id="droptext">
+      <div><strong>Drop an SVG here</strong> or click to browse</div>
+      <div class="hint">one .svg file at a time</div>
+    </div>
+    <div id="fname"></div>
+    <img id="preview" alt="SVG preview">
+  </div>
+  <input type="file" id="fileinput" accept=".svg,image/svg+xml" hidden>
+
+  <details>
+    <summary>Advanced options</summary>
+    <div class="opt">
+      <label>Snap tolerance
+        <small>vertex snap grid; raise (e.g. 0.1) if gaps break boundaries</small></label>
+      <input type="number" id="snap_tol" value="0.01" step="0.01" min="0.0001">
+    </div>
+    <div class="opt">
+      <label>Curve smoothness
+        <small>max flattening error; lower = smoother curves</small></label>
+      <input type="number" id="curve_tol" value="0.05" step="0.01" min="0.0001">
+    </div>
+    <div class="opt">
+      <label>Scale
+        <small>multiply coordinates, e.g. 3.78 for px → mm at 96&nbsp;dpi</small></label>
+      <input type="number" id="scale" value="1" step="0.01" min="0.0001">
+    </div>
+    <div class="opt">
+      <label>Strokes as filled outlines
+        <small>buffer stroked lines by their width instead of centerlines</small></label>
+      <input type="checkbox" id="stroke_as_outline">
+    </div>
+    <button id="reset" type="button">reset to defaults</button>
+  </details>
+
+  <button id="convert" disabled>Convert &amp; Download</button>
+  <div id="status"></div>
+</div>
+
+<script>
+  const drop = document.getElementById('drop');
+  const fileInput = document.getElementById('fileinput');
+  const fname = document.getElementById('fname');
+  const preview = document.getElementById('preview');
+  const droptext = document.getElementById('droptext');
+  const convertBtn = document.getElementById('convert');
+  const status = document.getElementById('status');
+  let file = null;
+
+  function setFile(f) {
+    if (!f) return;
+    if (!f.name.toLowerCase().endsWith('.svg')) {
+      showStatus('Please choose an .svg file.', true);
+      return;
+    }
+    file = f;
+    fname.textContent = f.name;
+    droptext.querySelector('.hint').textContent = 'click to choose a different file';
+    preview.src = URL.createObjectURL(f);
+    preview.style.display = 'block';
+    convertBtn.disabled = false;
+    showStatus('');
+  }
+
+  function showStatus(msg, isErr) {
+    status.textContent = msg;
+    status.className = isErr ? 'err' : 'ok';
+  }
+
+  drop.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+  ['dragover', 'dragenter'].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault(); drop.classList.add('dragover');
+  }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault(); drop.classList.remove('dragover');
+  }));
+  drop.addEventListener('drop', e => setFile(e.dataTransfer.files[0]));
+
+  document.getElementById('reset').addEventListener('click', () => {
+    document.getElementById('snap_tol').value = 0.01;
+    document.getElementById('curve_tol').value = 0.05;
+    document.getElementById('scale').value = 1;
+    document.getElementById('stroke_as_outline').checked = false;
+  });
+
+  convertBtn.addEventListener('click', async () => {
+    if (!file) return;
+    convertBtn.disabled = true;
+    showStatus('Converting…');
+    const form = new FormData();
+    form.append('file', file);
+    for (const id of ['snap_tol', 'curve_tol', 'scale'])
+      form.append(id, document.getElementById(id).value);
+    if (document.getElementById('stroke_as_outline').checked)
+      form.append('stroke_as_outline', 'on');
+
+    try {
+      const res = await fetch('/convert', { method: 'POST', body: form });
+      if (!res.ok) {
+        let msg = 'Conversion failed.';
+        try { msg = (await res.json()).error || msg; } catch (e) {}
+        showStatus(msg, true);
+        return;
+      }
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name.replace(/\.svg$/i, '') + '.dxf';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      let note = 'Done — DXF downloaded.';
+      try {
+        const s = JSON.parse(res.headers.get('X-Convert-Stats'));
+        note = `Done — ${s.paths_read} paths → ${s.regions} regions, ` +
+               `${s.hatches} solid fills. DXF downloaded.`;
+        if (s.warnings && s.warnings.length) note += ` (${s.warnings.length} warning${s.warnings.length > 1 ? 's' : ''})`;
+      } catch (e) {}
+      showStatus(note);
+    } catch (e) {
+      showStatus('Could not reach the converter — is the server still running?', true);
+    } finally {
+      convertBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
