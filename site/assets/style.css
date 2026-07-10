@@ -129,6 +129,11 @@ main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
   .thumb { background-color: #e9e9e9; }
 }
 
+/* road markings are white paint — show them on an asphalt-dark surface */
+.card[data-cat="RM"] .thumb {
+  background: #3b3f46;
+}
+
 .thumb img {
   max-width: 92%;
   max-height: 92%;
