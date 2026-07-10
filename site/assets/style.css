@@ -59,18 +59,32 @@ h1 { margin: 0; font-size: 1.35rem; letter-spacing: .01em; }
   align-items: center;
 }
 
-#search {
+.controls input[type="search"] {
   flex: 1 1 260px;
   max-width: 420px;
-  padding: 9px 14px;
-  font-size: 1rem;
+  padding: 9px 16px 9px 38px;
+  font-size: .95rem;
+  font-family: inherit;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg);
+  border-radius: 999px;
+  background-color: var(--card);
   color: var(--ink);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="%238a94a3" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>');
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  box-shadow: var(--shadow);
+  transition: border-color .15s ease, box-shadow .15s ease;
 }
 
-#search:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.controls input[type="search"]::placeholder { color: var(--muted); }
+
+.controls input[type="search"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.controls input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
 
 .tabs { display: flex; gap: 6px; }
 
@@ -91,6 +105,48 @@ h1 { margin: 0; font-size: 1.35rem; letter-spacing: .01em; }
   border-color: var(--accent);
   color: var(--accent-ink);
 }
+
+/* Accent-filled nav button shared by the gallery and map headers. */
+a.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  font-size: .92rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: var(--shadow);
+  transition: filter .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+a.nav-btn::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  -webkit-mask: var(--nav-icon) center / contain no-repeat;
+  mask: var(--nav-icon) center / contain no-repeat;
+}
+
+a.nav-btn.icon-grid {
+  --nav-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>');
+}
+
+a.nav-btn.icon-map {
+  --nav-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/></svg>');
+}
+
+a.nav-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 35%, transparent);
+  transform: translateY(-1px);
+}
+
+a.nav-btn:active { transform: translateY(0); filter: brightness(.96); }
 
 .count { margin: 12px 0 0; color: var(--muted); font-size: .85rem; }
 
