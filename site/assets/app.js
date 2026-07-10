@@ -62,6 +62,7 @@
   function card(e) {
     var el = document.createElement("div");
     el.className = "card";
+    el.dataset.cat = e.cat;
 
     var thumb = document.createElement("div");
     thumb.className = "thumb";
