@@ -52,6 +52,8 @@ pip install -e .
 
 ### Option A — Web interface (easiest)
 
+![The converter web interface: drag-and-drop area, advanced options, and a Convert & Download button](docs/converter-screenshot.png)
+
 1. Double-click **`start_converter.bat`** (or run `python -m svg2dxf.webapp`).
    A local server starts and your browser opens at `http://127.0.0.1:8517`.
 2. Drag an SVG file onto the page (or click to browse).
