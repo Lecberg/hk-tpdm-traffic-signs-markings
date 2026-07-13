@@ -147,6 +147,17 @@
   color: var(--accent-ink);
 }
 
+/* ---- layers control (Map / Satellite) ---- */
+
+/* The vendored Leaflet has no images/ folder, so its layers.png icon 404s —
+   draw the icon with an inline SVG instead. The .leaflet-retina selector must
+   be repeated to beat leaflet.css's layers-2x.png rule. */
+.leaflet-control-layers-toggle,
+.leaflet-retina .leaflet-control-layers-toggle {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23404755" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
+  background-size: 22px 22px;
+}
+
 /* ---- dark mode ---- */
 
 @media (prefers-color-scheme: dark) {
@@ -170,6 +181,10 @@
   .leaflet-control-layers {
     background: var(--card);
     color: var(--ink);
+  }
+  .leaflet-control-layers-toggle,
+  .leaflet-retina .leaflet-control-layers-toggle {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23dfe3ea" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
   }
   .leaflet-control-attribution {
     background: rgba(27, 32, 41, .8);
