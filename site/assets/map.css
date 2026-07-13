@@ -147,16 +147,124 @@
   color: var(--accent-ink);
 }
 
-/* ---- layers control (Map / Satellite) ---- */
+/* ---- map controls ----
+   Leaflet's stock chrome (2px grey borders, hard corners, monospace glyphs)
+   is replaced with the site's card language: hairline borders, soft shadows,
+   rounded corners, accent hovers. The .leaflet-touch variants are repeated
+   where needed to out-rank leaflet.css. */
+
+.leaflet-top .leaflet-control { margin-top: 14px; }
+.leaflet-left .leaflet-control { margin-left: 14px; }
+.leaflet-right .leaflet-control { margin-right: 14px; }
+
+.leaflet-bar,
+.leaflet-touch .leaflet-bar {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.leaflet-bar a,
+.leaflet-touch .leaflet-bar a {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  transition: background-color .12s ease, color .12s ease;
+}
+
+.leaflet-bar a:last-child { border-bottom: none; }
+
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+  background: color-mix(in srgb, var(--accent) 9%, var(--card));
+  color: var(--accent);
+}
+
+.leaflet-bar a.leaflet-disabled,
+.leaflet-bar a.leaflet-disabled:hover {
+  background: var(--card);
+  color: var(--line);
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-touch .leaflet-control-zoom-in,
+.leaflet-touch .leaflet-control-zoom-out {
+  font: 300 19px/32px "Segoe UI", system-ui, sans-serif;
+  text-indent: 0;
+}
+
+.leaflet-bar a:focus-visible,
+.leaflet-control-layers-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* layers control */
+
+.leaflet-control-layers,
+.leaflet-touch .leaflet-control-layers {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
 
 /* The vendored Leaflet has no images/ folder, so its layers.png icon 404s —
    draw the icon with an inline SVG instead. The .leaflet-retina selector must
    be repeated to beat leaflet.css's layers-2x.png rule. */
 .leaflet-control-layers-toggle,
+.leaflet-touch .leaflet-control-layers-toggle,
 .leaflet-retina .leaflet-control-layers-toggle {
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23404755" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
-  background-size: 22px 22px;
+  width: 32px;
+  height: 32px;
+  background-size: 17px 17px;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235b6575" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
 }
+
+.leaflet-control-layers-expanded {
+  padding: 10px 14px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+}
+
+.leaflet-control-layers label {
+  font-size: .84rem;
+  padding: 3px 0;
+  cursor: pointer;
+}
+
+.leaflet-control-layers label:hover { color: var(--accent); }
+
+.leaflet-control-layers-selector {
+  accent-color: var(--accent);
+  margin-right: 7px;
+}
+
+.leaflet-control-layers-separator {
+  border-top: 1px solid var(--line);
+  margin: 8px -14px;
+}
+
+/* attribution */
+
+.leaflet-container .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 3px 10px;
+  border-radius: 10px 0 0 0;
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.leaflet-control-attribution a { color: var(--accent); }
 
 /* ---- dark mode ---- */
 
@@ -173,22 +281,11 @@
     background: var(--card);
     color: var(--ink);
   }
-  .leaflet-control-zoom a {
-    background: var(--card);
-    color: var(--ink);
-    border-color: var(--line);
-  }
-  .leaflet-control-layers {
-    background: var(--card);
-    color: var(--ink);
-  }
+  /* The controls restyle above uses CSS variables, so only the icon's
+     stroke color (baked into the data URI) needs a dark variant. */
   .leaflet-control-layers-toggle,
+  .leaflet-touch .leaflet-control-layers-toggle,
   .leaflet-retina .leaflet-control-layers-toggle {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23dfe3ea" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%239aa4b2" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
   }
-  .leaflet-control-attribution {
-    background: rgba(27, 32, 41, .8);
-    color: var(--muted);
-  }
-  .leaflet-control-attribution a { color: var(--accent); }
 }
