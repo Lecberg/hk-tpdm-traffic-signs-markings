@@ -167,6 +167,10 @@
     color: var(--ink);
     border-color: var(--line);
   }
+  .leaflet-control-layers {
+    background: var(--card);
+    color: var(--ink);
+  }
   .leaflet-control-attribution {
     background: rgba(27, 32, 41, .8);
     color: var(--muted);
