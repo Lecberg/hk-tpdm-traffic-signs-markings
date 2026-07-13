@@ -71,7 +71,15 @@
     '街道名稱 (中文)': hkLayer('label/hk/tc', 5)
   };
 
-  L.control.layers(baseLayers, overlays).addTo(map);
+  var layersControl = L.control.layers(baseLayers, overlays).addTo(map);
+
+  // The panel should open on click (the toggle's own handler) and stay open
+  // until the map is clicked — not flicker in and out on hover, so unbind
+  // the hover handlers Leaflet wires up in Control.Layers._initLayout.
+  L.DomEvent.off(layersControl.getContainer(), {
+    mouseenter: layersControl._expandSafely,
+    mouseleave: layersControl.collapse
+  }, layersControl);
 
   map.attributionControl.addAttribution('Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>');
 
