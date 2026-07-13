@@ -56,7 +56,6 @@
     'Map': hkLayer('basemap', 1).addTo(map),
     'Satellite': hkLayer('imagery', 1),
     'Light': cartoLayer('light_nolabels'),
-    'Dark': cartoLayer('dark_nolabels'),
     'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 20,
       maxNativeZoom: 19,
@@ -82,12 +81,6 @@
   }, layersControl);
 
   map.attributionControl.addAttribution('Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>');
-
-  // The dark-mode CSS dims light basemaps; flag the true dark one so it
-  // isn't double-darkened.
-  map.on('baselayerchange', function (e) {
-    document.getElementById('map').classList.toggle('dark-basemap', e.layer === baseLayers['Dark']);
-  });
 
   var statusEl = document.getElementById('status');
   var filterEl = document.getElementById('filter');

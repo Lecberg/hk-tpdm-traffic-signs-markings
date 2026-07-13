@@ -271,9 +271,9 @@
 @media (prefers-color-scheme: dark) {
   .leaflet-container { background: #12151b; }
 
-  /* Light basemaps glare next to the dark chrome — dim them. The CARTO
-     dark basemap (.dark-basemap, set on baselayerchange) is left alone. */
-  #map:not(.dark-basemap) .leaflet-tile-pane { filter: brightness(.82) saturate(.9) contrast(1.02); }
+  /* The basemaps only come in light styles — dim them so they don't
+     glare next to the dark chrome. */
+  .leaflet-tile-pane { filter: brightness(.82) saturate(.9) contrast(1.02); }
 
   .sign-plate { border-color: rgba(0, 0, 0, .45); }
 
