@@ -31,27 +31,55 @@
     preferCanvas: true
   });
 
-  var attribution = '&copy; <a href="https://portal.csdi.gov.hk/">Lands Department</a> | Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>';
+  var landsDept = '&copy; <a href="https://portal.csdi.gov.hk/">Lands Department</a>';
+  var cartoAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-  var mapLayer = L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png', {
-    maxZoom: 20,
-    zIndex: 1,
-    attribution: attribution
-  }).addTo(map);
+  function hkLayer(path, zIndex) {
+    return L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/' + path + '/wgs84/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      zIndex: zIndex,
+      attribution: landsDept
+    });
+  }
 
-  var satelliteLayer = L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/wgs84/{z}/{x}/{y}.png', {
-    maxZoom: 20,
-    zIndex: 1,
-    attribution: attribution
+  // CARTO basemaps use the *_nolabels variants so the HK GeoData label
+  // overlays provide consistent, bilingual-capable labels everywhere.
+  function cartoLayer(style) {
+    return L.tileLayer('https://{s}.basemaps.cartocdn.com/' + style + '/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
+      zIndex: 1,
+      attribution: cartoAttr
+    });
+  }
+
+  var baseLayers = {
+    'Map': hkLayer('basemap', 1).addTo(map),
+    'Satellite': hkLayer('imagery', 1),
+    'Light': cartoLayer('light_nolabels'),
+    'Dark': cartoLayer('dark_nolabels'),
+    'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      maxNativeZoom: 19,
+      zIndex: 1,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    })
+  };
+
+  // Street/place name overlays sit above whichever basemap is active.
+  var overlays = {
+    'Street names (EN)': hkLayer('label/hk/en', 5).addTo(map),
+    '街道名稱 (中文)': hkLayer('label/hk/tc', 5)
+  };
+
+  L.control.layers(baseLayers, overlays).addTo(map);
+
+  map.attributionControl.addAttribution('Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>');
+
+  // The dark-mode CSS dims light basemaps; flag the true dark one so it
+  // isn't double-darkened.
+  map.on('baselayerchange', function (e) {
+    document.getElementById('map').classList.toggle('dark-basemap', e.layer === baseLayers['Dark']);
   });
-
-  // Street/place names stay on top of whichever basemap is active.
-  L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/en/wgs84/{z}/{x}/{y}.png', {
-    maxZoom: 20,
-    zIndex: 5
-  }).addTo(map);
-
-  L.control.layers({ 'Map': mapLayer, 'Satellite': satelliteLayer }).addTo(map);
 
   var statusEl = document.getElementById('status');
   var filterEl = document.getElementById('filter');
