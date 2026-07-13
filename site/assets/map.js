@@ -31,14 +31,27 @@
     preferCanvas: true
   });
 
-  L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png', {
+  var attribution = '&copy; <a href="https://portal.csdi.gov.hk/">Lands Department</a> | Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>';
+
+  var mapLayer = L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png', {
     maxZoom: 20,
-    attribution: '&copy; <a href="https://portal.csdi.gov.hk/">Lands Department</a> | Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>'
+    zIndex: 1,
+    attribution: attribution
   }).addTo(map);
 
+  var satelliteLayer = L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/wgs84/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    zIndex: 1,
+    attribution: attribution
+  });
+
+  // Street/place names stay on top of whichever basemap is active.
   L.tileLayer('https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/en/wgs84/{z}/{x}/{y}.png', {
-    maxZoom: 20
+    maxZoom: 20,
+    zIndex: 5
   }).addTo(map);
+
+  L.control.layers({ 'Map': mapLayer, 'Satellite': satelliteLayer }).addTo(map);
 
   var statusEl = document.getElementById('status');
   var filterEl = document.getElementById('filter');
