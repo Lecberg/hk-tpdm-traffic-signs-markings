@@ -80,6 +80,43 @@
     mouseleave: layersControl.collapse
   }, layersControl);
 
+  // Closing needs to be deferred by one animation. Leaflet's collapse() simply
+  // drops the `-expanded` class, which un-pads the panel and re-shows the
+  // toggle button while the list is still fading — so hold that off until the
+  // exit animation (map.css `.is-closing`) has played.
+  var LAYERS_CLOSE_MS = 130;
+  var layersBox = layersControl.getContainer();
+  var baseCollapse = L.Control.Layers.prototype.collapse;
+  var baseExpand = L.Control.Layers.prototype.expand;
+  var layersCloseTimer = null;
+
+  layersControl.collapse = function () {
+    if (layersCloseTimer ||
+        !L.DomUtil.hasClass(layersBox, 'leaflet-control-layers-expanded')) return this;
+    var control = this;
+    L.DomUtil.addClass(layersBox, 'is-closing');
+    layersCloseTimer = setTimeout(function () {
+      layersCloseTimer = null;
+      L.DomUtil.removeClass(layersBox, 'is-closing');
+      baseCollapse.call(control);
+    }, LAYERS_CLOSE_MS);
+    return this;
+  };
+
+  layersControl.expand = function () {
+    if (layersCloseTimer) {
+      clearTimeout(layersCloseTimer);
+      layersCloseTimer = null;
+      L.DomUtil.removeClass(layersBox, 'is-closing');
+    }
+    return baseExpand.call(this);
+  };
+
+  // Leaflet bound the map-click collapse to the prototype method before the
+  // override above existed, so re-point it at the instance.
+  map.off('click', L.Control.Layers.prototype.collapse, layersControl);
+  map.on('click', function () { layersControl.collapse(); });
+
   map.attributionControl.addAttribution('Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>');
 
   var statusEl = document.getElementById('status');

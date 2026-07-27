@@ -7,9 +7,22 @@
 
 /* The header itself is shared with the gallery (style.css); only the
    sticky positioning must go — the page is a fixed-height flex column. */
-.map-header { position: static; flex-shrink: 0; }
+.map-header {
+  position: static;
+  flex-shrink: 0;
+  border-bottom-color: var(--line);
+}
 
-.home-link { display: block; line-height: 0; }
+.home-link {
+  display: block;
+  line-height: 0;
+  border-radius: 50%;
+  transition: transform var(--dur) var(--ease-emph);
+}
+
+.home-link:hover { transform: scale(1.06) rotate(-4deg); }
+
+.home-link:active { transform: scale(.96); }
 
 #map { flex: 1; min-height: 0; background: var(--bg); }
 
@@ -28,18 +41,21 @@
   font-weight: 600;
   text-align: center;
   cursor: pointer;
-  animation: marker-in .18s ease-out;
-  transition: transform .12s ease-out;
+  animation: marker-in var(--dur) var(--ease-emph);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 
-.cluster-bubble:hover { transform: scale(1.08); }
+.cluster-bubble:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 14px rgba(16, 24, 40, .45);
+}
 
 /* ---- sign markers (zoom >= 17) ---- */
 
 .sign-marker {
   background: none;
   border: none;
-  animation: marker-in .18s ease-out;
+  animation: marker-in var(--dur) var(--ease-emph);
 }
 
 .sign-plate {
@@ -50,6 +66,12 @@
   border-radius: 4px;
   padding: 2px;
   box-shadow: 0 1px 3px rgba(16, 24, 40, .35);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.sign-marker:hover .sign-plate {
+  transform: scale(1.12);
+  box-shadow: 0 3px 10px rgba(16, 24, 40, .45);
 }
 
 /* Specificity must beat leaflet.css's
@@ -93,16 +115,52 @@
   font-family: "Segoe UI", system-ui, sans-serif;
   font-size: .75rem;
   font-weight: 600;
-  padding: 2px 7px;
-  background: var(--card);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
   color: var(--ink);
   border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
+  animation: tip-in var(--dur-fast) var(--ease-out);
 }
 
 .sign-tip::before { display: none; }
 
+@keyframes tip-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ---- popup ---- */
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-lg);
+}
+
+.leaflet-popup-content-wrapper {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  /* Leaflet drives .leaflet-popup's own transform, so the entrance motion has
+     to live on the wrapper. It is rebuilt on every open, so a keyframe
+     animation replays each time. */
+  transform-origin: bottom center;
+  animation: popup-in var(--dur-slow) var(--ease-emph) both;
+}
+
+@keyframes popup-in {
+  from { opacity: 0; transform: translateY(6px) scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover { color: var(--ink); }
 
 .sign-popup { text-align: center; font-family: inherit; min-width: 150px; }
 
@@ -133,12 +191,17 @@
   padding: 5px 16px;
   margin: 0 3px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--card);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   color: var(--accent);
   text-decoration: none;
   font-size: .85rem;
   font-weight: 600;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .sign-popup .dl a:hover {
@@ -146,6 +209,8 @@
   border-color: var(--accent);
   color: var(--accent-ink);
 }
+
+.sign-popup .dl a:active { transform: scale(.96); }
 
 /* ---- map controls ----
    Leaflet's stock chrome (2px grey borders, hard corners, monospace glyphs)
@@ -160,9 +225,9 @@
 .leaflet-bar,
 .leaflet-touch .leaflet-bar {
   border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -171,24 +236,28 @@
   width: 32px;
   height: 32px;
   line-height: 32px;
-  background: var(--card);
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  transition: background-color .12s ease, color .12s ease;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
 .leaflet-bar a:last-child { border-bottom: none; }
 
 .leaflet-bar a:hover,
 .leaflet-bar a:focus {
-  background: color-mix(in srgb, var(--accent) 9%, var(--card));
+  background: var(--accent-soft);
   color: var(--accent);
 }
 
+.leaflet-bar a:active { background: color-mix(in srgb, var(--accent) 18%, var(--surface)); }
+
 .leaflet-bar a.leaflet-disabled,
 .leaflet-bar a.leaflet-disabled:hover {
-  background: var(--card);
-  color: var(--line);
+  background: var(--surface);
+  color: var(--line-strong);
 }
 
 .leaflet-control-zoom-in,
@@ -210,11 +279,16 @@
 .leaflet-control-layers,
 .leaflet-touch .leaflet-control-layers {
   border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
+  border-radius: var(--radius);
+  background: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
+  /* clips the panel while it slides down out of the toggle */
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease-out);
 }
+
+.leaflet-control-layers-expanded { box-shadow: var(--shadow-lg); }
 
 /* The vendored Leaflet has no images/ folder, so its layers.png icon 404s —
    draw the icon with an inline SVG instead. The .leaflet-retina selector must
@@ -226,7 +300,10 @@
   height: 32px;
   background-size: 17px 17px;
   background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235b6575" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
+
+.leaflet-control-layers-toggle:hover { background-color: var(--accent-soft); }
 
 .leaflet-control-layers-expanded {
   padding: 10px 14px;
@@ -234,13 +311,57 @@
   color: var(--ink);
 }
 
-.leaflet-control-layers label {
-  font-size: .84rem;
-  padding: 3px 0;
-  cursor: pointer;
+/* Dropdown motion: the panel fades and slides down out of the toggle corner,
+   clipped by the container's overflow. The list goes from display:none to
+   block, so @starting-style is what gives the opening transition something to
+   start from; browsers without it fall back to the previous instant behaviour. */
+.leaflet-control-layers .leaflet-control-layers-list {
+  opacity: 0;
+  transform: translateY(-8px) scale(.97);
+  transform-origin: top right;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-emph);
 }
 
-.leaflet-control-layers label:hover { color: var(--accent); }
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .leaflet-control-layers-expanded .leaflet-control-layers-list {
+    opacity: 0;
+    transform: translateY(-8px) scale(.97);
+  }
+}
+
+/* Closing is JS-driven (map.js): Leaflet's collapse() drops the expanded class
+   outright, which would cut the fade off and pop the toggle button back in
+   mid-animation. The class below plays the exit while the panel's box is still
+   intact, and the real collapse follows. */
+.leaflet-control-layers.is-closing .leaflet-control-layers-list {
+  opacity: 0;
+  transform: translateY(-8px) scale(.97);
+  transition-duration: var(--dur-fast);
+}
+
+.leaflet-control-layers label {
+  display: block;
+  font-size: .84rem;
+  padding: 4px 6px;
+  margin: 0 -6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.leaflet-control-layers label:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
 
 .leaflet-control-layers-selector {
   accent-color: var(--accent);
@@ -255,37 +376,58 @@
 /* attribution */
 
 .leaflet-container .leaflet-control-attribution {
-  background: color-mix(in srgb, var(--card) 82%, transparent);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   padding: 3px 10px;
-  border-radius: 10px 0 0 0;
+  border-radius: var(--radius) 0 0 0;
   color: var(--muted);
   font-size: .7rem;
 }
 
 .leaflet-control-attribution a { color: var(--accent); }
 
-/* ---- dark mode ---- */
+/* ---- dark mode ----
+   Everything above is variable-driven, so only the tile dimming and the icons
+   with colours baked into their data URIs need a dark variant. The two blocks
+   below must stay in sync (see the header of style.css). */
 
 @media (prefers-color-scheme: dark) {
-  .leaflet-container { background: #12151b; }
+  :root:not([data-theme="light"]) .leaflet-container { background: #0f1218; }
 
   /* The basemaps only come in light styles — dim them so they don't
      glare next to the dark chrome. */
-  .leaflet-tile-pane { filter: brightness(.82) saturate(.9) contrast(1.02); }
-
-  .sign-plate { border-color: rgba(0, 0, 0, .45); }
-
-  .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-    background: var(--card);
-    color: var(--ink);
+  :root:not([data-theme="light"]) .leaflet-tile-pane {
+    filter: brightness(.82) saturate(.9) contrast(1.02);
   }
-  /* The controls restyle above uses CSS variables, so only the icon's
-     stroke color (baked into the data URI) needs a dark variant. */
-  .leaflet-control-layers-toggle,
-  .leaflet-touch .leaflet-control-layers-toggle,
-  .leaflet-retina .leaflet-control-layers-toggle {
+
+  :root:not([data-theme="light"]) .sign-plate { border-color: rgba(0, 0, 0, .45); }
+
+  :root:not([data-theme="light"]) .leaflet-control-layers-toggle,
+  :root:not([data-theme="light"]) .leaflet-touch .leaflet-control-layers-toggle,
+  :root:not([data-theme="light"]) .leaflet-retina .leaflet-control-layers-toggle {
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%239aa4b2" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
   }
+}
+
+[data-theme="dark"] .leaflet-container { background: #0f1218; }
+
+[data-theme="dark"] .leaflet-tile-pane {
+  filter: brightness(.82) saturate(.9) contrast(1.02);
+}
+
+[data-theme="dark"] .sign-plate { border-color: rgba(0, 0, 0, .45); }
+
+[data-theme="dark"] .leaflet-control-layers-toggle,
+[data-theme="dark"] .leaflet-touch .leaflet-control-layers-toggle,
+[data-theme="dark"] .leaflet-retina .leaflet-control-layers-toggle {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%239aa4b2" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="m2 12.5 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>');
+}
+
+/* ---- reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cluster-bubble:hover,
+  .sign-marker:hover .sign-plate,
+  .home-link:hover { transform: none; }
 }
