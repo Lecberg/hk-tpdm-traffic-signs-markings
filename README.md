@@ -163,6 +163,10 @@ python scripts/build_map_data.py doc.kml site/map-data
 
 This regenerates `site/map-data/` — per-grid-cell JSON files the map page
 loads lazily as you pan, so the full 157k-point dataset never loads at once.
+Sign density is very uneven, so any cell whose file would exceed 200 KB is
+split into an n×n grid of parts named `<x>_<y>_<i>-<j>.json` (Kowloon's
+26k-sign cell becomes 3×3). A view of one junction then fetches a part
+instead of a whole district; `index.json` records the split factors.
 
 Marker icons come from `site/map-icons/` — copies of the sign SVGs cropped
 to their content bounding box (the gallery SVGs share a TPDM drawing-sheet

@@ -125,6 +125,7 @@
 
   var cellSize = 0.05;
   var cellIndex = {};          // "x_y" -> sign count
+  var cellSplits = {};         // "x_y" -> {n, parts} for cells stored in parts
   var cellCache = {};          // "x_y" -> array of [code, lon, lat, angle]
   var cellPending = {};        // "x_y" -> Promise
   var iconAvailable = null;    // Set of site codes ("TS_115") with SVGs
@@ -150,6 +151,7 @@
     .then(function (idx) {
       cellSize = idx.cell;
       cellIndex = idx.cells;
+      cellSplits = idx.splits || {};   // absent in indexes built before splitting
       refresh();
     })
     .catch(function (err) {
@@ -210,15 +212,38 @@
     return cellPending[key];
   }
 
+  // Names of the files covering the current view. Usually one per cell, but a
+  // cell dense enough to have been split (see scripts/build_map_data.py)
+  // contributes only the parts the view actually touches — Kowloon's cell is
+  // 26k signs, and pulling all of it to look at one junction is what used to
+  // make that area so slow and failure-prone.
+  //
+  // Padded to match visibleRows(): a row in that margin is drawn, so its file
+  // has to have been fetched.
   function visibleCellKeys() {
-    var b = map.getBounds();
+    var b = map.getBounds().pad(0.05);
     var keys = [];
     var x0 = Math.floor(b.getWest() / cellSize), x1 = Math.floor(b.getEast() / cellSize);
     var y0 = Math.floor(b.getSouth() / cellSize), y1 = Math.floor(b.getNorth() / cellSize);
     for (var x = x0; x <= x1; x++) {
       for (var y = y0; y <= y1; y++) {
         var key = x + '_' + y;
-        if (cellIndex[key]) keys.push(key);
+        if (!cellIndex[key]) continue;
+        var split = cellSplits[key];
+        if (!split) { keys.push(key); continue; }
+
+        // Same arithmetic as partition() in the build script.
+        var sub = cellSize / split.n;
+        var i0 = Math.max(0, Math.floor((b.getWest() - x * cellSize) / sub));
+        var i1 = Math.min(split.n - 1, Math.floor((b.getEast() - x * cellSize) / sub));
+        var j0 = Math.max(0, Math.floor((b.getSouth() - y * cellSize) / sub));
+        var j1 = Math.min(split.n - 1, Math.floor((b.getNorth() - y * cellSize) / sub));
+        for (var i = i0; i <= i1; i++) {
+          for (var j = j0; j <= j1; j++) {
+            var part = i + '-' + j;
+            if (split.parts[part]) keys.push(key + '_' + part);
+          }
+        }
       }
     }
     return keys;
