@@ -18,10 +18,19 @@
   root.dataset.theme = stored() || (media.matches ? 'dark' : 'light');
 
   // Follow the OS while the visitor hasn't made an explicit choice.
-  media.addEventListener('change', function (e) {
+  function followSystem(e) {
     if (stored()) return;
     root.dataset.theme = e.matches ? 'dark' : 'light';
-  });
+  }
+
+  // MediaQueryList only gained addEventListener in Safari 14; the older
+  // addListener is all Safari 13 and the Android WebViews of that era have,
+  // and calling the missing one throws and takes the toggle wiring with it.
+  if (media.addEventListener) {
+    media.addEventListener('change', followSystem);
+  } else if (media.addListener) {
+    media.addListener(followSystem);
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('theme-toggle');

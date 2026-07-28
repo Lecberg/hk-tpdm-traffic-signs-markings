@@ -14,6 +14,7 @@
   var ICON_ZOOM = 17;       // at/above this, draw SVG icons instead of dots
   var MAX_ICONS = 600;      // icon markers are DOM nodes — cap them
   var BIN_PX = 96;          // screen-pixel bin size for zoom 13-14 clusters
+  var CELL_RETRY_MS = 1200; // wait before retrying a failed cell fetch once
 
   // #zoom/lat/lng deep links, e.g. map.html#17/22.3193/114.1694
   var view = { center: [22.3193, 114.1694], zoom: 12 };
@@ -132,36 +133,78 @@
   var clusterLayer = L.layerGroup().addTo(map);
   var signMarkers = {};        // marker key -> Leaflet marker (diffed on render)
   var filterText = '';
+  var fatalStatus = false;     // once set, render() must not overwrite it
 
   // ---- data loading -------------------------------------------------------
 
-  fetch('map-data/index.json')
-    .then(function (r) { return r.json(); })
+  function fetchJson(path) {
+    return fetch(path).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + path);
+      return r.json();
+    });
+  }
+
+  // Without the cell index nothing can be drawn at all, so say so rather than
+  // leaving an empty map with an empty status line.
+  fetchJson('map-data/index.json')
     .then(function (idx) {
       cellSize = idx.cell;
       cellIndex = idx.cells;
       refresh();
+    })
+    .catch(function (err) {
+      setFatalStatus('Could not load the sign index (' + err.message +
+                     ') — reload to retry');
     });
 
   // Cropped marker icons (built by scripts/build_map_icons.py) and their
-  // width/height aspect ratios.
-  fetch('map-icons/index.json')
-    .then(function (r) { return r.json(); })
+  // width/height aspect ratios. Losing these is survivable: markers fall back
+  // to plain dots, so it only warrants a console warning.
+  fetchJson('map-icons/index.json')
     .then(function (aspects) {
       iconAspect = aspects;
       iconAvailable = new Set(Object.keys(aspects));
       refresh();
+    })
+    .catch(function (err) {
+      iconAvailable = new Set();   // unblock the icon tier's fallback to dots
+      console.warn('Sign icons unavailable, falling back to dots:', err.message);
+      refresh();
     });
+
+  function fetchCell(key) {
+    return fetch('map-data/' + key + '.json').then(function (r) {
+      // Without this an error page reaches r.json(), which throws a much
+      // less useful parse error.
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for cell ' + key);
+      return r.json();
+    });
+  }
 
   function loadCell(key) {
     if (cellCache[key]) return Promise.resolve(cellCache[key]);
     if (!cellPending[key]) {
-      cellPending[key] = fetch('map-data/' + key + '.json')
-        .then(function (r) { return r.json(); })
+      // One automatic retry absorbs a transient network blip. Cell sizes are
+      // very uneven — Kowloon's is 890 KB against a 36 KB median — so the
+      // dense areas are by far the likeliest to fail.
+      //
+      // Either way the pending entry is dropped when it settles: caching a
+      // rejected promise here would make every later loadCell() replay that
+      // same failure, blacking the area out for the rest of the session even
+      // after the network recovered.
+      cellPending[key] = fetchCell(key)
+        .catch(function () {
+          return new Promise(function (resolve) {
+            setTimeout(resolve, CELL_RETRY_MS);
+          }).then(function () { return fetchCell(key); });
+        })
         .then(function (rows) {
           cellCache[key] = rows;
           delete cellPending[key];
           return rows;
+        }, function (err) {
+          delete cellPending[key];
+          throw err;
         });
     }
     return cellPending[key];
@@ -390,10 +433,27 @@
     var missing = visibleCellKeys().filter(function (k) { return !cellCache[k]; });
     if (!missing.length) { render(); return; }
     setStatus('Loading signs…');
-    Promise.all(missing.map(loadCell)).then(render);
+    var failed = 0;
+    Promise.all(missing.map(function (key) {
+      // Swallow per cell so one failure can't reject the whole batch and
+      // leave the map stuck on "Loading signs…" with nothing drawn.
+      return loadCell(key).catch(function () { failed++; });
+    })).then(function () {
+      render();   // draws whatever did arrive
+      if (failed) setStatus('Some signs could not be loaded — pan or zoom to retry');
+    });
   }
 
-  function setStatus(text) { statusEl.textContent = text; }
+  // A fatal message latches: without the cell index every later render()
+  // reports "0 signs in view" and would otherwise wipe the explanation.
+  function setStatus(text) {
+    if (!fatalStatus) statusEl.textContent = text;
+  }
+
+  function setFatalStatus(text) {
+    statusEl.textContent = text;
+    fatalStatus = true;
+  }
 
   // ---- events -------------------------------------------------------------
 
