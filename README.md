@@ -144,6 +144,19 @@ python scripts/build_thumbs.py          # only new/changed files
 python scripts/build_thumbs.py --force  # redo everything
 ```
 
+DXF downloads are served compressed. GitHub Pages gzips only a whitelist of
+content types and DXF is not on it, so a 924 KB drawing went out at 924 KB;
+`assets/dxf-download.js` fetches the `.dxf.gz` built beside it and inflates it
+in the browser, which is about 8x less over the wire. The plain `.dxf` stays
+in place for direct links and for browsers without `DecompressionStream` —
+the script only enhances a link that already works. Rebuild after
+`build_site.py`:
+
+```
+python scripts/build_dxf_gz.py          # only new/changed files
+python scripts/build_dxf_gz.py --force  # redo everything
+```
+
 Preview locally: `python -m http.server 8618 --directory site`
 
 ## Traffic signs map (`site/map.html`)

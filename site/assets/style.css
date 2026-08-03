@@ -538,6 +538,15 @@ main { max-width: 1200px; margin: 0 auto; padding: 26px 20px 72px; }
 
 .dl.dxf:hover { filter: brightness(1.1); color: var(--accent-ink); }
 
+/* A DXF is fetched and inflated before the save dialog appears (see
+   dxf-download.js); on the largest files that is a beat long enough to look
+   like a dead click. Applies to the map popup's links too. */
+a[download].is-downloading {
+  opacity: .55;
+  cursor: progress;
+  pointer-events: none;
+}
+
 .empty {
   text-align: center;
   color: var(--muted);
