@@ -32,6 +32,13 @@ def _compress(path_str: str) -> tuple[str, int, int, str]:
     dxf = Path(path_str)
     try:
         raw = dxf.read_bytes()
+        # Normalized to LF because that is what gets served: the repo stores
+        # these with LF, and a Windows checkout turns them into CRLF locally.
+        # Compressing the working copy as-is would make the inflated download
+        # differ from the plain .dxf behind the same button - same drawing,
+        # 924,700 bytes against 767,284 - and pad the .gz with 157,416
+        # carriage returns nobody asked for.
+        raw = raw.replace(b"\r\n", b"\n")
         buf = io.BytesIO()
         # mtime=0 and no embedded filename: the output depends only on the
         # input, so an unchanged DXF re-gzips to identical bytes and does not
