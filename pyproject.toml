@@ -16,6 +16,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]
+# Only scripts/build_thumbs.py needs a rasterizer; converting SVG to DXF does not.
+site = ["resvg-py>=0.3", "pillow>=10"]
 
 [project.scripts]
 svg2dxf = "svg2dxf.cli:main"

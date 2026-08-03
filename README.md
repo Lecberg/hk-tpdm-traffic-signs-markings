@@ -133,6 +133,17 @@ python scripts/build_site.py          # converts only new/changed files
 python scripts/build_site.py --force  # reconvert everything
 ```
 
+Gallery cards are served from `site/thumbs/`, small lossless WebP rasters of
+the drawings — a card shows 167x120 px of art that can run to 772 vector
+paths. A thumb is kept only where it is smaller than the gzipped SVG it
+replaces, so the simple road markings keep their SVG; `thumbs/index.json`
+lists the codes that have one. Rebuild after changing `svgs/`:
+
+```
+python scripts/build_thumbs.py          # only new/changed files
+python scripts/build_thumbs.py --force  # redo everything
+```
+
 Preview locally: `python -m http.server 8618 --directory site`
 
 ## Traffic signs map (`site/map.html`)

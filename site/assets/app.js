@@ -22,6 +22,7 @@
   var hasIO = "IntersectionObserver" in window;
 
   var all = [];       // full manifest
+  var thumbs = null;  // codes that have a WebP thumb; the rest show their SVG
   var filtered = [];  // current filter/search result
   var rendered = 0;   // how many of `filtered` are in the DOM
   var cat = "ALL";
@@ -40,13 +41,23 @@
   }
   if (params.get("q")) searchBox.value = params.get("q");
 
-  fetch("index.json")
-    .then(function (r) {
+  function getJson(path) {
+    return fetch(path).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
-    })
-    .then(function (data) {
-      all = data;
+    });
+  }
+
+  Promise.all([
+    getJson("index.json"),
+    // Optional. Losing this list only costs bytes, not cards: every thumb
+    // falls back to the SVG the gallery used before, so a failed fetch here
+    // must not take the grid down with it.
+    getJson("thumbs/index.json").catch(function () { return []; })
+  ])
+    .then(function (res) {
+      all = res[0];
+      thumbs = new Set(res[1]);
       grid.setAttribute("aria-busy", "false");
       apply(true);
     })
@@ -125,7 +136,18 @@
     var img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
-    img.src = e.svg;
+    // The card only ever needs 167x120 of a drawing that can run to 772 paths,
+    // so where a raster came out smaller than the gzipped SVG it is used here.
+    // The download links below still point at the real SVG and DXF.
+    if (thumbs && thumbs.has(e.code)) {
+      img.src = "thumbs/" + e.code + ".webp";
+      img.onerror = function () {
+        img.onerror = null;   // one retry, then let it fail visibly
+        img.src = e.svg;
+      };
+    } else {
+      img.src = e.svg;
+    }
     img.alt = e.code;
     thumb.appendChild(img);
 
