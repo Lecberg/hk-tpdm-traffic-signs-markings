@@ -6,13 +6,19 @@ Browse Hong Kong traffic signs and road markings, or explore surveyed traffic si
 
 **[Open the gallery](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)** to browse 1,327 drawings. Search by code, filter signs and road markings, and download files as SVG or DXF. SVG is an image format. DXF is a drawing format used by design software.
 
+[![Gallery showing traffic sign drawings and SVG and DXF download buttons](docs/gallery-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)
+
 **[Open the map](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)** to explore about 157,000 surveyed traffic sign locations. Zoom in to see sign faces. Select a sign to view its code and available downloads.
+
+[![Map showing surveyed traffic signs around Mong Kok](docs/map-current-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
 
 The public site needs no installation or API key. It does not include the assistant.
 
 ## Run the Docker version with the assistant
 
 The Docker version runs on your computer. It has the same Gallery and Map sections. The **Assistant** button appears only in the Map section.
+
+![Assistant showing a sign search result beside the map](docs/assistant-screenshot.png)
 
 The assistant has four tabs:
 
