@@ -1,0 +1,1589 @@
+[
+  {
+    "code": "TS_101",
+    "name_en": "Stop",
+    "name_zh_hant": "停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "zh_url": "https://www.td.gov.hk/tc/road_safety/road_users_code/index/chapter_5_for_all_drivers/stop_and_give_way_junctions_/",
+      "edition": "TPDM Volume 3, August 2026",
+      "section": "2.3.2.6",
+      "pdf_page": 21
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.749220+00:00"
+    }
+  },
+  {
+    "code": "TS_102",
+    "name_en": "Give Way",
+    "name_zh_hant": "讓路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "zh_url": "https://www.td.gov.hk/filemanager/tc/content_1125/c4_4.pdf",
+      "edition": "TPDM Volume 3, August 2026",
+      "section": "2.3.2.19",
+      "pdf_page": 23
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.759596+00:00"
+    }
+  },
+  {
+    "code": "TS_106",
+    "name_en": "Go straight ahead only",
+    "name_zh_hant": "只准駛前",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 26
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.233336+00:00"
+    }
+  },
+  {
+    "code": "TS_107",
+    "name_en": "Turn left",
+    "name_zh_hant": "左轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 26
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.942453+00:00"
+    }
+  },
+  {
+    "code": "TS_108",
+    "name_en": "Turn right",
+    "name_zh_hant": "右轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 26
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.417284+00:00"
+    }
+  },
+  {
+    "code": "TS_109",
+    "name_en": "Keep left",
+    "name_zh_hant": "靠左",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 27
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.569987+00:00"
+    }
+  },
+  {
+    "code": "TS_115",
+    "name_en": "No entry",
+    "name_zh_hant": "不准駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 30
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.717975+00:00"
+    }
+  },
+  {
+    "code": "TS_116",
+    "name_en": "All vehicles prohibited in both directions",
+    "name_zh_hant": "禁止來往方向的一切車輛駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 31
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.089955+00:00"
+    }
+  },
+  {
+    "code": "TS_117",
+    "name_en": "Motor Vehicles prohibited",
+    "name_zh_hant": "機動車輛禁止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 32
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.104588+00:00"
+    }
+  },
+  {
+    "code": "TS_119",
+    "name_en": "Minibuses are Prohibited",
+    "name_zh_hant": "小巴被禁止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 33
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.970060+00:00"
+    }
+  },
+  {
+    "code": "TS_130",
+    "name_en": "No motor vehicle driven by a 學 learner driver.",
+    "name_zh_hant": "無機動車由見習司機駕駛。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 36
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.988036+00:00"
+    }
+  },
+  {
+    "code": "TS_131",
+    "name_en": "No left turn",
+    "name_zh_hant": "不准左轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 36
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.382614+00:00"
+    }
+  },
+  {
+    "code": "TS_132",
+    "name_en": "No right turn",
+    "name_zh_hant": "不准右轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 26
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.454149+00:00"
+    }
+  },
+  {
+    "code": "TS_133",
+    "name_en": "No U-turn",
+    "name_zh_hant": "不准掉頭",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 37
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.269729+00:00"
+    }
+  },
+  {
+    "code": "TS_134",
+    "name_en": "No Pedestrians",
+    "name_zh_hant": "行人禁止通行",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 38
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.760456+00:00"
+    }
+  },
+  {
+    "code": "TS_136",
+    "name_en": "No pedestrians, pedestrian controlled vehicles, bicycles and tricycles.",
+    "name_zh_hant": "沒有行人，行人控制的車輛，自行車，三輪車超出了這一點。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 38
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.800671+00:00"
+    }
+  },
+  {
+    "code": "TS_173",
+    "name_en": "30 km/h speed limit",
+    "name_zh_hant": "時速三十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.364713+00:00"
+    }
+  },
+  {
+    "code": "TS_174",
+    "name_en": "Speed Limit",
+    "name_zh_hant": "速度限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 43
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.565630+00:00"
+    }
+  },
+  {
+    "code": "TS_175",
+    "name_en": "70 km/h speed limit",
+    "name_zh_hant": "時速七十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.823192+00:00"
+    }
+  },
+  {
+    "code": "TS_176",
+    "name_en": "80 km/h speed limit",
+    "name_zh_hant": "時速八十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.914202+00:00"
+    }
+  },
+  {
+    "code": "TS_177",
+    "name_en": "100 km/h speed limit",
+    "name_zh_hant": "時速一百公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.219458+00:00"
+    }
+  },
+  {
+    "code": "TS_179",
+    "name_en": "Segregated Pathway",
+    "name_zh_hant": "分開的路徑",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 44
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.858990+00:00"
+    }
+  },
+  {
+    "code": "TS_180",
+    "name_en": "Segregated Pathway",
+    "name_zh_hant": "分開的路徑",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 44
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.380296+00:00"
+    }
+  },
+  {
+    "code": "TS_182",
+    "name_en": "One-way traffic",
+    "name_zh_hant": "單向交通",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 45
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.907461+00:00"
+    }
+  },
+  {
+    "code": "TS_183",
+    "name_en": "No stopping",
+    "name_zh_hant": "不准停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.084446+00:00"
+    }
+  },
+  {
+    "code": "TS_191",
+    "name_en": "Keep left unless overtaking",
+    "name_zh_hant": "除越過前車外靠左駛",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 40
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.107456+00:00"
+    }
+  },
+  {
+    "code": "TS_198",
+    "name_en": "End of no stopping restriction",
+    "name_zh_hant": "禁止停車限制終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.026781+00:00"
+    }
+  },
+  {
+    "code": "TS_2131",
+    "name_en": "No stopping zone from 7 a.m. to midnight (start sign)",
+    "name_zh_hant": "上午七時至午夜十二時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.490785+00:00"
+    }
+  },
+  {
+    "code": "TS_2132",
+    "name_en": "No stopping zone from 7 a.m. to midnight (repeater sign)",
+    "name_zh_hant": "上午七時至午夜十二時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 50
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.896827+00:00"
+    }
+  },
+  {
+    "code": "TS_2133",
+    "name_en": "No stopping zone from 7 a.m. to 7 p.m. (start sign)",
+    "name_zh_hant": "上午七時至下午七時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 45
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.124263+00:00"
+    }
+  },
+  {
+    "code": "TS_2134",
+    "name_en": "No stopping zone from 7 a.m. to 7 p.m. (repeater sign)",
+    "name_zh_hant": "上午七時至下午七時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 51
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.343939+00:00"
+    }
+  },
+  {
+    "code": "TS_2137",
+    "name_en": "24 hour no stopping zone (start sign)",
+    "name_zh_hant": "全日不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.007802+00:00"
+    }
+  },
+  {
+    "code": "TS_2138",
+    "name_en": "24 hour no stopping zone (repeater sign)",
+    "name_zh_hant": "全日不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.950122+00:00"
+    }
+  },
+  {
+    "code": "TS_2139",
+    "name_en": "No stopping zone ends",
+    "name_zh_hant": "不准停車區終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.197031+00:00"
+    }
+  },
+  {
+    "code": "TS_2140",
+    "name_en": "No stopping zone for public light buses from 7 a.m. to midnight (start sign)",
+    "name_zh_hant": "上午七時至午夜十二時公共小巴不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.955765+00:00"
+    }
+  },
+  {
+    "code": "TS_2141",
+    "name_en": "No stopping zone for public light buses from 7 a.m. to midnight (repeater sign)",
+    "name_zh_hant": "上午七時至午夜十二時公共小巴不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.144491+00:00"
+    }
+  },
+  {
+    "code": "TS_2148",
+    "name_en": "No stopping zone for public light buses ends",
+    "name_zh_hant": "公共小巴不准停車區終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 53
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.292014+00:00"
+    }
+  },
+  {
+    "code": "TS_221",
+    "name_en": "In",
+    "name_zh_hant": "入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 55
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.628166+00:00"
+    }
+  },
+  {
+    "code": "TS_222",
+    "name_en": "Out",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 56
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.883528+00:00"
+    }
+  },
+  {
+    "code": "TS_223",
+    "name_en": "No exit",
+    "name_zh_hant": "不准駛出",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 56
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.773548+00:00"
+    }
+  },
+  {
+    "code": "TS_2230",
+    "name_en": "No stopping zone from 8 a.m. to 10 a.m. and from 5 p.m. to 7 p.m. (start sign)",
+    "name_zh_hant": "上午八時至十時及下午五時至七時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.045765+00:00"
+    }
+  },
+  {
+    "code": "TS_2231",
+    "name_en": "No stopping zone from 8 a.m. to 10 a.m. and from 5 p.m. to 7 p.m. (repeater sign)",
+    "name_zh_hant": "上午八時至十時及下午五時至七時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 50
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.196718+00:00"
+    }
+  },
+  {
+    "code": "TS_2234",
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.031777+00:00"
+    }
+  },
+  {
+    "code": "TS_2235",
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.994129+00:00"
+    }
+  },
+  {
+    "code": "TS_2238",
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.121849+00:00"
+    }
+  },
+  {
+    "code": "TS_2239",
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.158749+00:00"
+    }
+  },
+  {
+    "code": "TS_224",
+    "name_en": "No entry",
+    "name_zh_hant": "不准駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 56
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.327916+00:00"
+    }
+  },
+  {
+    "code": "TS_225",
+    "name_en": "Cyclists dismount and use pedestrian crossing",
+    "name_zh_hant": "騎單車者到此下車，由附近行人綫過路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 56
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.143979+00:00"
+    }
+  },
+  {
+    "code": "TS_2702",
+    "name_en": "Vehicle waiting will be prosecuted without warning",
+    "name_zh_hant": "停車等候會被檢控而不予警告",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.370051+00:00"
+    }
+  },
+  {
+    "code": "TS_280",
+    "name_en": "Parking",
+    "name_zh_hant": "泊車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 117
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.872576+00:00"
+    }
+  },
+  {
+    "code": "TS_281",
+    "name_en": "Parking for goods vehicles only",
+    "name_zh_hant": "僅限貨車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 117
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.785556+00:00"
+    }
+  },
+  {
+    "code": "TS_282",
+    "name_en": "Parking for buses only",
+    "name_zh_hant": "巴士專用泊車位",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 117
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.182513+00:00"
+    }
+  },
+  {
+    "code": "TS_283",
+    "name_en": "Parking for motorcycles only",
+    "name_zh_hant": "僅限摩托車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 117
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.160641+00:00"
+    }
+  },
+  {
+    "code": "TS_284",
+    "name_en": "Parking for pedal cycles only",
+    "name_zh_hant": "僅限腳踏車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 117
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.601630+00:00"
+    }
+  },
+  {
+    "code": "TS_286",
+    "name_en": "No parking",
+    "name_zh_hant": "不准泊車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 122
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.532570+00:00"
+    }
+  },
+  {
+    "code": "TS_322",
+    "name_en": "Green minibus stand",
+    "name_zh_hant": "綠色小巴站",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 124
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.528367+00:00"
+    }
+  },
+  {
+    "code": "TS_323",
+    "name_en": "Public Light Bus Stand",
+    "name_zh_hant": "公共小型巴士站",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 124
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.295626+00:00"
+    }
+  },
+  {
+    "code": "TS_324",
+    "name_en": "Taxi stand",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 125
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.711890+00:00"
+    }
+  },
+  {
+    "code": "TS_333",
+    "name_en": "Light rail vehicles and trams only.",
+    "name_zh_hant": "輕軌車和電車只。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 57
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.701506+00:00"
+    }
+  },
+  {
+    "code": "TS_347",
+    "name_en": "Disabled person permit parking only (left arrow)",
+    "name_zh_hant": "殘疾人士泊車許可證車輛專用（向左）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 121
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.444730+00:00"
+    }
+  },
+  {
+    "code": "TS_348",
+    "name_en": "Disabled person permit parking only (right arrow)",
+    "name_zh_hant": "殘疾人士泊車許可證車輛專用（向右）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.481245+00:00"
+    }
+  },
+  {
+    "code": "TS_371",
+    "name_en": "Private road",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 122
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.809927+00:00"
+    }
+  },
+  {
+    "code": "TS_407",
+    "name_en": "Two-way traffic",
+    "name_zh_hant": "雙程行車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 61
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.645460+00:00"
+    }
+  },
+  {
+    "code": "TS_409",
+    "name_en": "Traffic signals ahead",
+    "name_zh_hant": "前面交通燈號",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 64
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.933685+00:00"
+    }
+  },
+  {
+    "code": "TS_410",
+    "name_en": "Bend to the left ahead",
+    "name_zh_hant": "前方道路向左彎曲",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 65
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.419139+00:00"
+    }
+  },
+  {
+    "code": "TS_411",
+    "name_en": "Bend to the right ahead",
+    "name_zh_hant": "前方道路向右彎曲",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 65
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.495488+00:00"
+    }
+  },
+  {
+    "code": "TS_414",
+    "name_en": "Left-pointing chevron",
+    "name_zh_hant": "向左箭紋標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 67
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.979207+00:00"
+    }
+  },
+  {
+    "code": "TS_421",
+    "name_en": "Side road on the right ahead",
+    "name_zh_hant": "前面右邊有旁路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 70
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.737220+00:00"
+    }
+  },
+  {
+    "code": "TS_422",
+    "name_en": "Side road on the left ahead",
+    "name_zh_hant": "前面左邊有旁路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.683368+00:00"
+    }
+  },
+  {
+    "code": "TS_425",
+    "name_en": "Roundabout",
+    "name_zh_hant": "迂迴",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 70
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.270863+00:00"
+    }
+  },
+  {
+    "code": "TS_460",
+    "name_en": "Pedestrians on the road ahead",
+    "name_zh_hant": "前方道路上的行人",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 73
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.798767+00:00"
+    }
+  },
+  {
+    "code": "TS_461",
+    "name_en": "Pedestrian crossing ahead",
+    "name_zh_hant": "前面有行人過處",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 73
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.518151+00:00"
+    }
+  },
+  {
+    "code": "TS_463",
+    "name_en": "Watch out for children.",
+    "name_zh_hant": "當心孩子",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 74
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.457436+00:00"
+    }
+  },
+  {
+    "code": "TS_483",
+    "name_en": "Cyclists dismount",
+    "name_zh_hant": "騎單車者下車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.589730+00:00"
+    }
+  },
+  {
+    "code": "TS_520",
+    "name_en": "Cyclist Crossing",
+    "name_zh_hant": "自行車道口",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 85
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.219515+00:00"
+    }
+  },
+  {
+    "code": "TS_524",
+    "name_en": "Light Rail or Tram Crossing ahead.",
+    "name_zh_hant": "輕軌或電車道口。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 85
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.182388+00:00"
+    }
+  },
+  {
+    "code": "TS_570",
+    "name_en": "50 km/h speed limit ahead",
+    "name_zh_hant": "前方時速五十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 86
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.919021+00:00"
+    }
+  },
+  {
+    "code": "TS_581",
+    "name_en": "Traffic enforcement camera",
+    "name_zh_hant": "交通執法攝影機",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.345786+00:00"
+    }
+  },
+  {
+    "code": "TS_586",
+    "name_en": "Beware of Reversing Vehicles",
+    "name_zh_hant": "小心倒車車輛",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 86
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.257209+00:00"
+    }
+  },
+  {
+    "code": "TS_588",
+    "name_en": "Chevron",
+    "name_zh_hant": "箭咀",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 66
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.638629+00:00"
+    }
+  },
+  {
+    "code": "TS_589",
+    "name_en": "Shortened version of Chevron sign",
+    "name_zh_hant": "縮短版箭咀標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 66
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.232948+00:00"
+    }
+  },
+  {
+    "code": "TS_611",
+    "name_en": "Get in lane",
+    "name_zh_hant": "選定行車綫",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 89
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.664169+00:00"
+    }
+  },
+  {
+    "code": "TS_615",
+    "name_en": "No through road",
+    "name_zh_hant": "死胡同",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 90
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.065385+00:00"
+    }
+  },
+  {
+    "code": "TS_620",
+    "name_en": "Passing place",
+    "name_zh_hant": "讓車處",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 92
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.877532+00:00"
+    }
+  },
+  {
+    "code": "TS_629",
+    "name_en": "Direction to parking place",
+    "name_zh_hant": "泊車處方向",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.069727+00:00"
+    }
+  },
+  {
+    "code": "TS_708",
+    "name_en": "Except franchised buses",
+    "name_zh_hant": "專利巴士例外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 27
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.720951+00:00"
+    }
+  },
+  {
+    "code": "TS_710",
+    "name_en": "Except taxis",
+    "name_zh_hant": "的士除外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 46
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.402265+00:00"
+    }
+  },
+  {
+    "code": "TS_711",
+    "name_en": "Except for access",
+    "name_zh_hant": "前往此區者不在此限",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 99
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:05.255551+00:00"
+    }
+  },
+  {
+    "code": "TS_712",
+    "name_en": "Except with permit",
+    "name_zh_hant": "持有許可證者不在此限",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 32
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.838068+00:00"
+    }
+  },
+  {
+    "code": "TS_733",
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 122
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.051911+00:00"
+    }
+  },
+  {
+    "code": "TS_734",
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 102
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.017253+00:00"
+    }
+  },
+  {
+    "code": "TS_735",
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 122
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.308258+00:00"
+    }
+  },
+  {
+    "code": "TS_737",
+    "name_en": "Reduce speed now",
+    "name_zh_hant": "開始減速",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 103
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.675137+00:00"
+    }
+  },
+  {
+    "code": "TS_740",
+    "name_en": "School",
+    "name_zh_hant": "學校",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 106
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:03.608234+00:00"
+    }
+  },
+  {
+    "code": "TS_769",
+    "name_en": "Distance plate",
+    "name_zh_hant": "距離標誌牌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 86
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.407029+00:00"
+    }
+  },
+  {
+    "code": "TS_818",
+    "name_en": "NT Taxis",
+    "name_zh_hant": "新界的士",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 127
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.846056+00:00"
+    }
+  },
+  {
+    "code": "TS_831",
+    "name_en": "Vehicle length",
+    "name_zh_hant": "車輛長度",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 36
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.553356+00:00"
+    }
+  },
+  {
+    "code": "TS_838",
+    "name_en": "Except General Holidays",
+    "name_zh_hant": "公眾假期除外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 114
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:02.306150+00:00"
+    }
+  },
+  {
+    "code": "TS_852",
+    "name_en": "Except public light buses (scheduled services)",
+    "name_zh_hant": "專線小巴例外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:04.332304+00:00"
+    }
+  },
+  {
+    "code": "TS_860",
+    "name_en": "Except taxi drop off",
+    "name_zh_hant": "除的士落客外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "pdf_page": 47
+    },
+    "review_status": "verified",
+    "review": {
+      "reviewer": "Project owner (approved all 100 in Codex chat, 2026-09-24)",
+      "approved_at": "2026-09-24T08:50:01.836291+00:00"
+    }
+  }
+]

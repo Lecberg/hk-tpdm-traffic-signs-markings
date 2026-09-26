@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-09-24T16:19:38.686857+00:00",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "prompt": "Please help me use the sign search.",
+  "http_status": 200,
+  "help_correct": true,
+  "grounded": true,
+  "turn": {
+    "actions": [],
+    "answer": "I can search drawings, count signs near a place, or convert an SVG.",
+    "blocks": [
+      {
+        "type": "help"
+      }
+    ],
+    "created_at": 1790266775.9444795,
+    "id": "f62fb394-eeba-47f7-971d-b5dc524dd3ca",
+    "language": "en",
+    "message": "Please help me use the sign search.",
+    "status": "complete",
+    "tool_results": [
+      {
+        "result": {
+          "kind": "help"
+        },
+        "tool": "help_or_clarify"
+      }
+    ]
+  }
+}

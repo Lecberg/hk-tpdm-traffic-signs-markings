@@ -57,7 +57,7 @@ generic converters), it repaints the drawing the way the SVG renders:
 
 ### Step 0 — Install (once)
 
-Requires Python 3.10+. From the project folder:
+Requires Python 3.9+. From the project folder:
 
 ```
 pip install -e .
@@ -77,7 +77,110 @@ pip install -e .
 
 Everything runs locally; files never leave your PC.
 
-### Option B — Command line (single files or whole folders)
+### Option B — Local Docker edition (pilot)
+
+This edition has separate Gallery and Map sections. The Gallery shows drawings
+and downloads. The Map has an assistant panel for catalog search, map queries,
+SVG conversion, and optional model chat. It is separate from the public GitHub
+Pages site.
+
+1. Install and start Docker Desktop or another Docker engine with Compose.
+2. Copy `.env.example` to `.env`. Choose `AI_PROVIDER` and set that provider's
+   key and model. The custom provider also needs a base URL. Leave keys empty
+   if you only want search, map queries, and conversion.
+3. From this folder, run `docker compose up --build -d`.
+4. Open `http://localhost:8517`. Stop it with `docker compose down`.
+
+The web service listens only on `127.0.0.1:8517`. The backend is internal to
+Compose. The API key goes only to the backend container and the selected model
+service. Chat messages and selected tool results go to that service. Uploaded SVG
+bytes are used only by the local converter and are not sent to the model.
+Map tiles still require internet access.
+
+The local Docker edition supports four chat routes:
+
+| `AI_PROVIDER` | Key in `.env` | Model setting |
+|---|---|---|
+| `openai` | `OPENAI_API_KEY` | `OPENAI_MODEL` |
+| `deepseek` | `DEEPSEEK_API_KEY` | `DEEPSEEK_MODEL` (default `deepseek-flash`) |
+| `vercel` | `AI_GATEWAY_API_KEY` | `AI_GATEWAY_MODEL` (required `provider/model` ID) |
+| `custom` | `CUSTOM_API_KEY` | `CUSTOM_MODEL` and `CUSTOM_API_BASE_URL` |
+
+For example, to use DeepSeek, set `AI_PROVIDER=deepseek` and fill in
+`DEEPSEEK_API_KEY`. To use [Vercel AI Gateway](https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions),
+set `AI_PROVIDER=vercel`, fill in `AI_GATEWAY_API_KEY`, and choose a model from
+the [gateway model catalog](https://vercel.com/ai-gateway/models) that supports
+tool calls. Vercel AI SDK is a client library; this Python backend uses the
+Gateway's compatible API. DeepSeek's current model and API details are in its
+[official documentation](https://api-docs.deepseek.com/).
+
+To use another service that accepts OpenAI-style chat requests, fill in these
+lines in `.env`:
+
+```text
+AI_PROVIDER=custom
+CUSTOM_API_BASE_URL=https://example.com/v1
+CUSTOM_MODEL=your-model
+CUSTOM_API_KEY=your-key
+```
+
+The base URL is the API root, not the full `/chat/completions` address.
+The model must support tool calls, which let it ask the server to search signs
+or count map records. For a local service without authentication,
+use a placeholder key. The backend sends the key and chat requests to this URL,
+so use a service you trust and HTTPS for a remote service. A service running on
+the same computer as Docker may need `host.docker.internal` in its URL instead
+of `localhost`.
+
+After editing `.env`, run `docker compose up -d --force-recreate backend` and
+refresh the page. The panel shows the configured provider and, when chat is
+available, its model. Provider keys are read by the backend; the website has
+no key entry field. Only one provider is active at a time. Live chat needs a
+compatible service and its required credentials.
+
+The assistant uses checked tool results for visible facts. The model chooses
+the tools. It cannot supply its own sign codes, counts, names, or links in a
+reply. Chat remembers the last eight turns while browsing the map.
+Repeated turn IDs reuse the saved result. Each visit allows five chat turns per
+minute. The local service allows 60 turns per hour overall and two active
+model calls.
+
+This is still a **pilot**. The 100 most common downloadable sign codes in the
+current map survey are frozen in `data/sign-review-queue.json`. Five batches of
+20 previews are in `docs/sign-review-batches/`. The project owner approved all
+100 bilingual names on 2026-09-24. The assistant searches these names and all
+1,327 drawing codes. The other 1,227 drawings remain code-only. The
+place index has eight named places and centre reference points for all 18
+districts. These points are not district boundaries. When a name is missing
+from that list, the local server asks the [Lands Department location search](https://tools.csdi.gov.hk/csdi-webpage/apidoc/LocationSearchAPI)
+for up to 10 location points. The user chooses a result before the map counts
+signs within 0.5 km. These points may not mark a building entrance. Place names
+entered for this lookup are sent to the Lands Department. A service failure
+does not prevent searches of the saved places. Surveyed records can exist
+without downloadable artwork. SVG viewBox numbers are not physical dimensions.
+
+DeepSeek is the primary configured chat service. A recorded live run with
+unlisted place questions passed 28/30 English and 30/30 Traditional Chinese
+tasks, with no invented visible codes, counts, links, or coordinates. See
+`docs/evaluations/deepseek-20260924-174929.json`. The checked tasks cover
+code and name search, downloads, saved and unlisted places, map counts,
+follow-ups, and help. Two English map requests could not be verified because
+the model changed the supplied point. OpenAI and
+Vercel Gateway remain experimental.
+Run `python scripts/evaluate_deepseek.py --live` to repeat the paid check.
+
+Uploads, conversion outputs, and chat history stay in one in-memory session.
+They expire after one hour of inactivity or when the backend restarts. One
+conversion can run at a time; another request gets a retryable busy response.
+Uploads are limited to 20 MiB, and conversion stops after 30 seconds.
+
+If the panel says chat is unavailable, check `AI_PROVIDER`, its matching key,
+and its model in `.env`, then recreate the backend as above. Search and
+conversion do not need a key. If the
+container is unhealthy, run `docker compose ps` and `docker compose logs backend`.
+The legacy `python -m svg2dxf.webapp` converter remains available without Docker.
+
+### Option C — Command line (single files or whole folders)
 
 ```
 svg2dxf sign.svg                    # -> sign.dxf next to the input

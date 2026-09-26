@@ -132,9 +132,33 @@
   var iconAspect = {};         // site code -> width/height ratio of its SVG
   var signLayer = L.layerGroup().addTo(map);
   var clusterLayer = L.layerGroup().addTo(map);
+  var queryLayer = L.layerGroup().addTo(map);
+  var activeQuery = null;
+  var selectedPoint = null;
+  var selectedLayer = L.layerGroup().addTo(map);
+  var assistantApplying = false;
   var signMarkers = {};        // marker key -> Leaflet marker (diffed on render)
   var filterText = '';
   var fatalStatus = false;     // once set, render() must not overwrite it
+  var clearScopeEl = document.getElementById('clear-scope');
+
+  function syncScopeButton() {
+    clearScopeEl.hidden = !activeQuery && !filterEl.value.trim();
+  }
+
+  function clearScope() {
+    if (!activeQuery && !filterEl.value.trim()) return;
+    clearTimeout(filterTimer);
+    activeQuery = null;
+    filterText = '';
+    filterEl.value = '';
+    queryLayer.clearLayers();
+    syncScopeButton();
+    window.dispatchEvent(new Event('svgcad:user-action'));
+    window.dispatchEvent(new Event('svgcad:scope-cleared'));
+    clearSigns();
+    refresh();
+  }
 
   // ---- data loading -------------------------------------------------------
 
@@ -147,16 +171,18 @@
 
   // Without the cell index nothing can be drawn at all, so say so rather than
   // leaving an empty map with an empty status line.
-  fetchJson('map-data/index.json')
+  var indexReady = fetchJson('map-data/index.json')
     .then(function (idx) {
       cellSize = idx.cell;
       cellIndex = idx.cells;
       cellSplits = idx.splits || {};   // absent in indexes built before splitting
       refresh();
+      return true;
     })
     .catch(function (err) {
       setFatalStatus('Could not load the sign index (' + err.message +
                      ') — reload to retry');
+      return false;
     });
 
   // Cropped marker icons (built by scripts/build_map_icons.py) and their
@@ -257,11 +283,22 @@
       if (!cell) return;
       for (var i = 0; i < cell.length; i++) {
         var r = cell[i];
-        if (filterText && r[0].toLowerCase().indexOf(filterText) === -1) continue;
+        if (activeQuery) {
+          if (activeQuery.code && r[0].toUpperCase() !== activeQuery.code) continue;
+          if (distanceKm(activeQuery.latitude, activeQuery.longitude, r[2], r[1]) >
+              activeQuery.radius_km) continue;
+        } else if (filterText && r[0].toLowerCase().indexOf(filterText) === -1) continue;
         if (bounds.contains([r[2], r[1]])) rows.push(r);
       }
     });
     return rows;
+  }
+
+  function distanceKm(aLat, aLon, bLat, bLon) {
+    var p1 = aLat * Math.PI / 180, p2 = bLat * Math.PI / 180;
+    var dp = p2 - p1, dl = (bLon - aLon) * Math.PI / 180;
+    var h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+    return 6371.0088 * 2 * Math.asin(Math.min(1, Math.sqrt(h)));
   }
 
   // ---- cluster bubbles (zoom < 15) ---------------------------------------
@@ -442,6 +479,11 @@
 
   function render() {
     var zoom = map.getZoom();
+    if (activeQuery && zoom < DOT_ZOOM) {
+      clearSigns();
+      renderBinnedBubbles();
+      return;
+    }
     if (zoom < BIN_ZOOM) {
       clearSigns();
       renderCellBubbles();
@@ -454,7 +496,7 @@
   }
 
   function refresh() {
-    if (map.getZoom() < BIN_ZOOM) { render(); return; }
+    if (map.getZoom() < BIN_ZOOM && !activeQuery) { render(); return; }
     var missing = visibleCellKeys().filter(function (k) { return !cellCache[k]; });
     if (!missing.length) { render(); return; }
     setStatus('Loading signs…');
@@ -494,11 +536,69 @@
 
   var filterTimer;
   filterEl.addEventListener('input', function () {
+    var hadQuery = !!activeQuery;
+    queryLayer.clearLayers();
+    activeQuery = null;
+    syncScopeButton();
+    window.dispatchEvent(new Event('svgcad:user-action'));
+    if (hadQuery) window.dispatchEvent(new Event('svgcad:scope-cleared'));
     clearTimeout(filterTimer);
     filterTimer = setTimeout(function () {
       filterText = filterEl.value.trim().toLowerCase();
       clearSigns();   // filter changes what a key means — rebuild
       refresh();
     }, 150);
+  });
+
+  clearScopeEl.addEventListener('click', clearScope);
+
+  window.svgCadMap = {
+    ready: function () { return indexReady; },
+    currentPoint: function () {
+      var c = selectedPoint || map.getCenter();
+      return { latitude: c.lat, longitude: c.lng,
+        source: selectedPoint ? 'selected' : 'center' };
+    },
+    clearScope: clearScope,
+    clearCodeFilter: function () {
+      if (activeQuery || !filterEl.value.trim()) return;
+      filterEl.value = '';
+      filterEl.dispatchEvent(new Event('input', { bubbles: true }));
+    },
+    applyQuery: function (action) {
+      if (!action || !Number.isFinite(action.latitude) || !Number.isFinite(action.longitude) ||
+          action.latitude < 22.1 || action.latitude > 22.65 ||
+          action.longitude < 113.8 || action.longitude > 114.5 ||
+          !Number.isFinite(action.radius_km) || action.radius_km < 0.01 || action.radius_km > 5) return false;
+      if (action.code && !/^TS\d+[A-Z]?$/.test(action.code)) return false;
+      filterText = action.code ? action.code.toLowerCase() : '';
+      filterEl.value = action.code || '';
+      activeQuery = { latitude: action.latitude, longitude: action.longitude,
+        radius_km: action.radius_km, code: action.code || null };
+      syncScopeButton();
+      selectedPoint = null;
+      selectedLayer.clearLayers();
+      queryLayer.clearLayers();
+      L.circle([action.latitude, action.longitude], {
+        radius: action.radius_km * 1000, color: '#c1121f', weight: 2,
+        fillColor: '#c1121f', fillOpacity: 0.08
+      }).addTo(queryLayer);
+      assistantApplying = true;
+      map.setView([action.latitude, action.longitude], 15);
+      assistantApplying = false;
+      clearSigns();
+      refresh();
+      return true;
+    }
+  };
+  map.on('click', function (event) {
+    window.dispatchEvent(new Event('svgcad:user-action'));
+    selectedPoint = event.latlng;
+    selectedLayer.clearLayers();
+    L.circleMarker(selectedPoint, { radius: 7, color: '#c1121f',
+      weight: 2, fillColor: '#fff', fillOpacity: 1 }).addTo(selectedLayer);
+  });
+  map.on('movestart', function () {
+    if (!assistantApplying) window.dispatchEvent(new Event('svgcad:user-action'));
   });
 })();

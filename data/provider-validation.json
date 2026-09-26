@@ -1,0 +1,13 @@
+{
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "pass": true,
+  "scores": {
+    "en": 28,
+    "zh-Hant": 30
+  },
+  "invented_visible_facts": 0,
+  "questions": 60,
+  "record": "deepseek-20260924-174929.json",
+  "completed_at": "2026-09-24T17:51:27.738746+00:00"
+}

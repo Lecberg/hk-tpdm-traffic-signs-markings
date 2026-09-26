@@ -1,0 +1,2677 @@
+[
+  {
+    "rank": 1,
+    "code": "TS_115",
+    "survey_count": 9015,
+    "preview": "svgs/TS_115.svg",
+    "downloads": {
+      "svg": "svgs/TS_115.svg",
+      "dxf": "dxfs/TS_115.dxf"
+    },
+    "name_en": "No entry",
+    "name_zh_hant": "不准駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 30,
+        "text": "e of signing must not be used alone to indicate the \"No Entry\" requirement. August 2026 Edition T.S. 115 (T.C. 112) 2.3.2.42 Traffic sign 115, \"No Entry\" should only be used in respect of a one way street where all vehicular traffic is prohibited entry. It is not the appropriate sign if contra flow for certain vehicles is to be "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_115.svg"
+  },
+  {
+    "rank": 2,
+    "code": "TS_102",
+    "survey_count": 7188,
+    "preview": "svgs/TS_102.svg",
+    "downloads": {
+      "svg": "svgs/TS_102.svg",
+      "dxf": "dxfs/TS_102.dxf"
+    },
+    "name_en": "Give Way",
+    "name_zh_hant": "讓路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "zh_url": "https://www.td.gov.hk/filemanager/tc/content_1125/c4_4.pdf",
+      "edition": "TPDM Volume 3, August 2026",
+      "section": "2.3.2.19",
+      "pdf_page": 23
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 23,
+        "text": "ajor road or cause the driver of such a vehicle to change its speed or direction. The sign may be used in conjunction with the supplementary plate \"Dual carriageway\", traffic sign 736. T.S. 102 (T.C. 102) 2.3.2.20 The \"Give Way\" sign should always be accompanied by the dotted give way road markings (RM 1013) as shown in Diagrams 2.3.2.2 and 2.3.2.3. However, where the road markings are not present the vehic"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 3,
+    "code": "TS_460",
+    "survey_count": 6298,
+    "preview": "svgs/TS_460.svg",
+    "downloads": {
+      "svg": "svgs/TS_460.svg",
+      "dxf": "dxfs/TS_460.dxf"
+    },
+    "name_en": "Pedestrians on the road ahead",
+    "name_zh_hant": "前方道路上的行人",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 73,
+        "text": " traffic sign 460 will be preferable to the “Slow, Pedestrian” sign, traffic sign 515. However traffic sign 460 is not appropriate to warn of zebra crossings or light controlled crossings. T.S. 460 (T.C. 261) 2.3.3.38 Traffic sign 461 is used to warn of zebra crossings. Normally the sign will only be erected when the zebra crossing is hidden from view to approaching traffic and the visibility of both beacons is less than "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_460.svg"
+  },
+  {
+    "rank": 4,
+    "code": "TS_860",
+    "survey_count": 6022,
+    "preview": "svgs/TS_860.svg",
+    "downloads": {
+      "svg": "svgs/TS_860.svg",
+      "dxf": "dxfs/TS_860.dxf"
+    },
+    "name_en": "Except taxi drop off",
+    "name_zh_hant": "除的士落客外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 47,
+        "text": " “4pm – 10pm, General Holidays”, etc. [Note: General Holidays include Sundays and Public Holidays.] (viii) T.S. 860 / T.S. 898 \"Except taxi drop off\" - The word “taxi” may be omitted or varied to \"Lantau taxis\", \"NT taxis\" or \"Urban taxis\" or to specify any type, class or description of motor vehicles "
+      },
+      {
+        "pdf_page": 46,
+        "text": "oad over which the stopping of vehicles, except franchised buses at designated bus stops, during the time designations is prohibited. The signs may be used in conjunction with the supplementary plates T.S. 838 “Except General Holidays”, T.S. 860 “Except taxi pick up or drop off” and T.S. 898 “Except taxi drop off” (see paragraph 2.3.2.92 below) only, but not T.S. 710 “Except taxis” or the like. T.S. 897 “Except Sundays and Public Holidays” should no longer be used as stated in paragraph 2.3.5.74. T.S. 2139 indicates t"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 5,
+    "code": "TS_280",
+    "survey_count": 4470,
+    "preview": "svgs/TS_280.svg",
+    "downloads": {
+      "svg": "svgs/TS_280.svg",
+      "dxf": "dxfs/TS_280.dxf"
+    },
+    "name_en": "Parking",
+    "name_zh_hant": "泊車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 117,
+        "text": "ted using the marking alone are available to all vehicle types. It is more normal however, to designate the space for use of a particular type or types of vehicle. To do so, the markings must be accompanied by the appropriate traffic signs T.S. 280 to 284. It should be appreciated however, that the sign alone is not sufficient - it must be accompanied by the marking. 2.4.2.7 Traffic signs 280to 284 are used to indicate parking places in accordance with the following : - (i) traffic sign 280- Parking for vehicles"
+      },
+      {
+        "pdf_page": 117,
+        "text": " only. These spaces may be used by coaches and buses, but not light buses. (iv) traffic sign 283- Parking for motor cycles only. (v) traffic sign 284- Parking for cycles only. T.S. 280 (PA 1) T.S. 281 T.S. 282 T.S. 283 T.S. 284 (PA 2) (PA 3) (PA 4) (PA 5) "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_280.svg"
+  },
+  {
+    "rank": 6,
+    "code": "TS_182",
+    "survey_count": 4285,
+    "preview": "svgs/TS_182.svg",
+    "downloads": {
+      "svg": "svgs/TS_182.svg",
+      "dxf": "dxfs/TS_182.dxf"
+    },
+    "name_en": "One-way traffic",
+    "name_zh_hant": "單向交通",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 45,
+        "text": "in the vertical position, horizontal arrangements of this sign must not be used as traffic sign 107 or 108 are the appropriate signs to indicate that vehicles must turn left or right. T.S. 182 (T.C. 139) 2.3.2.88 The Road Traffic (Traffic Control) Regulations allow considerable flexibility in the signing arrangements for stopping restrictions and the following paragraphs describe the signs and markings av"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_182.svg"
+  },
+  {
+    "rank": 7,
+    "code": "TS_107",
+    "survey_count": 4171,
+    "preview": "svgs/TS_107.svg",
+    "downloads": {
+      "svg": "svgs/TS_107.svg",
+      "dxf": "dxfs/TS_107.dxf"
+    },
+    "name_en": "Turn left",
+    "name_zh_hant": "左轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 26,
+        "text": "igns. 2.3.2.29 At cross road junctions, where turns both to the left and right have been prohibited, T.S. 106 \"Ahead Only\" should be used. At cross road junctions where the straight ahead movement and the right or left turn have been prohibited T.S. 107 \"Turn Left\" or T.S. 108 \"Turn Right\" respectively should be used. At cross roads junctions where only the left or the right turn is prohibited, T.S. 131 \"No Left Turn\" or T.S. 132 \"No Right Turn\" respectively should be used. 2.3.2.30 At T Junctions where traffic turning int"
+      },
+      {
+        "pdf_page": 26,
+        "text": "works. It must be stressed that even legally permissible, these combinations of sign/supplementary plate should be used extremely sparingly and only after consultation with the Police. T.S. 106 T.S. 107 T.S. 108 (T.C. 106) (T.C. 107) (T.C. 107) 2.3.2.28 The prohibition of a turn or turns at a junction can theoretically be signed using T.S. 106/107/108 or T.S. 131/132 \"No Left Turn\"/\"No Ri"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_107.svg"
+  },
+  {
+    "rank": 8,
+    "code": "TS_414",
+    "survey_count": 3005,
+    "preview": "svgs/TS_414.svg",
+    "downloads": {
+      "svg": "svgs/TS_414.svg",
+      "dxf": "dxfs/TS_414.dxf"
+    },
+    "name_en": "Left-pointing chevron",
+    "name_zh_hant": "向左箭紋標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 67,
+        "text": "p deviation and is used at permanent sites, unlike the red and white version, traffic sign 503, which should be used only as a temporary sign, generally in association with road works. T.S. 414 (T.C. 210) 2.3.3.23 On normal roundabouts, traffic sign 414 should be erected on the central island opposite each approach road. In conjunction with traffic sign 414, the “Turn Left” sign, traffic sign 107 should be erected in "
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_414.svg"
+  },
+  {
+    "rank": 9,
+    "code": "TS_734",
+    "survey_count": 2673,
+    "preview": "svgs/TS_734.svg",
+    "downloads": {
+      "svg": "svgs/TS_734.svg",
+      "dxf": "dxfs/TS_734.dxf"
+    },
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 102,
+        "text": " arrow plates with \"parking\" signs and \"no parking\" signs. As new “No Stopping” signs are erecting facing on-coming traffic, arrow plate is not necessary to be used. T.S. 733 T.S. 734 (T.C. 407) (T.C. 407) 2.3.5.31 Traffic sign 733/734 may also be used with prohibitory and speed limit signs to indicate the road to which the main sign applies. The use of supplementary plates 733/734 will no"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_734.svg"
+  },
+  {
+    "rank": 10,
+    "code": "TS_733",
+    "survey_count": 2611,
+    "preview": "svgs/TS_733.svg",
+    "downloads": {
+      "svg": "svgs/TS_733.svg",
+      "dxf": "dxfs/TS_733.dxf"
+    },
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 122,
+        "text": "estate or development facing on-coming motorists. T.S. 371 (PPR 1) 2.4.3.4 Traffic sign T.S. 286, “No Parking”, T.S. 287, “Temporary No Parking”, T.S. 733/ 734 “Arrow Plate” T.S. 735 “Double Arrow Plate” and T.S. 822 “Time Plate” are all prescribed in the Regulations and are used to control parking. The signs are described in the previous Section 2.4.2 on Road Traffic (Parking) Regulations and their use is comprehensi"
+      },
+      {
+        "pdf_page": 33,
+        "text": "n location as for traffic sign 115, “No Entry”, will be required. Traffic sign 119 prohibits PLBs from passing the sign for any reason and not just for the purposes of picking up or setting down passengers. Supplementary “arrow plates”, T.S.733/734 may be used when necessary. T.S. 119 (T.C. 116) 2.3.2.50 Traffic sign 120, “Goods Vehicles prohibited” prohibits all goods vehicles, i.e. light, medium and heav"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_733.svg"
+  },
+  {
+    "rank": 11,
+    "code": "TS_116",
+    "survey_count": 2560,
+    "preview": "svgs/TS_116.svg",
+    "downloads": {
+      "svg": "svgs/TS_116.svg",
+      "dxf": "dxfs/TS_116.dxf"
+    },
+    "name_en": "All vehicles prohibited in both directions",
+    "name_zh_hant": "禁止來往方向的一切車輛駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 31,
+        "text": "e\" (x) traffic sign 831 \"Vehicle length\" August 2026 Edition T.S. 116 (T.C. 113) 2.3.2.45 This sign may be used with supplementary plate T.S. 814 “Goods vehicles” and its variations to indicate that a prohibition only applies to one type of vehicle. Whilst such signing is legally acceptable "
+      },
+      {
+        "pdf_page": 41,
+        "text": " sign 116 “All vehicles prohibited in both directions” together with the supplementary plate traffic sign 831 “Vehicle length” would be appropriate and user friendly. T.S. 147 T.S. 116 & T.S. 831 (T.C. 132) (T.C. 113 & T.C. 432) 2.3.2.75 Traffic sign 155, indicates that a vehicle, including any load, with a height greater than that shown is prohibited from passing the sign. The dimension on the sign s"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_116.svg"
+  },
+  {
+    "rank": 12,
+    "code": "TS_2133",
+    "survey_count": 2507,
+    "preview": "svgs/TS_2133.svg",
+    "downloads": {
+      "svg": "svgs/TS_2133.svg",
+      "dxf": "dxfs/TS_2133.dxf"
+    },
+    "name_en": "No stopping zone from 7 a.m. to 7 p.m. (start sign)",
+    "name_zh_hant": "上午七時至下午七時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 45,
+        "text": "low, taxis shall be exempted from part-time no stopping restrictions of periods i) 8 - 10 am & 5 - 7 pm, ii) 8 - 10 am & 5 - 8 pm, iii) 7 am - 7 pm, iv) 7 am - 8 pm; i.e. T.S. 860 “Except taxi pick up or drop off” shall be used in conjunction with T.S. 2133 and 2230 on these roads. 2.3.2.90 In accordance with the legislation, \"parking\" means the standing of a vehicle, whether occupied or not, except when standing temporarily for the purpose of and while actually engaged in loading or unloading or picking up or setti"
+      },
+      {
+        "pdf_page": 46,
+        "text": "plates for designating no stopping restrictions should be erected facing on-coming traffic except those under rare circumstances erected with “arrow” or “double arrow” plates (see paragraph 2.3.2.92 below). T.S. 2230 T.S. 2133 T.S. 2131 T.S. 2137 T.S. 2139 (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 166) (Note: upper part background - yellow, lower part background - white) 2.3.2.92 T.S. 183, if u"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2133.svg"
+  },
+  {
+    "rank": 13,
+    "code": "TS_283",
+    "survey_count": 2382,
+    "preview": "svgs/TS_283.svg",
+    "downloads": {
+      "svg": "svgs/TS_283.svg",
+      "dxf": "dxfs/TS_283.dxf"
+    },
+    "name_en": "Parking for motorcycles only",
+    "name_zh_hant": "僅限摩托車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 117,
+        "text": " but not light buses. (iv) traffic sign 283- Parking for motor cycles only. (v) traffic sign 284- Parking for cycles only. T.S. 280 (PA 1) T.S. 281 T.S. 282 T.S. 283 T.S. 284 (PA 2) (PA 3) (PA 4) (PA 5) August 2026 Edition 2.4.2.8 With respect to the placement of th"
+      },
+      {
+        "pdf_page": 123,
+        "text": " H. 1 2.4.4.2 As on the majority of public roads, the presumption on Housing Authority restricted roads is that parking is prohibited unless signs and markings indicate otherwise. Traffic signs T.S. 280, T.S. 281, T.S. 282, T.S. 283 and T.S. 284 are prescribed for the purpose of designating parking spaces for specific types of vehicle. T.S. 286 and T.S. 287 are prescribed for the purpose of designating ‘no parking’ and ‘temporary no parking’ areas. The ‘no parking’ signs should generally not be required "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_283.svg"
+  },
+  {
+    "rank": 14,
+    "code": "TS_2139",
+    "survey_count": 2372,
+    "preview": "svgs/TS_2139.svg",
+    "downloads": {
+      "svg": "svgs/TS_2139.svg",
+      "dxf": "dxfs/TS_2139.dxf"
+    },
+    "name_en": "No stopping zone ends",
+    "name_zh_hant": "不准停車區終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": "taxi pick up or drop off” and T.S. 898 “Except taxi drop off” (see paragraph 2.3.2.92 below) only, but not T.S. 710 “Except taxis” or the like. T.S. 897 “Except Sundays and Public Holidays” should no longer be used as stated in paragraph 2.3.5.74. T.S. 2139 indicates the end of a no stopping restriction zone. All the above signs as well as other relevant signs and supplementary plates for designating no stopping restrictions should be erected facing on-coming traffic except those under rare circumstances erected with “"
+      },
+      {
+        "pdf_page": 46,
+        "text": "ed facing on-coming traffic except those under rare circumstances erected with “arrow” or “double arrow” plates (see paragraph 2.3.2.92 below). T.S. 2230 T.S. 2133 T.S. 2131 T.S. 2137 T.S. 2139 (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 166) (Note: upper part background - yellow, lower part background - white) 2.3.2.92 T.S. 183, if used alone without any supplementary plate, is generally used as"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2139.svg"
+  },
+  {
+    "rank": 15,
+    "code": "TS_589",
+    "survey_count": 2343,
+    "preview": "svgs/TS_589.svg",
+    "downloads": {
+      "svg": "svgs/TS_589.svg",
+      "dxf": "dxfs/TS_589.dxf"
+    },
+    "name_en": "Shortened version of Chevron sign",
+    "name_zh_hant": "縮短版箭咀標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 66,
+        "text": " that there may not be sufficient space on the parapet of a flyover or the central divider of a dual carriageway to accommodate “Chevron” signs. To get round this problem, a shortened version of “Chevron” sign T.S. 589 may be used at the appropriate location to achieve the same effective width. T.S. 589 (h) As pointed out in paragraph (ii)(a), the surface texture of the bend is one of "
+      },
+      {
+        "pdf_page": 66,
+        "text": " signs. To get round this problem, a shortened version of “Chevron” sign T.S. 589 may be used at the appropriate location to achieve the same effective width. T.S. 589 (h) As pointed out in paragraph (ii)(a), the surface texture of the bend is one of the contributory factor to some accidents occurred at bends. For the completeness of the improvement to sharp bend, the project e"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 16,
+    "code": "TS_133",
+    "survey_count": 2208,
+    "preview": "svgs/TS_133.svg",
+    "downloads": {
+      "svg": "svgs/TS_133.svg",
+      "dxf": "dxfs/TS_133.dxf"
+    },
+    "name_en": "No U-turn",
+    "name_zh_hant": "不准掉頭",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 37,
+        "text": "epeater signs for speed limits in Table 2.3.2.4 may be used. Where the distance plate is repeated, it should be amended to accord with the remaining distance over which the prohibition applies. T.S. 133 (T.C. 123) 2.3.2.65 It is relevant to note that Regulation 42 of the Road Traffic (Traffic Control) Regulations does generally prohibit the making of 'U'-turns if they are likely to obstruct other road users. Therefore the us"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_133.svg"
+  },
+  {
+    "rank": 17,
+    "code": "TS_838",
+    "survey_count": 2177,
+    "preview": "svgs/TS_838.svg",
+    "downloads": {
+      "svg": "svgs/TS_838.svg",
+      "dxf": "dxfs/TS_838.dxf"
+    },
+    "name_en": "Except General Holidays",
+    "name_zh_hant": "公眾假期除外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 114,
+        "text": " \"Axle Weight Limit\" (xiii) traffic sign 183 \"No Stopping\" (xiv) traffic sign 470 and 471 \"Advance Warning of bus lane\" T.S. 897 T.S. 838 (T.C. 429) (T.C. 429) (replaced by T.S. 838) 2.3.5.75 Traffic signs 860 “Except taxi pick up or drop off” and 898 “Except taxi drop off” may be used with “No stopping restriction” traffi"
+      },
+      {
+        "pdf_page": 46,
+        "text": "ing” zone indicate the start of the length of road over which the stopping of vehicles, except franchised buses at designated bus stops, during the time designations is prohibited. The signs may be used in conjunction with the supplementary plates T.S. 838 “Except General Holidays”, T.S. 860 “Except taxi pick up or drop off” and T.S. 898 “Except taxi drop off” (see paragraph 2.3.2.92 below) only, but not T.S. 710 “Except taxis” or the like. T.S. 897 “Except Sundays and Public Holidays” should no longer be used as stat"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 18,
+    "code": "TS_2134",
+    "survey_count": 1882,
+    "preview": "svgs/TS_2134.svg",
+    "downloads": {
+      "svg": "svgs/TS_2134.svg",
+      "dxf": "dxfs/TS_2134.dxf"
+    },
+    "name_en": "No stopping zone from 7 a.m. to 7 p.m. (repeater sign)",
+    "name_zh_hant": "上午七時至下午七時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 51,
+        "text": "t the end of one no stopping restriction and the start of the next, in order to reduce any confusion to motorists and ensure that one sign does not obscure the other. Diagram 2.3.2.9 indicates two possible arrangements (Arrangements B and C) using T.S. 2134/2231 as examples. A reduction in signs is possible because the “End” sign is not used, the end being indicated by the start of the next restriction and the perpendicular bar on the yellow line. However in the case where the preceding restriction is not one applying "
+      },
+      {
+        "pdf_page": 50,
+        "text": " required adjacent to the central reserve, however the gazette notice should state that the 24 hours no stopping restriction applies to the whole carriageway. T.S. 2231 T.S. 2232 T.S. 2134 (T.C. 165) (T.C. 165) (T.C. 165) (Note: upper part background - white, lower part background - white) "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2134.svg"
+  },
+  {
+    "rank": 19,
+    "code": "TS_180",
+    "survey_count": 1728,
+    "preview": "svgs/TS_180.svg",
+    "downloads": {
+      "svg": "svgs/TS_180.svg",
+      "dxf": "dxfs/TS_180.dxf"
+    },
+    "name_en": "Segregated Pathway",
+    "name_zh_hant": "分開的路徑",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 44,
+        "text": "5, should also be used at those locations where children, under the age of 11, are permitted to ride bicycles or tricycles whilst unaccompanied by an adult. T.S. 179 T.S. 180 (T.C. 137) (T.C. 137) For a combined footway and cycleway for multicycles, use traffic signs 231 and 232 as appropriate instead. The signing arrangement is similar to traffic signs 179 and 180. "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_180.svg"
+  },
+  {
+    "rank": 20,
+    "code": "TS_108",
+    "survey_count": 1724,
+    "preview": "svgs/TS_108.svg",
+    "downloads": {
+      "svg": "svgs/TS_108.svg",
+      "dxf": "dxfs/TS_108.dxf"
+    },
+    "name_en": "Turn right",
+    "name_zh_hant": "右轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 26,
+        "text": "ss road junctions, where turns both to the left and right have been prohibited, T.S. 106 \"Ahead Only\" should be used. At cross road junctions where the straight ahead movement and the right or left turn have been prohibited T.S. 107 \"Turn Left\" or T.S. 108 \"Turn Right\" respectively should be used. At cross roads junctions where only the left or the right turn is prohibited, T.S. 131 \"No Left Turn\" or T.S. 132 \"No Right Turn\" respectively should be used. 2.3.2.30 At T Junctions where traffic turning into the stem or out of the"
+      },
+      {
+        "pdf_page": 26,
+        "text": "ed that even legally permissible, these combinations of sign/supplementary plate should be used extremely sparingly and only after consultation with the Police. T.S. 106 T.S. 107 T.S. 108 (T.C. 106) (T.C. 107) (T.C. 107) 2.3.2.28 The prohibition of a turn or turns at a junction can theoretically be signed using T.S. 106/107/108 or T.S. 131/132 \"No Left Turn\"/\"No Right Turn\". It is important therefor"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_108.svg"
+  },
+  {
+    "rank": 21,
+    "code": "TS_132",
+    "survey_count": 1711,
+    "preview": "svgs/TS_132.svg",
+    "downloads": {
+      "svg": "svgs/TS_132.svg",
+      "dxf": "dxfs/TS_132.dxf"
+    },
+    "name_en": "No right turn",
+    "name_zh_hant": "不准右轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 26,
+        "text": "movement and the right or left turn have been prohibited T.S. 107 \"Turn Left\" or T.S. 108 \"Turn Right\" respectively should be used. At cross roads junctions where only the left or the right turn is prohibited, T.S. 131 \"No Left Turn\" or T.S. 132 \"No Right Turn\" respectively should be used. 2.3.2.30 At T Junctions where traffic turning into the stem or out of the stem in one direction is prohibited, T.S. 131 or T.S. 132 as appropriate should be used. At T junctions where traffic turning out of the stem is prohibited"
+      },
+      {
+        "pdf_page": 36,
+        "text": "njunction with supplementary plates T.S. 701 “Over 3 tonnes”, T.S. 814 \"Goods Vehicle\", T.S. 3706 “Time plate” and T.S. 831 “Vehicle Length” refer to paragraph 2.3.2.27. T.S. 131 T.S. 132 (T.C. 122) (T.C. 122) August 2026 Edition 2.3.2.60 Traffic signs 131 and 132 should be located in the immediate vicinity o"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_132.svg"
+  },
+  {
+    "rank": 22,
+    "code": "TS_2131",
+    "survey_count": 1704,
+    "preview": "svgs/TS_2131.svg",
+    "downloads": {
+      "svg": "svgs/TS_2131.svg",
+      "dxf": "dxfs/TS_2131.dxf"
+    },
+    "name_en": "No stopping zone from 7 a.m. to midnight (start sign)",
+    "name_zh_hant": "上午七時至午夜十二時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": "ng no stopping restrictions should be erected facing on-coming traffic except those under rare circumstances erected with “arrow” or “double arrow” plates (see paragraph 2.3.2.92 below). T.S. 2230 T.S. 2133 T.S. 2131 T.S. 2137 T.S. 2139 (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 166) (Note: upper part background - yellow, lower part background - white) 2.3.2.92 T.S. 183, if used alone without an"
+      },
+      {
+        "pdf_page": 46,
+        "text": "e imposed on high speed roads where any stopping of vehicles would cause a potential hazard to their occupants and other vehicles. August 2026 Edition 2.3.2.91 T.S. 2131, 2133, 2137 and 2230 “No stopping” zone indicate the start of the length of road over which the stopping of vehicles, except franchised buses at designated bus stops, during the time designations is prohibited. The signs may be used in conjunction with the supplementary plates"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2131.svg"
+  },
+  {
+    "rank": 23,
+    "code": "TS_322",
+    "survey_count": 1690,
+    "preview": "svgs/TS_322.svg",
+    "downloads": {
+      "svg": "svgs/TS_322.svg",
+      "dxf": "dxfs/TS_322.dxf"
+    },
+    "name_en": "Green minibus stand",
+    "name_zh_hant": "綠色小巴站",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 124,
+        "text": ".5.2.1(i). For part-time parking at light bus stands, the signs should be erected parallel to the kerb and used in conjunction with the time plate T.S. 325 with arrangement similar to Diagram 2.5.2.1(ii). Where sign clutter is a concern, one post of T.S. 322/323 at the upstream instead of two at both ends may be used. However, there may be situation where two posts should be retained, for examples, when the stand is long or if the stand is used by several routes. The policy on the provision of Scheduled Service Stands, Pub"
+      },
+      {
+        "pdf_page": 125,
+        "text": "supplementary plates are not required as the markings will indicate the limits of the stand August 2026 Edition T.S. 322/323 (P.S. 5/6) 2.5.2.4 Neither Scheduled Service Buses, nor Public Light Buses are permitted to park at stands unless the traffic sign 325 is also displayed to indicate that parking by Scheduled Service Vehicles or Public Light"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_322.svg"
+  },
+  {
+    "rank": 24,
+    "code": "TS_174",
+    "survey_count": 1673,
+    "preview": "svgs/TS_174.svg",
+    "downloads": {
+      "svg": "svgs/TS_174.svg",
+      "dxf": "dxfs/TS_174.dxf"
+    },
+    "name_en": "Speed Limit",
+    "name_zh_hant": "速度限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 43,
+        "text": "be shown. This amendment would facilitate motorists viewing from a distance. August 2026 Edition T.S. 174 (T.C. 136) 2.3.2.79 At the locations where speed limits change, large signs with minimum unobstructed visibility should be placed in accordance with Table 2.3.2.3. The size and visibility will relate to the speed limit with t"
+      },
+      {
+        "pdf_page": 479,
+        "text": "for directing traffic to autotoll lanes is shown in Diagram 4.7.1.1. The arrangement is applicable to tolled roads including tunnels and bridges. 4.7.1.2 At the point where speed limit is lowered to 50 km/h, a pair of speed limit signs of 50 km/h T.S. 174 should be erected and 50 km/h speed limit road marking RM 1031 should be provided at the same location on each of the traffic lanes. 4.7.1.3 If site condition permits, at least 50 nos. of 600mm wide transverse yellow bar markings RM 1077, in accordance with Table 5."
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 25,
+    "code": "TS_284",
+    "survey_count": 1669,
+    "preview": "svgs/TS_284.svg",
+    "downloads": {
+      "svg": "svgs/TS_284.svg",
+      "dxf": "dxfs/TS_284.dxf"
+    },
+    "name_en": "Parking for pedal cycles only",
+    "name_zh_hant": "僅限腳踏車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 117,
+        "text": " (iv) traffic sign 283- Parking for motor cycles only. (v) traffic sign 284- Parking for cycles only. T.S. 280 (PA 1) T.S. 281 T.S. 282 T.S. 283 T.S. 284 (PA 2) (PA 3) (PA 4) (PA 5) August 2026 Edition 2.4.2.8 With respect to the placement of the traffic signs 280, 2"
+      },
+      {
+        "pdf_page": 123,
+        "text": " H. 1 2.4.4.2 As on the majority of public roads, the presumption on Housing Authority restricted roads is that parking is prohibited unless signs and markings indicate otherwise. Traffic signs T.S. 280, T.S. 281, T.S. 282, T.S. 283 and T.S. 284 are prescribed for the purpose of designating parking spaces for specific types of vehicle. T.S. 286 and T.S. 287 are prescribed for the purpose of designating ‘no parking’ and ‘temporary no parking’ areas. The ‘no parking’ signs should generally not be required howeve"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_284.svg"
+  },
+  {
+    "rank": 26,
+    "code": "TS_588",
+    "survey_count": 1668,
+    "preview": "svgs/TS_588.svg",
+    "downloads": {
+      "svg": "svgs/TS_588.svg",
+      "dxf": "dxfs/TS_588.dxf"
+    },
+    "name_en": "Chevron",
+    "name_zh_hant": "箭咀",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 66,
+        "text": "al sharp bends are encouraged. (f) Additionally, special “Chevron” signs, TS 588, should be erected to emphasize the curvature of the bend. T.S. 588 (g) It is common experience that there may not be sufficient space on the parapet of a flyover or the central divider of a dual carriageway to accommodate “Chevron” signs. To get round this problem, a shortened"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 27,
+    "code": "TS_737",
+    "survey_count": 1658,
+    "preview": "svgs/TS_737.svg",
+    "downloads": {
+      "svg": "svgs/TS_737.svg",
+      "dxf": "dxfs/TS_737.dxf"
+    },
+    "name_en": "Reduce speed now",
+    "name_zh_hant": "開始減速",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 103,
+        "text": "D NOW\", is a supplementary plate and therefore must not be used alone but always in conjunction with a warning sign, to give emphasis to motorists that they should reduce their speed. T.S. 737 (T.C. 410) Traffic sign 737 \"REDUCE SPEED NOW\" signs may be used together with transverse yellow bar markings at the deceleration lane of expressways or trunk roads where there is a reduction in speed limit. "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_737.svg"
+  },
+  {
+    "rank": 28,
+    "code": "TS_324",
+    "survey_count": 1612,
+    "preview": "svgs/TS_324.svg",
+    "downloads": {
+      "svg": "svgs/TS_324.svg",
+      "dxf": "dxfs/TS_324.dxf"
+    },
+    "name_en": "Taxi stand",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 125,
+        "text": " (P.S. 8) 2.5.2.5 Taxi stands traffic sign 324 should be erected at each end of the area of the stand, demarcated by the road marking 1049. However, where sign clutter is a concern, placement of only one post of T.S. 324 at the upstream may be considered for short taxi stands. The sign should be erected double-sided and facing on-coming traffic. Where appropriate, off-centered mounting method should be adopted to maximise the unobstructed widths of footpaths as illustrated in Diagram 2"
+      },
+      {
+        "pdf_page": 125,
+        "text": " the provision of taxi stands and other relevant details are given in Volume 9 Chapter 4. Arrow supplementary plates are not required as the markings will indicate the limits of the stand. T.S. 324 (P.S. 7) August 2026 Edition DIAGRAM 2.5.2.1 TAXI STAND TRAFFIC SIGN ARRANGEMENT (i) TAXI ST"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_324.svg"
+  },
+  {
+    "rank": 29,
+    "code": "TS_101",
+    "survey_count": 1596,
+    "preview": "svgs/TS_101.svg",
+    "downloads": {
+      "svg": "svgs/TS_101.svg",
+      "dxf": "dxfs/TS_101.dxf"
+    },
+    "name_en": "Stop",
+    "name_zh_hant": "停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf",
+      "zh_url": "https://www.td.gov.hk/tc/road_safety/road_users_code/index/chapter_5_for_all_drivers/stop_and_give_way_junctions_/",
+      "edition": "TPDM Volume 3, August 2026",
+      "section": "2.3.2.6",
+      "pdf_page": 21
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 21,
+        "text": "conjunction with the supplementary plate \"Dual Carriageway\", traffic sign 736. August 2026 Edition T.S. 101 (T.C. 101) 2.3.2.7 To obtain proper respect and compliance with this sign, it is essential that it only be used at locations where visibility is severely restricted and where a dangerous situation could arise if the vehicle di"
+      },
+      {
+        "pdf_page": 669,
+        "text": " Visibility Distance(m) Stop Sign At junction, but see (i) 750 45 T.S. 101 Section 6.3.2 At junction, but see (ii) Give WaySign 600 45 "
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 30,
+    "code": "TS_281",
+    "survey_count": 1551,
+    "preview": "svgs/TS_281.svg",
+    "downloads": {
+      "svg": "svgs/TS_281.svg",
+      "dxf": "dxfs/TS_281.dxf"
+    },
+    "name_en": "Parking for goods vehicles only",
+    "name_zh_hant": "僅限貨車停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 117,
+        "text": "uses, but not light buses. (iv) traffic sign 283- Parking for motor cycles only. (v) traffic sign 284- Parking for cycles only. T.S. 280 (PA 1) T.S. 281 T.S. 282 T.S. 283 T.S. 284 (PA 2) (PA 3) (PA 4) (PA 5) August 2026 Edition 2."
+      },
+      {
+        "pdf_page": 123,
+        "text": " H. 1 2.4.4.2 As on the majority of public roads, the presumption on Housing Authority restricted roads is that parking is prohibited unless signs and markings indicate otherwise. Traffic signs T.S. 280, T.S. 281, T.S. 282, T.S. 283 and T.S. 284 are prescribed for the purpose of designating parking spaces for specific types of vehicle. T.S. 286 and T.S. 287 are prescribed for the purpose of designating ‘no parking’ and ‘temporary no parking’ areas. The ‘no parking’ signs should"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_281.svg"
+  },
+  {
+    "rank": 31,
+    "code": "TS_175",
+    "survey_count": 1511,
+    "preview": "svgs/TS_175.svg",
+    "downloads": {
+      "svg": "svgs/TS_175.svg",
+      "dxf": "dxfs/TS_175.dxf"
+    },
+    "name_en": "70 km/h speed limit",
+    "name_zh_hant": "時速七十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_175.svg"
+  },
+  {
+    "rank": 32,
+    "code": "TS_179",
+    "survey_count": 1499,
+    "preview": "svgs/TS_179.svg",
+    "downloads": {
+      "svg": "svgs/TS_179.svg",
+      "dxf": "dxfs/TS_179.dxf"
+    },
+    "name_en": "Segregated Pathway",
+    "name_zh_hant": "分開的路徑",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 44,
+        "text": "te “Unaccompanied Children Permitted”, traffic sign 805, should also be used at those locations where children, under the age of 11, are permitted to ride bicycles or tricycles whilst unaccompanied by an adult. T.S. 179 T.S. 180 (T.C. 137) (T.C. 137) For a combined footway and cycleway for multicycles, use traffic signs 231 and 232 as appropriate instead. The signing arrang"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_179.svg"
+  },
+  {
+    "rank": 33,
+    "code": "TS_2132",
+    "survey_count": 1487,
+    "preview": "svgs/TS_2132.svg",
+    "downloads": {
+      "svg": "svgs/TS_2132.svg",
+      "dxf": "dxfs/TS_2132.dxf"
+    },
+    "name_en": "No stopping zone from 7 a.m. to midnight (repeater sign)",
+    "name_zh_hant": "上午七時至午夜十二時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 50,
+        "text": " out much more quickly than double yellow lines, as a result of the scuffing action of vehicle tyres braking and accelerating over the line during those periods when the restrictions do not apply, repeater signs are essential. Repeater signs, T.S. 2132, 2134 or 2231, etc. similar to the “Start” signs but with white colour background instead of yellow background in the upper part of the signs, should be erected facing on- coming traffic, at approximately 50 m intervals. On dual carriageways, signs and markings are not "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2132.svg"
+  },
+  {
+    "rank": 34,
+    "code": "TS_409",
+    "survey_count": 1463,
+    "preview": "svgs/TS_409.svg",
+    "downloads": {
+      "svg": "svgs/TS_409.svg",
+      "dxf": "dxfs/TS_409.dxf"
+    },
+    "name_en": "Traffic signals ahead",
+    "name_zh_hant": "前面交通燈號",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 64,
+        "text": "d the traffic signals may not be expected by the general motorists. August 2026 Edition T.S. 409 (T.C. 207) 2.3.3.18 When the siting distance between traffic sign 409 and the signals is different to that shown in Table 2.2.2.1, a supplementary distance plate, traffic sign 772 or similar, should be used in conjunction with "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_409.svg"
+  },
+  {
+    "rank": 35,
+    "code": "TS_119",
+    "survey_count": 1451,
+    "preview": "svgs/TS_119.svg",
+    "downloads": {
+      "svg": "svgs/TS_119.svg",
+      "dxf": "dxfs/TS_119.dxf"
+    },
+    "name_en": "Minibuses are Prohibited",
+    "name_zh_hant": "小巴被禁止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 33,
+        "text": " PLBs from passing the sign for any reason and not just for the purposes of picking up or setting down passengers. Supplementary “arrow plates”, T.S.733/734 may be used when necessary. T.S. 119 (T.C. 116) 2.3.2.50 Traffic sign 120, “Goods Vehicles prohibited” prohibits all goods vehicles, i.e. light, medium and heavy goods vehicles from entering a street at all times, unless qualified by plates showing the “Gross "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_119.svg"
+  },
+  {
+    "rank": 36,
+    "code": "TS_2137",
+    "survey_count": 1427,
+    "preview": "svgs/TS_2137.svg",
+    "downloads": {
+      "svg": "svgs/TS_2137.svg",
+      "dxf": "dxfs/TS_2137.dxf"
+    },
+    "name_en": "24 hour no stopping zone (start sign)",
+    "name_zh_hant": "全日不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": "tions should be erected facing on-coming traffic except those under rare circumstances erected with “arrow” or “double arrow” plates (see paragraph 2.3.2.92 below). T.S. 2230 T.S. 2133 T.S. 2131 T.S. 2137 T.S. 2139 (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 166) (Note: upper part background - yellow, lower part background - white) 2.3.2.92 T.S. 183, if used alone without any supplementary plate,"
+      },
+      {
+        "pdf_page": 48,
+        "text": "t necessary as the extent of the no stopping restriction can be clearly indicated with signs only. As double yellow lines on these roads would cause maintenance problems and traffic disruption during repainting, they should not be used. T.S. 2137 should be erected facing on-coming motorists at the start of the restriction and T.S. 183 should be erected facing on-coming motorists following each intervening slip road. T.S. 183 should also be erected at approximately 500m intervals as intermediate repeater signs, if requi"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2137.svg"
+  },
+  {
+    "rank": 37,
+    "code": "TS_2230",
+    "survey_count": 1358,
+    "preview": "svgs/TS_2230.svg",
+    "downloads": {
+      "svg": "svgs/TS_2230.svg",
+      "dxf": "dxfs/TS_2230.dxf"
+    },
+    "name_en": "No stopping zone from 8 a.m. to 10 a.m. and from 5 p.m. to 7 p.m. (start sign)",
+    "name_zh_hant": "上午八時至十時及下午五時至七時不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": " supplementary plates for designating no stopping restrictions should be erected facing on-coming traffic except those under rare circumstances erected with “arrow” or “double arrow” plates (see paragraph 2.3.2.92 below). T.S. 2230 T.S. 2133 T.S. 2131 T.S. 2137 T.S. 2139 (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 165) (T.C. 166) (Note: upper part background - yellow, lower part background - white) 2.3"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2230.svg"
+  },
+  {
+    "rank": 38,
+    "code": "TS_183",
+    "survey_count": 1160,
+    "preview": "svgs/TS_183.svg",
+    "downloads": {
+      "svg": "svgs/TS_183.svg",
+      "dxf": "dxfs/TS_183.dxf"
+    },
+    "name_en": "No stopping",
+    "name_zh_hant": "不准停車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": "d as a 24-hour “No Stopping” repeater sign on high standard roads (see paragraph 2.3.2.94). The sign may be used in conjunction with a number of supplementary plates as described below: T.S. 183 (T.C. 140) August 2026 Edition (i) T.S. 3706/3707 \"time plate\" – They are used to indicate the period of tim"
+      },
+      {
+        "pdf_page": 47,
+        "text": " indicate a continuing restriction where a yellow line is not used. When used, it should be erected parallel to traffic together with T.S. 183. (iv) T.S. 767 \"End\" - It is used to indicate the end of the restriction. (v) T.S. 784 \"For 1 km\" - The numerals may be varied. It may be used to indicate the extent of"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_183.svg"
+  },
+  {
+    "rank": 39,
+    "code": "TS_2238",
+    "survey_count": 1143,
+    "preview": "svgs/TS_2238.svg",
+    "downloads": {
+      "svg": "svgs/TS_2238.svg",
+      "dxf": "dxfs/TS_2238.dxf"
+    },
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_2238.svg",
+    "review_note": "Check the exact meter restriction and arrow direction; the draft name is generic."
+  },
+  {
+    "rank": 40,
+    "code": "TS_2239",
+    "survey_count": 1138,
+    "preview": "svgs/TS_2239.svg",
+    "downloads": {
+      "svg": "svgs/TS_2239.svg",
+      "dxf": "dxfs/TS_2239.dxf"
+    },
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_2239.svg",
+    "review_note": "Check the exact meter restriction and arrow direction; the draft name is generic."
+  },
+  {
+    "rank": 41,
+    "code": "TS_2231",
+    "survey_count": 1050,
+    "preview": "svgs/TS_2231.svg",
+    "downloads": {
+      "svg": "svgs/TS_2231.svg",
+      "dxf": "dxfs/TS_2231.dxf"
+    },
+    "name_en": "No stopping zone from 8 a.m. to 10 a.m. and from 5 p.m. to 7 p.m. (repeater sign)",
+    "name_zh_hant": "上午八時至十時及下午五時至七時不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 50,
+        "text": "0 m intervals. On dual carriageways, signs and markings are not required adjacent to the central reserve, however the gazette notice should state that the 24 hours no stopping restriction applies to the whole carriageway. T.S. 2231 T.S. 2232 T.S. 2134 (T.C. 165) (T.C. 165) (T.C. 165) (Note: upper part background - white, lower part background - white) "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2231.svg"
+  },
+  {
+    "rank": 42,
+    "code": "TS_106",
+    "survey_count": 1004,
+    "preview": "svgs/TS_106.svg",
+    "downloads": {
+      "svg": "svgs/TS_106.svg",
+      "dxf": "dxfs/TS_106.dxf"
+    },
+    "name_en": "Go straight ahead only",
+    "name_zh_hant": "只准駛前",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 26,
+        "text": "actice in the choice of signs be adopted throughout the Territory. Diagram 2.3.2.4 and the following paragraphs describe typical uses of these signs. 2.3.2.29 At cross road junctions, where turns both to the left and right have been prohibited, T.S. 106 \"Ahead Only\" should be used. At cross road junctions where the straight ahead movement and the right or left turn have been prohibited T.S. 107 \"Turn Left\" or T.S. 108 \"Turn Right\" respectively should be used. At cross roads junctions where only the left or the righ"
+      },
+      {
+        "pdf_page": 26,
+        "text": " T.S. 107 T.S. 108 (T.C. 106) (T.C. 107) (T.C. 107) 2.3.2.28 The prohibition of a turn or turns at a junction can theoretically be signed using T.S. 106/107/108 or T.S. 131/132 \"No Left Turn\"/\"No Right Turn\". It is important therefore that a consistent practice in the choice of signs be adopted throughout the Territory. Diagram 2.3.2.4 and the following paragraphs describe typical uses of these signs. 2.3.2.29 At"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_106.svg"
+  },
+  {
+    "rank": 43,
+    "code": "TS_425",
+    "survey_count": 989,
+    "preview": "svgs/TS_425.svg",
+    "downloads": {
+      "svg": "svgs/TS_425.svg",
+      "dxf": "dxfs/TS_425.dxf"
+    },
+    "name_en": "Roundabout",
+    "name_zh_hant": "迂迴",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 70,
+        "text": " Distributor Roads, it may be appropriate to erect an additional sign on the central reserve opposite that on the nearside. It should also be noted that advance warning of a roundabout is often given by the use of a map type direction sign, and T.S. 425 should not be located in the immediate vicinity of such a sign, as it would be superfluous in such a situation. T.S. 425 (T.C. 217) 2.3.3.30 Traffic signs 428 a"
+      },
+      {
+        "pdf_page": 70,
+        "text": "t is often given by the use of a map type direction sign, and T.S. 425 should not be located in the immediate vicinity of such a sign, as it would be superfluous in such a situation. T.S. 425 (T.C. 217) 2.3.3.30 Traffic signs 428 and 432 are used to indicate a steep gradient, downhill and uphill respectively. They should only be used in situations when the gradients are 10% or more. Although the actual gradient ca"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_425.svg"
+  },
+  {
+    "rank": 44,
+    "code": "TS_735",
+    "survey_count": 985,
+    "preview": "svgs/TS_735.svg",
+    "downloads": {
+      "svg": "svgs/TS_735.svg",
+      "dxf": "dxfs/TS_735.dxf"
+    },
+    "name_en": "Directional arrow sign",
+    "name_zh_hant": "方向指示箭頭標誌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 122,
+        "text": "motorists. T.S. 371 (PPR 1) 2.4.3.4 Traffic sign T.S. 286, “No Parking”, T.S. 287, “Temporary No Parking”, T.S. 733/ 734 “Arrow Plate” T.S. 735 “Double Arrow Plate” and T.S. 822 “Time Plate” are all prescribed in the Regulations and are used to control parking. The signs are described in the previous Section 2.4.2 on Road Traffic (Parking) Regulations and their use is comprehensively covered in the Code of Practice fo"
+      },
+      {
+        "pdf_page": 47,
+        "text": "o indicate the start or end of a restriction but normally not used as the “Start/End” restriction signs are already erected facing traffic. (iii) T.S. 735 \"double arrow plate\" - It is only used with repeater signs to indicate a continuing restriction where a yellow line is not used. When used, it should be erected parallel to traf"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_735.svg"
+  },
+  {
+    "rank": 45,
+    "code": "TS_581",
+    "survey_count": 974,
+    "preview": "svgs/TS_581.svg",
+    "downloads": {
+      "svg": "svgs/TS_581.svg",
+      "dxf": "dxfs/TS_581.dxf"
+    },
+    "name_en": "Traffic enforcement camera",
+    "name_zh_hant": "交通執法攝影機",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_581.svg"
+  },
+  {
+    "rank": 46,
+    "code": "TS_131",
+    "survey_count": 968,
+    "preview": "svgs/TS_131.svg",
+    "downloads": {
+      "svg": "svgs/TS_131.svg",
+      "dxf": "dxfs/TS_131.dxf"
+    },
+    "name_en": "No left turn",
+    "name_zh_hant": "不准左轉",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 36,
+        "text": " \"Vehicle length\" For use in conjunction with supplementary plates T.S. 701 “Over 3 tonnes”, T.S. 814 \"Goods Vehicle\", T.S. 3706 “Time plate” and T.S. 831 “Vehicle Length” refer to paragraph 2.3.2.27. T.S. 131 T.S. 132 (T.C. 122) (T.C. 122) August 2026 Edition 2.3.2.60 Traffic signs 131 "
+      },
+      {
+        "pdf_page": 26,
+        "text": "ad junctions where the straight ahead movement and the right or left turn have been prohibited T.S. 107 \"Turn Left\" or T.S. 108 \"Turn Right\" respectively should be used. At cross roads junctions where only the left or the right turn is prohibited, T.S. 131 \"No Left Turn\" or T.S. 132 \"No Right Turn\" respectively should be used. 2.3.2.30 At T Junctions where traffic turning into the stem or out of the stem in one direction is prohibited, T.S. 131 or T.S. 132 as appropriate should be used. At T junctions where traffic turning ou"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_131.svg"
+  },
+  {
+    "rank": 47,
+    "code": "TS_410",
+    "survey_count": 926,
+    "preview": "svgs/TS_410.svg",
+    "downloads": {
+      "svg": "svgs/TS_410.svg",
+      "dxf": "dxfs/TS_410.dxf"
+    },
+    "name_en": "Bend to the left ahead",
+    "name_zh_hant": "前方道路向左彎曲",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 65,
+        "text": "cient. However, if for any reason the curvature of the bend is not considered to be readily apparent, it will be appropriate to erect chevrons traffic sign 414 around the outside of the bend. T.S. 410 T.S. 411 T.S. 412 T.S. 413 (T.C. 208) (T.C. 208) (T.C. 208) (T.C. 209) (c) A further warning that may be used at these locations particularly where an additional hazard such as"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_410.svg"
+  },
+  {
+    "rank": 48,
+    "code": "TS_463",
+    "survey_count": 901,
+    "preview": "svgs/TS_463.svg",
+    "downloads": {
+      "svg": "svgs/TS_463.svg",
+      "dxf": "dxfs/TS_463.dxf"
+    },
+    "name_en": "Watch out for children.",
+    "name_zh_hant": "當心孩子",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 74,
+        "text": "ool crossing patrol signing may be found in paragraphs 2.3.3.69 to 2.3.3.71. August 2026 Edition T.S. 463 (T.C. 225) 2.3.3.41 Traffic signs 464 and 465, are used to warn of the possibility of horses, and cattle or water buffalo, respectively in the road ahead. They should only be used when there is a recurring problem of animals "
+      },
+      {
+        "pdf_page": 82,
+        "text": "perates over a zebra crossing. (iv) On all other roads where safety may be a hazard. T.S. 516 (T.C. 258) 2.3.3.70 If installed, T.S. 463/516 should be positioned in advance of the crossing on all the approaches along the road where the school crossing patrol operates. The matter of who actually operates the lights will need to be determined between the Police, the Education Authority and the Headmaster/Principa"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_463.svg"
+  },
+  {
+    "rank": 49,
+    "code": "TS_411",
+    "survey_count": 852,
+    "preview": "svgs/TS_411.svg",
+    "downloads": {
+      "svg": "svgs/TS_411.svg",
+      "dxf": "dxfs/TS_411.dxf"
+    },
+    "name_en": "Bend to the right ahead",
+    "name_zh_hant": "前方道路向右彎曲",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 65,
+        "text": " However, if for any reason the curvature of the bend is not considered to be readily apparent, it will be appropriate to erect chevrons traffic sign 414 around the outside of the bend. T.S. 410 T.S. 411 T.S. 412 T.S. 413 (T.C. 208) (T.C. 208) (T.C. 208) (T.C. 209) (c) A further warning that may be used at these locations particularly where an additional hazard such as the likelihood of pe"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_411.svg"
+  },
+  {
+    "rank": 50,
+    "code": "TS_286",
+    "survey_count": 832,
+    "preview": "svgs/TS_286.svg",
+    "downloads": {
+      "svg": "svgs/TS_286.svg",
+      "dxf": "dxfs/TS_286.dxf"
+    },
+    "name_en": "No parking",
+    "name_zh_hant": "不准泊車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 122,
+        "text": "in a prominent position at the entrance to the estate or development facing on-coming motorists. T.S. 371 (PPR 1) 2.4.3.4 Traffic sign T.S. 286, “No Parking”, T.S. 287, “Temporary No Parking”, T.S. 733/ 734 “Arrow Plate” T.S. 735 “Double Arrow Plate” and T.S. 822 “Time Plate” are all prescribed in the Regulations and are used to control parking. The signs are described in the previous Section 2.4.2 on Road Traffic "
+      },
+      {
+        "pdf_page": 120,
+        "text": "ragraph 2.4.2.1. Details of this road marking can also be found in Chapter 5. August 2026 Edition T.S. 286 (PA 6) 2.4.2.16 Traffic sign 286 should be erected parallel to the kerb, at each end of the section where parking is to be restricted. Appropriate \"arrow\" supplementary plates, traffic sign 733 or 734, should be erected benea"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_286.svg"
+  },
+  {
+    "rank": 51,
+    "code": "TS_109",
+    "survey_count": 829,
+    "preview": "svgs/TS_109.svg",
+    "downloads": {
+      "svg": "svgs/TS_109.svg",
+      "dxf": "dxfs/TS_109.dxf"
+    },
+    "name_en": "Keep left",
+    "name_zh_hant": "靠左",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 27,
+        "text": " permanent sites such as traffic islands, refuges and on the central reserves of dual carriageway roads. It is also extensively used as a temporary sign at roadworks. The \"Keep Right\" sign, T.S. 110, is generally only used at roadworks. T.S. 109 and 110 may be used with the supplementary plates T.S. 708 \"Except franchised buses\", and T.S. 736 \"Dual carriageway\". Where the sign is in the form of a bollard, it should not be accompanied by a similar sign mounted on a post, as this duplication of the sign is un"
+      },
+      {
+        "pdf_page": 27,
+        "text": "736 \"Dual carriageway\". Where the sign is in the form of a bollard, it should not be accompanied by a similar sign mounted on a post, as this duplication of the sign is unnecessary and is wasteful of resources. T.S. 109 T.S. 110 (T.C. 108) (T.C. 108) August 2026 Edition DIAGRAM 2"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_109.svg"
+  },
+  {
+    "rank": 52,
+    "code": "TS_740",
+    "survey_count": 785,
+    "preview": "svgs/TS_740.svg",
+    "downloads": {
+      "svg": "svgs/TS_740.svg",
+      "dxf": "dxfs/TS_740.dxf"
+    },
+    "name_en": "School",
+    "name_zh_hant": "學校",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 106,
+        "text": "fic sign 740 “School” is a supplementary plate for use with the traffic sign, 463, “Children” to warn motorists of a school ahead and the possible presence of children crossing or near the road. T.S. 740 (T.C. 412) 2.3.5.43 Traffic sign 741 “Playground”, may be used with traffic sign 463, “Children” to warn motorists of a playground situated near the road ahead and the possibility therefore that there may be children crossing "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_740.svg"
+  },
+  {
+    "rank": 53,
+    "code": "TS_407",
+    "survey_count": 780,
+    "preview": "svgs/TS_407.svg",
+    "downloads": {
+      "svg": "svgs/TS_407.svg",
+      "dxf": "dxfs/TS_407.dxf"
+    },
+    "name_en": "Two-way traffic",
+    "name_zh_hant": "雙程行車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 61,
+        "text": "to a two-way road and in these situations it is appropriate to use traffic sign 407 alone, the sign being erected at the beginning of the two-way section. T.S. 406 T.S. 407 (T.C. 204) (T.C. 205) 2.3.3.13 Where a dual carriageway road changes to a two-way road, traffic sign 406 should be erected at the normal distance for warning signs, in advance of the end of the dual carriagew"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_407.svg"
+  },
+  {
+    "rank": 54,
+    "code": "TS_422",
+    "survey_count": 760,
+    "preview": "svgs/TS_422.svg",
+    "downloads": {
+      "svg": "svgs/TS_422.svg",
+      "dxf": "dxfs/TS_422.dxf"
+    },
+    "name_en": "Side road on the left ahead",
+    "name_zh_hant": "前面左邊有旁路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_422.svg"
+  },
+  {
+    "rank": 55,
+    "code": "TS_708",
+    "survey_count": 760,
+    "preview": "svgs/TS_708.svg",
+    "downloads": {
+      "svg": "svgs/TS_708.svg",
+      "dxf": "dxfs/TS_708.dxf"
+    },
+    "name_en": "Except franchised buses",
+    "name_zh_hant": "專利巴士例外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 27,
+        "text": "s and on the central reserves of dual carriageway roads. It is also extensively used as a temporary sign at roadworks. The \"Keep Right\" sign, T.S. 110, is generally only used at roadworks. T.S. 109 and 110 may be used with the supplementary plates T.S. 708 \"Except franchised buses\", and T.S. 736 \"Dual carriageway\". Where the sign is in the form of a bollard, it should not be accompanied by a similar sign mounted on a post, as this duplication of the sign is unnecessary and is wasteful of resources. "
+      },
+      {
+        "pdf_page": 97,
+        "text": "12 \"Turn right ahead\" 2.3.5.16 Traffic sign 708 “Except franchised buses”, indicates the exception of franchised buses to the particular restriction referred to on the main sign. T.S. 708 (T.C. 403) August 2026 Edition 2.3.5.17 Traffic sign 708 may be used in conjunction with the following signs : (i) tra"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_708.svg"
+  },
+  {
+    "rank": 56,
+    "code": "TS_134",
+    "survey_count": 756,
+    "preview": "svgs/TS_134.svg",
+    "downloads": {
+      "svg": "svgs/TS_134.svg",
+      "dxf": "dxfs/TS_134.dxf"
+    },
+    "name_en": "No Pedestrians",
+    "name_zh_hant": "行人禁止通行",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 38,
+        "text": "1500mm as mentioned in paragraph 2.2.3.1. Supplementary \"arrow plates\" may be used to clarify which road is affected by the prohibition, if the road configuration makes this necessary. T.S. 134 (T.C. 124) 2.3.2.67 Traffic sign 135, prohibits rickshaws, handcarts and other pedestrian propelled vehicles, but not pedestrians, from passing the sign. It may be used with the \"End\" supplementary plate, traffic sign 767. "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_134.svg"
+  },
+  {
+    "rank": 57,
+    "code": "TS_136",
+    "survey_count": 751,
+    "preview": "svgs/TS_136.svg",
+    "downloads": {
+      "svg": "svgs/TS_136.svg",
+      "dxf": "dxfs/TS_136.dxf"
+    },
+    "name_en": "No pedestrians, pedestrian controlled vehicles, bicycles and tricycles.",
+    "name_zh_hant": "沒有行人，行人控制的車輛，自行車，三輪車超出了這一點。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 38,
+        "text": " facing motorists, to advise that pedestrians could be adjacent to the carriageway. Mounting height should be as for traffic sign 134. Supplementary \"arrow plates\" may be used where necessary. T.S. 136 (T.C. 126) August 2026 Edition 2.3.2.69 Traffic sign 137, \"No Cyclists\" indicates that bicycles and tricycles are prohibited from passing "
+      },
+      {
+        "pdf_page": 56,
+        "text": "hat cycling is prohibited beyond the sign and cyclists must dismount and push their bicycle or tricycle if they wish to proceed beyond the sign. The end of such a cycling prohibition is indicated by T.S. 228. T.S. 227 should not be confused with T.S. 136 “No Pedestrians No Cyclists” or T.S. 137 \"No Cyclists\" where cyclists are prohibited from riding or pushing their bicycle/tricycle beyond the sign. T.S. 227 T.S. 228 "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_136.svg"
+  },
+  {
+    "rank": 58,
+    "code": "TS_712",
+    "survey_count": 706,
+    "preview": "svgs/TS_712.svg",
+    "downloads": {
+      "svg": "svgs/TS_712.svg",
+      "dxf": "dxfs/TS_712.dxf"
+    },
+    "name_en": "Except with permit",
+    "name_zh_hant": "持有許可證者不在此限",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 32,
+        "text": "ign 118, “Buses prohibited” prohibits all buses from entering a street at all times unless qualified by the supplementary plates “Except franchised buses” traffic sign 708, or an appropriate “time plate” to T.S. 714. The use of supplementary plate T.S. 712 “Except with permit” is not necessary. Signs should be erected on both sides of the street at the point where the restriction commences, and should be orientated as for traffic sign 115, “No Entry”. Supplementary arrow plates, T.S. 733/734 may be used where necessar"
+      },
+      {
+        "pdf_page": 55,
+        "text": "uch closure shall be published as soon as reasonably practicable in the Gazette or in one issue of at least one English newspaper and one Chinese newspaper circulating in Hong Kong. The use of supplementary plate \"Except with permit\" T.S. 712 is not necessary as vehicles issued with a valid closed road permit for the road in accordance with the Road Traffic (Registration and Licensing of Vehicles) Regulations are exempted under regulation 27. T.S. 220"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_712.svg"
+  },
+  {
+    "rank": 59,
+    "code": "TS_620",
+    "survey_count": 693,
+    "preview": "svgs/TS_620.svg",
+    "downloads": {
+      "svg": "svgs/TS_620.svg",
+      "dxf": "dxfs/TS_620.dxf"
+    },
+    "name_en": "Passing place",
+    "name_zh_hant": "讓車處",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 92,
+        "text": "nd if necessary parking restrictions should be introduced to prevent this. The sign should be positioned to achieve the maximum visibility distance attainable within the limitations of the site. T.S. 620 (T.C. 313) 2.3.4.17 Traffic sign 621 is a temporary sign for use by the Police T.S. 621 (T.C. 314) 2.3.4.18 Traf"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_620.svg"
+  },
+  {
+    "rank": 60,
+    "code": "TS_176",
+    "survey_count": 688,
+    "preview": "svgs/TS_176.svg",
+    "downloads": {
+      "svg": "svgs/TS_176.svg",
+      "dxf": "dxfs/TS_176.dxf"
+    },
+    "name_en": "80 km/h speed limit",
+    "name_zh_hant": "時速八十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_176.svg"
+  },
+  {
+    "rank": 61,
+    "code": "TS_2138",
+    "survey_count": 686,
+    "preview": "svgs/TS_2138.svg",
+    "downloads": {
+      "svg": "svgs/TS_2138.svg",
+      "dxf": "dxfs/TS_2138.dxf"
+    },
+    "name_en": "24 hour no stopping zone (repeater sign)",
+    "name_zh_hant": "全日不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2138.svg"
+  },
+  {
+    "rank": 62,
+    "code": "TS_130",
+    "survey_count": 672,
+    "preview": "svgs/TS_130.svg",
+    "downloads": {
+      "svg": "svgs/TS_130.svg",
+      "dxf": "dxfs/TS_130.dxf"
+    },
+    "name_en": "No motor vehicle driven by a 學 learner driver.",
+    "name_zh_hant": "無機動車由見習司機駕駛。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 36,
+        "text": "ed with this sign at the end of the road to which the prohibition applies. This combination is useful to inform the instructor when he may permit the learner to drive the vehicle again. T.S. 130 (T.C. 121) 2.3.2.59 The traffic signs 131 and 132 indicate respectively that left turning movements and right turning movements are prohibited. Whilst the use of T.S. 132 would normally imply that \"U\" turns are also p"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_130.svg"
+  },
+  {
+    "rank": 63,
+    "code": "TS_198",
+    "survey_count": 671,
+    "preview": "svgs/TS_198.svg",
+    "downloads": {
+      "svg": "svgs/TS_198.svg",
+      "dxf": "dxfs/TS_198.dxf"
+    },
+    "name_en": "End of no stopping restriction",
+    "name_zh_hant": "禁止停車限制終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_198.svg"
+  },
+  {
+    "rank": 64,
+    "code": "TS_615",
+    "survey_count": 667,
+    "preview": "svgs/TS_615.svg",
+    "downloads": {
+      "svg": "svgs/TS_615.svg",
+      "dxf": "dxfs/TS_615.dxf"
+    },
+    "name_en": "No through road",
+    "name_zh_hant": "死胡同",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 90,
+        "text": "gn could be confusing to drivers of other vehicles. It should also be remembered that traffic signs 615, 616 and 617 are not in themselves regulatory signs, and other signs are required to prohibit the particular vehicle. T.S. 615 T.S. 616 T.S. 617 (T.C. 310) (T.C. 311) (T.C. 311) August 2026 Edition"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_615.svg"
+  },
+  {
+    "rank": 65,
+    "code": "TS_117",
+    "survey_count": 639,
+    "preview": "svgs/TS_117.svg",
+    "downloads": {
+      "svg": "svgs/TS_117.svg",
+      "dxf": "dxfs/TS_117.dxf"
+    },
+    "name_en": "Motor Vehicles prohibited",
+    "name_zh_hant": "機動車輛禁止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 32,
+        "text": "only motorcycle symbol is used, this sign prohibits the entry of motorcycles and motor tricycles. When only car symbol is used, this sign prohibits the entry of all motor vehicles except motorcycles and motor tricycles. T.S. 117 T.S. 2200 T.S. 2201 (T.C. 114) (T.C. 114) (T.C. 114) 2.3.2.48 Traffic sign 118, “Buses prohibited” prohibits all buses from entering a street at all times unless "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_117.svg"
+  },
+  {
+    "rank": 66,
+    "code": "TS_225",
+    "survey_count": 606,
+    "preview": "svgs/TS_225.svg",
+    "downloads": {
+      "svg": "svgs/TS_225.svg",
+      "dxf": "dxfs/TS_225.dxf"
+    },
+    "name_en": "Cyclists dismount and use pedestrian crossing",
+    "name_zh_hant": "騎單車者到此下車，由附近行人綫過路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 56,
+        "text": "strian crossing is not available near the end of the cycle track, the sign should not be erected. The use of this sign at pedestrian crossings not associated with cycleways is not appropriate. T.S. 225 (T.C. 154) 2.3.2.107 T.S. 227 “Cycling Restriction” indicates that cycling is prohibited beyond the sign and cyclists must dismount and push their bicycle or tricycle if they wish to proceed beyond the sign. The end of such "
+      },
+      {
+        "pdf_page": 56,
+        "text": " (i) end of cycle track at footpath – cycling on footpath already prohibited under Summary Offences Ordinance Cap. 228 as shown in Diagram 2.3.2.11. (ii) end of cycle track near pedestrian crossing – regulatory sign T.S. 225 “Cyclists dismount, Use pedestrian crossing” should be used. August 2026 Edition (iii) end of cycle track at road junction – cycling is allowed on carriagew"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_225.svg"
+  },
+  {
+    "rank": 67,
+    "code": "TS_282",
+    "survey_count": 572,
+    "preview": "svgs/TS_282.svg",
+    "downloads": {
+      "svg": "svgs/TS_282.svg",
+      "dxf": "dxfs/TS_282.dxf"
+    },
+    "name_en": "Parking for buses only",
+    "name_zh_hant": "巴士專用泊車位",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 117,
+        "text": " but not light buses. (iv) traffic sign 283- Parking for motor cycles only. (v) traffic sign 284- Parking for cycles only. T.S. 280 (PA 1) T.S. 281 T.S. 282 T.S. 283 T.S. 284 (PA 2) (PA 3) (PA 4) (PA 5) August 2026 Edition 2.4.2.8 With respect "
+      },
+      {
+        "pdf_page": 123,
+        "text": " H. 1 2.4.4.2 As on the majority of public roads, the presumption on Housing Authority restricted roads is that parking is prohibited unless signs and markings indicate otherwise. Traffic signs T.S. 280, T.S. 281, T.S. 282, T.S. 283 and T.S. 284 are prescribed for the purpose of designating parking spaces for specific types of vehicle. T.S. 286 and T.S. 287 are prescribed for the purpose of designating ‘no parking’ and ‘temporary no parking’ areas. The ‘no parking’ signs should generally not be re"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_282.svg"
+  },
+  {
+    "rank": 68,
+    "code": "TS_520",
+    "survey_count": 561,
+    "preview": "svgs/TS_520.svg",
+    "downloads": {
+      "svg": "svgs/TS_520.svg",
+      "dxf": "dxfs/TS_520.dxf"
+    },
+    "name_en": "Cyclist Crossing",
+    "name_zh_hant": "自行車道口",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 85,
+        "text": "e. But if it is erected to warn motorists, then sizes appropriate to the speed limit should be used as normal. Further details as to the use of this sign will be found in Chapter 6. T.S. 520 (T.C. 260) 2.3.3.75 Traffic sign 524 may be used to warn vehicular or pedestrian traffic that there is a North-West Railway track or tram track in or crossing the road ahead and that vehicles of the North-West Railway or tra"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_520.svg"
+  },
+  {
+    "rank": 69,
+    "code": "TS_586",
+    "survey_count": 544,
+    "preview": "svgs/TS_586.svg",
+    "downloads": {
+      "svg": "svgs/TS_586.svg",
+      "dxf": "dxfs/TS_586.dxf"
+    },
+    "name_en": "Beware of Reversing Vehicles",
+    "name_zh_hant": "小心倒車車輛",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 86,
+        "text": "ines of pedestrians are likely to be obstructed, e.g. sharp bend, steep gradient etc.; and (iv) where the footpath is narrow, lacking or frequently obstructed. T.S. 586 2.3.3.7 The sign should be erected to face traffic and in both directions such that both drivers and pedestrians can 9 view the sign in either direction. For long blind alleys and service lanes, provision of repeater signs at spacing 60m–100m would be required, and lesser sp"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_586.svg"
+  },
+  {
+    "rank": 70,
+    "code": "TS_323",
+    "survey_count": 537,
+    "preview": "svgs/TS_323.svg",
+    "downloads": {
+      "svg": "svgs/TS_323.svg",
+      "dxf": "dxfs/TS_323.dxf"
+    },
+    "name_en": "Public Light Bus Stand",
+    "name_zh_hant": "公共小型巴士站",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 124,
+        "text": " (P.S. 2/3) 2.5.2.3 For Scheduled Service Stands, at the termini of routes, traffic sign 322, having a green border and symbol in conjunction with the road marking 1049, see Chapter 5, should be used to indicate the stand area. A similar sign T.S. 323 is used for Public Light Bus Stands, though this has a red border and symbol, together with the same road marking 1049. In both cases, the signs should be erected double- sided and facing oncoming traffic. Where appropriate, off-centered mounting method should be adopt"
+      },
+      {
+        "pdf_page": 125,
+        "text": " to whether such parking should be permitted or not should take account of any inconvenience to the public, e.g. noise by vehicles or operators, and the effects if any on other traffic. The sign should be erected in addition to T.S. 322 or T.S. 323, as appropriate, and the parking provision is limited to only that type of vehicle for which the stand is designated. T.S. 325 (P.S. 8) 2.5.2.5 Taxi stands traffic sign"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 71,
+    "code": "TS_852",
+    "survey_count": 507,
+    "preview": "svgs/TS_852.svg",
+    "downloads": {
+      "svg": "svgs/TS_852.svg",
+      "dxf": "dxfs/TS_852.dxf"
+    },
+    "name_en": "Except public light buses (scheduled services)",
+    "name_zh_hant": "專線小巴例外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_852.svg"
+  },
+  {
+    "rank": 72,
+    "code": "TS_2702",
+    "survey_count": 469,
+    "preview": "svgs/TS_2702.svg",
+    "downloads": {
+      "svg": "svgs/TS_2702.svg",
+      "dxf": "dxfs/TS_2702.dxf"
+    },
+    "name_en": "Vehicle waiting will be prosecuted without warning",
+    "name_zh_hant": "停車等候會被檢控而不予警告",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_2702.svg"
+  },
+  {
+    "rank": 73,
+    "code": "TS_769",
+    "survey_count": 466,
+    "preview": "svgs/TS_769.svg",
+    "downloads": {
+      "svg": "svgs/TS_769.svg",
+      "dxf": "dxfs/TS_769.dxf"
+    },
+    "name_en": "Distance plate",
+    "name_zh_hant": "距離標誌牌",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 86,
+        "text": " August 2026 Edition 2.3.3.77 Traffic sign 570 is used to give advance warning that the speed limit on the road ahead shall be lowered. The sign in conjunction with the distance plate T.S. 769 shall be used on roads where the speed has to be lowered by 20 km/h or more. The sign shall be erected in pairs about 100m ahead of the change and under special circumstances, e.g. for speed change of 30 km/h or more, an additional pair at about 200m in advanc"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 74,
+    "code": "TS_347",
+    "survey_count": 460,
+    "preview": "svgs/TS_347.svg",
+    "downloads": {
+      "svg": "svgs/TS_347.svg",
+      "dxf": "dxfs/TS_347.dxf"
+    },
+    "name_en": "Disabled person permit parking only (left arrow)",
+    "name_zh_hant": "殘疾人士泊車許可證車輛專用（向左）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 121,
+        "text": " Vehicles Only, T.S. 315, 316 (v) Fire Appliances Only, T.S. 341, 342 (vi) Vehicles with “Disabled Person's Parking Permit” or “Parking Certificate for Drivers Who Carry People with Mobility Disabilities” Only, T.S. 347, 348 (vii) Food and Environmental Hygiene Department refuse collection vehicles only T.S. 289 (PA 16) 2.4.2.22 Where parking meters are installed, traffic "
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_347.svg",
+    "review_note": "Check the full permit wording against the bilingual drawing."
+  },
+  {
+    "rank": 75,
+    "code": "TS_348",
+    "survey_count": 459,
+    "preview": "svgs/TS_348.svg",
+    "downloads": {
+      "svg": "svgs/TS_348.svg",
+      "dxf": "dxfs/TS_348.dxf"
+    },
+    "name_en": "Disabled person permit parking only (right arrow)",
+    "name_zh_hant": "殘疾人士泊車許可證車輛專用（向右）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_348.svg",
+    "review_note": "Check the full permit wording against the bilingual drawing."
+  },
+  {
+    "rank": 76,
+    "code": "TS_461",
+    "survey_count": 441,
+    "preview": "svgs/TS_461.svg",
+    "downloads": {
+      "svg": "svgs/TS_461.svg",
+      "dxf": "dxfs/TS_461.dxf"
+    },
+    "name_en": "Pedestrian crossing ahead",
+    "name_zh_hant": "前面有行人過處",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 73,
+        "text": "it and on a road with a 70 km/h speed limit regardless of visibility criteria. Zebra crossings should not normally be used on roads with speed limits in excess of 70 km/h. Traffic sign 461 is not appropriate to warn of a cautionary crossing. Where T.S. 461 must be erected at a distance from the crossing, significantly different to that recommended in Table 2.2.2.1, a distance plate, T.S. 772 or similar should be used. T.S. 461 "
+      },
+      {
+        "pdf_page": 73,
+        "text": "ing. Where T.S. 461 must be erected at a distance from the crossing, significantly different to that recommended in Table 2.2.2.1, a distance plate, T.S. 772 or similar should be used. T.S. 461 (T.C. 223) 2.3.3.39 To give a warning to motorists that they are likely to encounter disabled persons ahead whose ability to move quickly may be impaired, traffic sign 462 may be erected. It should not be used indisc"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_461.svg"
+  },
+  {
+    "rank": 77,
+    "code": "TS_831",
+    "survey_count": 440,
+    "preview": "svgs/TS_831.svg",
+    "downloads": {
+      "svg": "svgs/TS_831.svg",
+      "dxf": "dxfs/TS_831.dxf"
+    },
+    "name_en": "Vehicle length",
+    "name_zh_hant": "車輛長度",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 36,
+        "text": "6 \"Time plate\" (vi) traffic sign 831 \"Vehicle length\" For use in conjunction with supplementary plates T.S. 701 “Over 3 tonnes”, T.S. 814 \"Goods Vehicle\", T.S. 3706 “Time plate” and T.S. 831 “Vehicle Length” refer to paragraph 2.3.2.27. T.S. 131 T.S. 132 (T.C. 122) (T.C. 122) "
+      },
+      {
+        "pdf_page": 26,
+        "text": "raffic sign 831 \"Vehicle length\" Additionally, supplementary plate \"Dual Carriageway\", traffic sign 736, may be used with the \"Turn Left\" and \"Turn Right\" signs. A typical situation requiring the use of T.S. 701, T.S. 814, T.S. 831 and T.S. 3706 would be where it is necessary to prohibit vehicles, above a certain length, from turning left at a junction, because the geometry of the junction could not accommodate such a manoeuvre. This may be a temporary traffic arrangement during certain period"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 78,
+    "code": "TS_483",
+    "survey_count": 403,
+    "preview": "svgs/TS_483.svg",
+    "downloads": {
+      "svg": "svgs/TS_483.svg",
+      "dxf": "dxfs/TS_483.dxf"
+    },
+    "name_en": "Cyclists dismount",
+    "name_zh_hant": "騎單車者下車",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_483.svg"
+  },
+  {
+    "rank": 79,
+    "code": "TS_221",
+    "survey_count": 400,
+    "preview": "svgs/TS_221.svg",
+    "downloads": {
+      "svg": "svgs/TS_221.svg",
+      "dxf": "dxfs/TS_221.dxf"
+    },
+    "name_en": "In",
+    "name_zh_hant": "入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 55,
+        "text": "the Road Traffic (Registration and Licensing of Vehicles) Regulations are exempted under regulation 27. T.S. 220 (T.C. 149) 2.3.2.105 T.S. 221, 222, 223 and 224 are used to regulate traffic movements at car parks, petrol filling stations and other premises. The signs should be erected, preferably in pairs on both sides of the access within the boundary of the premises to which they apply, adjacent to the relevant e"
+      },
+      {
+        "pdf_page": 56,
+        "text": " the access within the boundary of the premises to which they apply, adjacent to the relevant entrance or exit. August 2026 Edition T.S. 221 T.S. 222 T.S. 223 T.S. 224 (T.C. 150) (T.C. 151) (T.C. 152) (T.C. 153) 2.3.2.106 T.S. 225 is for use where a main road intersects a cycle track. It should be positioned at t"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_221.svg"
+  },
+  {
+    "rank": 80,
+    "code": "TS_611",
+    "survey_count": 395,
+    "preview": "svgs/TS_611.svg",
+    "downloads": {
+      "svg": "svgs/TS_611.svg",
+      "dxf": "dxfs/TS_611.dxf"
+    },
+    "name_en": "Get in lane",
+    "name_zh_hant": "選定行車綫",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 89,
+        "text": "sts may change lanes, providing it is safe to do so, prior to the stop or give way lines. See also paragraph 2.3.4.14, in respect of the use of traffic sign 618 for the same purpose. T.S. 611 (T.C. 306) 2.3.4.12 Traffic signs 612, 613 and 614 are for use at traffic survey points, and even though these are temporary signs, authority for their use is obtained from Regulation 3 of the Road Traffic (Traffic Control) "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_611.svg"
+  },
+  {
+    "rank": 81,
+    "code": "TS_333",
+    "survey_count": 393,
+    "preview": "svgs/TS_333.svg",
+    "downloads": {
+      "svg": "svgs/TS_333.svg",
+      "dxf": "dxfs/TS_333.dxf"
+    },
+    "name_en": "Light rail vehicles and trams only.",
+    "name_zh_hant": "輕軌車和電車只。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 57,
+        "text": "d persons of these two companies. T.S. 2624 indicates the end of rail only lane for vehicles of the North-west Railway. The word “rail” may be varied to “tram” to indicate the end of tram only lane for trams. T.S. 333 T.S. 2624 (T.C. 159) (T.C. 163) 2.3.2.110 T.S. 355 indicates that a speed limit of 60 km/h is imposed on all vehicles of the North-west Railway, on the section o"
+      },
+      {
+        "pdf_page": 57,
+        "text": " “Stop” should be used as stated in TPDM Volume 3 Section 6.3.2.7, except for Bicycle Prohibition Zones where T.S. 136 or T.S. 137 should be used. DIAGRAM 2.3.2.11 : TERMINATION OF CYCLE TRACK AT FOOTPATH 2.3.2.109 T.S. 333 prohibits the entry of all vehicles except vehicles of the North-west Railway (Light Rail Transit) and trams and such vehicles as are authorized by the MTRC or by the HK Tramways Ltd., as the case may be. It also prohibits the entry of all persons except those authorized per"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_333.svg"
+  },
+  {
+    "rank": 82,
+    "code": "TS_421",
+    "survey_count": 383,
+    "preview": "svgs/TS_421.svg",
+    "downloads": {
+      "svg": "svgs/TS_421.svg",
+      "dxf": "dxfs/TS_421.dxf"
+    },
+    "name_en": "Side road on the right ahead",
+    "name_zh_hant": "前面右邊有旁路",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 70,
+        "text": "f the signs are placed at a distance before the junction much greater than that indicated in Table 2.2.2.1, a supplementary distance plate should be used with the sign. T.S. 418 T.S. 420 T.S. 421 T.S. 424 (T.C. 213) (T.C. 214) (T.C. 215) (T.C. 216) 2.3.3.29 Traffic sign 425 is used to indicate the approach to a roundabout. On Trunk Roads and Primary Distributor Roads where speed limits are "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_421.svg"
+  },
+  {
+    "rank": 83,
+    "code": "TS_223",
+    "survey_count": 362,
+    "preview": "svgs/TS_223.svg",
+    "downloads": {
+      "svg": "svgs/TS_223.svg",
+      "dxf": "dxfs/TS_223.dxf"
+    },
+    "name_en": "No exit",
+    "name_zh_hant": "不准駛出",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 56,
+        "text": "remises to which they apply, adjacent to the relevant entrance or exit. August 2026 Edition T.S. 221 T.S. 222 T.S. 223 T.S. 224 (T.C. 150) (T.C. 151) (T.C. 152) (T.C. 153) 2.3.2.106 T.S. 225 is for use where a main road intersects a cycle track. It should be positioned at the end of the cycle track facing cyclist"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_223.svg"
+  },
+  {
+    "rank": 84,
+    "code": "TS_371",
+    "survey_count": 356,
+    "preview": "svgs/TS_371.svg",
+    "downloads": {
+      "svg": "svgs/TS_371.svg",
+      "dxf": "dxfs/TS_371.dxf"
+    },
+    "name_en": "Private road",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 122,
+        "text": " the Road Traffic (Parking on Private Roads) Regulations apply. The sign must be located in a prominent position at the entrance to the estate or development facing on-coming motorists. T.S. 371 (PPR 1) 2.4.3.4 Traffic sign T.S. 286, “No Parking”, T.S. 287, “Temporary No Parking”, T.S. 733/ 734 “Arrow Plate” T.S. 735 “Double Arrow Plate” and T.S. 822 “Time Plate” are all prescribed in the Regulations and are "
+      },
+      {
+        "pdf_page": 122,
+        "text": "the owner of the private road. A set of signs are prescribed within the Road Traffic (Parking on Private Roads) Regulations to facilitate this control and their erection on private roads is the responsibility of the owner. 2.4.3.3 Traffic sign T.S. 371 indicates that the road is a private road and that the Road Traffic (Parking on Private Roads) Regulations apply. The sign must be located in a prominent position at the entrance to the estate or development facing on-coming motorists. "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_371.svg"
+  },
+  {
+    "rank": 85,
+    "code": "TS_818",
+    "survey_count": 354,
+    "preview": "svgs/TS_818.svg",
+    "downloads": {
+      "svg": "svgs/TS_818.svg",
+      "dxf": "dxfs/TS_818.dxf"
+    },
+    "name_en": "NT Taxis",
+    "name_zh_hant": "新界的士",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 127,
+        "text": " (P.S. 11) 2.5.2.9 Traffic sign 818, “NT taxis”, is for use with traffic sign 324, “TAXI STAND”, to indicate that the stand is for use by the New Territories taxis only. T.S. 818 (P.S. 10) 2.5.2.10 Traffic sign 566, “Lantau taxis”, is for use with traffic sign 324, “TAXI STAND”, to indicate that the stand is for use by Lantau taxis only. T.S"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  },
+  {
+    "rank": 86,
+    "code": "TS_222",
+    "survey_count": 343,
+    "preview": "svgs/TS_222.svg",
+    "downloads": {
+      "svg": "svgs/TS_222.svg",
+      "dxf": "dxfs/TS_222.dxf"
+    },
+    "name_en": "Out",
+    "name_zh_hant": "道路交通（ 交通管制 ）規例",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 56,
+        "text": " the boundary of the premises to which they apply, adjacent to the relevant entrance or exit. August 2026 Edition T.S. 221 T.S. 222 T.S. 223 T.S. 224 (T.C. 150) (T.C. 151) (T.C. 152) (T.C. 153) 2.3.2.106 T.S. 225 is for use where a main road intersects a cycle track. It should be positioned at the end of the "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_222.svg"
+  },
+  {
+    "rank": 87,
+    "code": "TS_570",
+    "survey_count": 328,
+    "preview": "svgs/TS_570.svg",
+    "downloads": {
+      "svg": "svgs/TS_570.svg",
+      "dxf": "dxfs/TS_570.dxf"
+    },
+    "name_en": "50 km/h speed limit ahead",
+    "name_zh_hant": "前方時速五十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 86,
+        "text": "al circumstances, e.g. for speed change of 30 km/h or more, an additional pair at about 200m in advance. The numerals on the sign may be altered to suit the actual speed limit being adopted. T.S. 570 2.3.3.78 Traffic sign 586 “Beware of Reversing Vehicles” should be installed at blind alleys and narrow service lanes subject to the following criteria: (i) where there are frequent reversing of goods vehicles into or out of the alleys/lanes due to lack "
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_570.svg"
+  },
+  {
+    "rank": 88,
+    "code": "TS_2140",
+    "survey_count": 325,
+    "preview": "svgs/TS_2140.svg",
+    "downloads": {
+      "svg": "svgs/TS_2140.svg",
+      "dxf": "dxfs/TS_2140.dxf"
+    },
+    "name_en": "No stopping zone for public light buses from 7 a.m. to midnight (start sign)",
+    "name_zh_hant": "上午七時至午夜十二時公共小巴不准停車區（ 開始標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2140.svg"
+  },
+  {
+    "rank": 89,
+    "code": "TS_2235",
+    "survey_count": 321,
+    "preview": "svgs/TS_2235.svg",
+    "downloads": {
+      "svg": "svgs/TS_2235.svg",
+      "dxf": "dxfs/TS_2235.dxf"
+    },
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_2235.svg",
+    "review_note": "Check the exact meter restriction and arrow direction; the draft name is generic."
+  },
+  {
+    "rank": 90,
+    "code": "TS_2234",
+    "survey_count": 317,
+    "preview": "svgs/TS_2234.svg",
+    "downloads": {
+      "svg": "svgs/TS_2234.svg",
+      "dxf": "dxfs/TS_2234.dxf"
+    },
+    "name_en": "Two-hour parking meters",
+    "name_zh_hant": "兩小時停車收費錶",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_2234.svg",
+    "review_note": "Check the exact meter restriction and arrow direction; the draft name is generic."
+  },
+  {
+    "rank": 91,
+    "code": "TS_629",
+    "survey_count": 307,
+    "preview": "svgs/TS_629.svg",
+    "downloads": {
+      "svg": "svgs/TS_629.svg",
+      "dxf": "dxfs/TS_629.dxf"
+    },
+    "name_en": "Direction to parking place",
+    "name_zh_hant": "泊車處方向",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_629.svg"
+  },
+  {
+    "rank": 92,
+    "code": "TS_191",
+    "survey_count": 287,
+    "preview": "svgs/TS_191.svg",
+    "downloads": {
+      "svg": "svgs/TS_191.svg",
+      "dxf": "dxfs/TS_191.dxf"
+    },
+    "name_en": "Keep left unless overtaking",
+    "name_zh_hant": "除越過前車外靠左駛",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 40,
+        "text": " T.S. 140 T.S. 191 (T.C. 130) (T.C. 169) Traffic sign 191 is a variation in size of traffic sign 140. Because of narrower width, T.S. 191 has higher chance to be erected at the central divider with adequate laternal clearnce. 2.3.2.73 Traffic sign 141, \"Width Limit\", indicates that a vehicle exceeding the width shown on the sign is prohibited from passing the sign. The measurement indicated on the sign should"
+      },
+      {
+        "pdf_page": 40,
+        "text": "/diverging. Use of the sign can however assist enforcement and prior consultation with the Police about the use of this sign on expressways is recommended. T.S. 140 T.S. 191 (T.C. 130) (T.C. 169) Traffic sign 191 is a variation in size of traffic sign 140. Because of narrower width, T.S. 191 has higher chance to be erected at the central divider with adequate laternal cle"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_191.svg"
+  },
+  {
+    "rank": 93,
+    "code": "TS_2141",
+    "survey_count": 287,
+    "preview": "svgs/TS_2141.svg",
+    "downloads": {
+      "svg": "svgs/TS_2141.svg",
+      "dxf": "dxfs/TS_2141.dxf"
+    },
+    "name_en": "No stopping zone for public light buses from 7 a.m. to midnight (repeater sign)",
+    "name_zh_hant": "上午七時至午夜十二時公共小巴不准停車區（ 重複標誌 ）",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2141.svg"
+  },
+  {
+    "rank": 94,
+    "code": "TS_524",
+    "survey_count": 287,
+    "preview": "svgs/TS_524.svg",
+    "downloads": {
+      "svg": "svgs/TS_524.svg",
+      "dxf": "dxfs/TS_524.dxf"
+    },
+    "name_en": "Light Rail or Tram Crossing ahead.",
+    "name_zh_hant": "輕軌或電車道口。",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 85,
+        "text": "ay or trams may be operating. A distance plate of the T.S. 772 type may be used to supplement the main sign, when the distance between the sign and the track does not conform with that recommended in Table 2.2.2.1. T.S. 524 T.S. 527 T.S. 530 (T.C. 262) (T.C. 264) (T.C. 265) Traffic sign 527 may be used to give advance warning to motorists and pedestrians of the presence of "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_524.svg"
+  },
+  {
+    "rank": 95,
+    "code": "TS_177",
+    "survey_count": 281,
+    "preview": "svgs/TS_177.svg",
+    "downloads": {
+      "svg": "svgs/TS_177.svg",
+      "dxf": "dxfs/TS_177.dxf"
+    },
+    "name_en": "100 km/h speed limit",
+    "name_zh_hant": "時速一百公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_177.svg"
+  },
+  {
+    "rank": 96,
+    "code": "TS_711",
+    "survey_count": 281,
+    "preview": "svgs/TS_711.svg",
+    "downloads": {
+      "svg": "svgs/TS_711.svg",
+      "dxf": "dxfs/TS_711.dxf"
+    },
+    "name_en": "Except for access",
+    "name_zh_hant": "前往此區者不在此限",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 99,
+        "text": ") traffic sign 161 – 166 \"Weight Limit\" (viii) traffic sign 168 - 170 \"Axle Weight Limit\" 2.3.5.23 It is recommended that other means, particularly the use of a more specific sign be first investigated before installing T.S. 711 as it can be difficult and time consuming to enforce. In this respect it is not always obvious whether a vehicle requires access or not and therefore either they have to be stopped and checked or followed through. There is also the problem that the term \"access\" can cover a wi"
+      },
+      {
+        "pdf_page": 98,
+        "text": "ry plate, traffic sign 711, provides a relaxation to certain restrictions by permitting vehicles that would normally be prohibited, to enter the road in order gain access to premises. T.S. 711 (T.C. 404 ) August 2026 Edition 2.3.5.22 Traffic sign 711 may be used in conjunction with the following signs : (i) tr"
+      }
+    ],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_711.svg"
+  },
+  {
+    "rank": 97,
+    "code": "TS_2148",
+    "survey_count": 279,
+    "preview": "svgs/TS_2148.svg",
+    "downloads": {
+      "svg": "svgs/TS_2148.svg",
+      "dxf": "dxfs/TS_2148.dxf"
+    },
+    "name_en": "No stopping zone for public light buses ends",
+    "name_zh_hant": "公共小巴不准停車區終止",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 53,
+        "text": " plate “Except General Holidays”, T.S. 838. August 2026 Edition T.S. 2142 T.S. 2144 T.S. 2146 T.S. 2148 (T.C. 167) (T.C. 167) (T.C. 167) (T.C. 168) 2.3.2.100 T.S. 2160, 2162, 2164 and 2166, and T.S. 2151, 2153, 2155 and 2157 are used to demarcate no stopping restriction zone for buses and goods vehicles respectively. Simi"
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_2148.svg"
+  },
+  {
+    "rank": 98,
+    "code": "TS_224",
+    "survey_count": 279,
+    "preview": "svgs/TS_224.svg",
+    "downloads": {
+      "svg": "svgs/TS_224.svg",
+      "dxf": "dxfs/TS_224.dxf"
+    },
+    "name_en": "No entry",
+    "name_zh_hant": "不准駛入",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 56,
+        "text": "adjacent to the relevant entrance or exit. August 2026 Edition T.S. 221 T.S. 222 T.S. 223 T.S. 224 (T.C. 150) (T.C. 151) (T.C. 152) (T.C. 153) 2.3.2.106 T.S. 225 is for use where a main road intersects a cycle track. It should be positioned at the end of the cycle track facing cyclists approaching the main road. "
+      }
+    ],
+    "proposal_method": "Historic Commons bilingual file description; compare with current drawing and official manual before approval",
+    "candidate_source": "https://commons.wikimedia.org/wiki/File:HK_traffic_sign_224.svg"
+  },
+  {
+    "rank": 99,
+    "code": "TS_173",
+    "survey_count": 267,
+    "preview": "svgs/TS_173.svg",
+    "downloads": {
+      "svg": "svgs/TS_173.svg",
+      "dxf": "dxfs/TS_173.dxf"
+    },
+    "name_en": "30 km/h speed limit",
+    "name_zh_hant": "時速三十公里限制",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [],
+    "proposal_method": "Draft read from drawing preview and, where available, official manual; human check required",
+    "candidate_source": "../../site/svgs/TS_173.svg"
+  },
+  {
+    "rank": 100,
+    "code": "TS_710",
+    "survey_count": 249,
+    "preview": "svgs/TS_710.svg",
+    "downloads": {
+      "svg": "svgs/TS_710.svg",
+      "dxf": "dxfs/TS_710.dxf"
+    },
+    "name_en": "Except taxis",
+    "name_zh_hant": "的士除外",
+    "aliases_en": [],
+    "aliases_zh_hant": [],
+    "source": {
+      "url": "https://www.td.gov.hk/filemanager/en/content_5055/V3_08_2026.pdf"
+    },
+    "review_status": "verified",
+    "evidence": [
+      {
+        "pdf_page": 46,
+        "text": " is prohibited. The signs may be used in conjunction with the supplementary plates T.S. 838 “Except General Holidays”, T.S. 860 “Except taxi pick up or drop off” and T.S. 898 “Except taxi drop off” (see paragraph 2.3.2.92 below) only, but not T.S. 710 “Except taxis” or the like. T.S. 897 “Except Sundays and Public Holidays” should no longer be used as stated in paragraph 2.3.5.74. T.S. 2139 indicates the end of a no stopping restriction zone. All the above signs as well as other relevant signs and supplementary p"
+      }
+    ],
+    "proposal_method": "AI draft from official manual excerpts; requires human code and translation check"
+  }
+]

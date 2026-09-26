@@ -307,54 +307,42 @@ h1 {
 
 .tab:focus-visible { outline-offset: -1px; }
 
-/* Accent-filled nav button shared by the gallery and map headers. */
-a.nav-btn {
+/* The same two section links appear on both pages. */
+.section-nav {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: 38px;
-  padding: 8px 18px;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+}
+
+.section-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  color: var(--muted);
   font-size: var(--fs-md);
   font-weight: 600;
+  line-height: 1;
   text-decoration: none;
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+.section-nav a:hover { color: var(--ink); background: var(--accent-soft); }
+
+.section-nav a[aria-current="page"],
+.section-nav a[aria-current="page"]:hover {
   background: var(--accent);
   color: var(--accent-ink);
-  box-shadow: var(--shadow-sm);
-  transition:
-    filter var(--dur) var(--ease-out),
-    box-shadow var(--dur) var(--ease-out),
-    transform var(--dur) var(--ease-out);
 }
 
-a.nav-btn::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  background: currentColor;
-  -webkit-mask: var(--nav-icon) center / contain no-repeat;
-  mask: var(--nav-icon) center / contain no-repeat;
-  transition: transform var(--dur) var(--ease-emph);
-}
-
-a.nav-btn.icon-grid {
-  --nav-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>');
-}
-
-a.nav-btn.icon-map {
-  --nav-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/></svg>');
-}
-
-a.nav-btn:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 34%, transparent);
-  transform: translateY(-1px);
-}
-
-a.nav-btn:hover::before { transform: scale(1.08); }
-
-a.nav-btn:active { transform: translateY(0) scale(.98); filter: brightness(.96); }
+.section-nav a:focus-visible { outline: 3px solid #e69b00; outline-offset: 2px; }
 
 /* Round icon button — currently the theme toggle. The two glyphs are stacked
    and cross-rotate, so the swap reads as one object turning over. */
@@ -655,5 +643,5 @@ a[download].is-downloading {
   .card { opacity: 1; transform: none; }
   .card.in:hover, .card.in:focus-within { transform: none; }
   .card.in:hover .thumb img { transform: none; }
-  a.nav-btn:hover, .to-top:hover.show { transform: none; }
+  .to-top:hover.show { transform: none; }
 }

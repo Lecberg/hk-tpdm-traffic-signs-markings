@@ -26,6 +26,7 @@
   var filtered = [];  // current filter/search result
   var rendered = 0;   // how many of `filtered` are in the DOM
   var cat = "ALL";
+  var exactCodes = null;
   var swapToken = 0;  // guards overlapping tab/search rebuilds
 
   // Deep links: index.html?cat=TS|RM&q=115 preselects a tab and search.
@@ -77,6 +78,7 @@
     var q = normalize(searchBox.value);
     filtered = all.filter(function (e) {
       if (cat !== "ALL" && e.cat !== cat) return false;
+      if (exactCodes) return exactCodes.has(e.code);
       return !q || normalize(e.code).indexOf(q) !== -1;
     });
 
@@ -239,6 +241,7 @@
   tabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
       if (cat === tab.dataset.cat) return;
+      window.dispatchEvent(new Event('svgcad:user-action'));
       cat = tab.dataset.cat;
       tabs.forEach(function (t) {
         var active = t === tab;
@@ -254,7 +257,34 @@
 
   var debounce;
   searchBox.addEventListener("input", function () {
+    window.dispatchEvent(new Event('svgcad:user-action'));
+    exactCodes = null;
     clearTimeout(debounce);
     debounce = setTimeout(function () { apply(true); }, 120);
   });
+
+  window.svgCadGallery = {
+    setExactCodes: function (codes) {
+      if (!Array.isArray(codes) || !codes.length || codes.length > 50 ||
+          codes.some(function (code) { return typeof code !== "string" || !/^(TS|RM)_\d+[A-Z]?$/.test(code); })) return false;
+      exactCodes = new Set(codes.filter(function (code) { return all.some(function (item) { return item.code === code; }); }));
+      if (!exactCodes.size) return false;
+      cat = "ALL";
+      searchBox.value = "";
+      tabs.forEach(function (tab) {
+        var active = tab.dataset.cat === "ALL";
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+      moveIndicator();
+      apply(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return true;
+    }
+  };
+  try {
+    var pendingCodes = JSON.parse(sessionStorage.getItem('svgcad_gallery_codes') || 'null');
+    sessionStorage.removeItem('svgcad_gallery_codes');
+    if (pendingCodes) window.svgCadGallery.setExactCodes(pendingCodes);
+  } catch (error) { sessionStorage.removeItem('svgcad_gallery_codes'); }
 })();

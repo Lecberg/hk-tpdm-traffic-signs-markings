@@ -1,0 +1,14 @@
+.git
+.github
+.env
+.env.*
+__pycache__
+*.pyc
+*.egg-info
+.pytest_cache
+tests
+docs
+examples
+.playwright-cli
+tmp
+*.dxf.bak

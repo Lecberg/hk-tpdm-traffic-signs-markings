@@ -1,0 +1,363 @@
+[
+  {
+    "name_en": "Central District",
+    "name_zh_hant": "中環",
+    "aliases": [
+      "Central",
+      "中區"
+    ],
+    "latitude": 22.281886,
+    "longitude": 114.15936,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Central%20District",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Mong Kok",
+    "name_zh_hant": "旺角",
+    "aliases": [],
+    "latitude": 22.320104,
+    "longitude": 114.171488,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Mong%20Kok",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Tsim Sha Tsui",
+    "name_zh_hant": "尖沙咀",
+    "aliases": [],
+    "latitude": 22.300093,
+    "longitude": 114.172575,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Tsim%20Sha%20Tsui",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Causeway Bay",
+    "name_zh_hant": "銅鑼灣",
+    "aliases": [],
+    "latitude": 22.282302,
+    "longitude": 114.186209,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Causeway%20Bay",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Sha Tin",
+    "name_zh_hant": "沙田",
+    "aliases": [],
+    "latitude": 22.389179,
+    "longitude": 114.19114,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Sha%20Tin",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Tsuen Wan",
+    "name_zh_hant": "荃灣",
+    "aliases": [],
+    "latitude": 22.374444,
+    "longitude": 114.107236,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Tsuen%20Wan",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Tuen Mun",
+    "name_zh_hant": "屯門",
+    "aliases": [],
+    "latitude": 22.397767,
+    "longitude": 113.974237,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Tuen%20Mun",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Yuen Long",
+    "name_zh_hant": "元朗",
+    "aliases": [],
+    "latitude": 22.445904,
+    "longitude": 114.018874,
+    "source": {
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=Yuen%20Long",
+      "coordinate_system": "HK1980 Grid EPSG:2326 converted to WGS84"
+    }
+  },
+  {
+    "name_en": "Yuen Long District",
+    "name_zh_hant": "元朗區",
+    "aliases": [
+      "Yuen Long"
+    ],
+    "latitude": 22.460334,
+    "longitude": 114.025158,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Southern District",
+    "name_zh_hant": "南區",
+    "aliases": [
+      "Southern"
+    ],
+    "latitude": 22.219282,
+    "longitude": 114.225228,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Wan Chai District",
+    "name_zh_hant": "灣仔區",
+    "aliases": [
+      "Wan Chai"
+    ],
+    "latitude": 22.273942,
+    "longitude": 114.181729,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Central and Western District",
+    "name_zh_hant": "中西區",
+    "aliases": [
+      "Central and Western"
+    ],
+    "latitude": 22.274846,
+    "longitude": 114.148693,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Eastern District",
+    "name_zh_hant": "東區",
+    "aliases": [
+      "Eastern"
+    ],
+    "latitude": 22.271729,
+    "longitude": 114.234035,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Islands District",
+    "name_zh_hant": "離島區",
+    "aliases": [
+      "Islands"
+    ],
+    "latitude": 22.226598,
+    "longitude": 113.988318,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Yau Tsim Mong District",
+    "name_zh_hant": "油尖旺區",
+    "aliases": [
+      "Yau Tsim Mong"
+    ],
+    "latitude": 22.307382,
+    "longitude": 114.165464,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Kwun Tong District",
+    "name_zh_hant": "觀塘區",
+    "aliases": [
+      "Kwun Tong"
+    ],
+    "latitude": 22.308651,
+    "longitude": 114.227662,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Sham Shui Po District",
+    "name_zh_hant": "深水埗區",
+    "aliases": [
+      "Sham Shui Po"
+    ],
+    "latitude": 22.33126,
+    "longitude": 114.15931,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Kowloon City District",
+    "name_zh_hant": "九龍城區",
+    "aliases": [
+      "Kowloon City"
+    ],
+    "latitude": 22.321579,
+    "longitude": 114.188743,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Wong Tai Sin District",
+    "name_zh_hant": "黃大仙區",
+    "aliases": [
+      "Wong Tai Sin"
+    ],
+    "latitude": 22.344522,
+    "longitude": 114.202049,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Kwai Tsing District",
+    "name_zh_hant": "葵青區",
+    "aliases": [
+      "Kwai Tsing"
+    ],
+    "latitude": 22.34098,
+    "longitude": 114.104258,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Tsuen Wan District",
+    "name_zh_hant": "荃灣區",
+    "aliases": [
+      "Tsuen Wan"
+    ],
+    "latitude": 22.36507,
+    "longitude": 114.077637,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Tuen Mun District",
+    "name_zh_hant": "屯門區",
+    "aliases": [
+      "Tuen Mun"
+    ],
+    "latitude": 22.378882,
+    "longitude": 113.952799,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Sha Tin District",
+    "name_zh_hant": "沙田區",
+    "aliases": [
+      "Sha Tin"
+    ],
+    "latitude": 22.391597,
+    "longitude": 114.208138,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Sai Kung District",
+    "name_zh_hant": "西貢區",
+    "aliases": [
+      "Sai Kung"
+    ],
+    "latitude": 22.307013,
+    "longitude": 114.37134,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "Tai Po District",
+    "name_zh_hant": "大埔區",
+    "aliases": [
+      "Tai Po"
+    ],
+    "latitude": 22.480969,
+    "longitude": 114.304087,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  },
+  {
+    "name_en": "North District",
+    "name_zh_hant": "北區",
+    "aliases": [
+      "North"
+    ],
+    "latitude": 22.516946,
+    "longitude": 114.213593,
+    "kind": "district_center",
+    "source": {
+      "url": "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json",
+      "name_url": "https://www.had.gov.hk/tc/18_districts/my_map.htm",
+      "method": "point inside official district polygon; reference point, not a boundary"
+    }
+  }
+]
