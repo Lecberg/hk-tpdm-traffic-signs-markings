@@ -18,7 +18,9 @@ The public site needs no installation or API key. It does not include the assist
 
 The Docker version runs on your computer. It has the same Gallery and Map sections. The **Assistant** button appears only in the Map section.
 
-![Assistant showing a sign search result beside the map](docs/assistant-screenshot.png)
+![Assistant map search showing surveyed signs near Mong Kok](docs/assistant-screenshot.png)
+
+This example searches Mong Kok and highlights the surveyed signs within 0.5 km.
 
 The assistant has four tabs:
 
