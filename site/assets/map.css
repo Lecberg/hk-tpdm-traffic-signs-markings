@@ -15,81 +15,84 @@
 }
 
 .map-search-shell {
+  position: relative;
   display: flex;
   align-items: center;
   flex: 1 1 260px;
-  max-width: 420px;
+  max-width: 460px;
   min-width: 0;
 }
 
-.map-search-shell #filter { width: 100%; }
+.map-search-shell #filter { width: 100%; max-width: none; }
 
-.map-search-shell.assistant-search-enabled {
-  max-width: 520px;
+/* ---- search suggestions ---- */
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  max-height: min(60vh, 440px);
+  overflow-y: auto;
+  padding: 6px;
   border: 1px solid var(--line);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
+  animation: suggest-in var(--dur) var(--ease-emph);
 }
 
-.map-search-shell.assistant-search-enabled:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+.search-suggestions[hidden] { display: none; }
+
+@keyframes suggest-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
 }
 
-.map-search-shell.assistant-search-enabled .assistant-choice {
-  flex: none;
-  width: 132px;
-  border-right: 1px solid var(--line);
-  --choice-bg: var(--surface);
-  --choice-ink: var(--ink);
-  --choice-border: var(--line);
-  --choice-accent: var(--accent);
-  --choice-selected: var(--accent-soft);
+.suggest-group {
+  padding: 8px 10px 4px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
 
-.map-search-shell.assistant-search-enabled .assistant-choice summary {
-  min-height: 42px;
-  padding: 0 11px 0 16px;
-  font-size: var(--fs-sm);
-}
-
-.map-search-shell .assistant-choice summary:focus-visible {
-  outline: none;
-}
-
-.map-search-shell.assistant-search-enabled input[type="search"] {
-  flex: 1 1 auto;
-  width: 0;
-  max-width: none;
-  min-width: 0;
-  min-height: 42px;
-  margin: 0;
-  padding: 8px 12px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  background-image: none;
-  box-shadow: none;
-}
-
-.map-search-shell.assistant-search-enabled input[type="search"]:focus {
-  box-shadow: none;
-}
-
-.map-search-shell #map-ask-submit {
-  flex: none;
-  margin-right: 4px;
-  padding: 7px 12px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-  color: var(--accent-ink);
-  font: 600 var(--fs-sm) "Segoe UI", system-ui, sans-serif;
+.suggest-option {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.map-search-shell [hidden] { display: none !important; }
+.suggest-option:hover,
+.suggest-option[aria-selected="true"] { background: var(--accent-soft); }
+
+.suggest-label { font-size: var(--fs-md); font-weight: 600; color: var(--ink); }
+
+.suggest-secondary {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.suggest-option.kind-ask .suggest-label { color: var(--accent); }
+
+.suggest-option.is-status { cursor: default; }
+
+.suggest-option.is-status:hover { background: none; }
+
+.suggest-option.is-status .suggest-label {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
 
 .map-status-row {
   display: flex;
@@ -128,7 +131,14 @@
 
 .home-link:active { transform: scale(.96); }
 
-#map { flex: 1; min-height: 0; background: var(--bg); }
+.map-body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+#map { flex: 1; min-width: 0; min-height: 0; background: var(--bg); }
 
 /* ---- cluster bubbles (zoom < 15) ---- */
 
@@ -491,6 +501,559 @@
 
 .leaflet-control-attribution a { color: var(--accent); }
 
+/* ---- filter chips (status row) ---- */
+
+.scope-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.scope-chips[hidden] { display: none; }
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 28px;
+  padding: 0 3px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  animation: chip-in var(--dur) var(--ease-emph);
+}
+
+@keyframes chip-in {
+  from { opacity: 0; transform: scale(.92); }
+  to { opacity: 1; transform: none; }
+}
+
+.chip-label { max-width: 220px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.chip-place .chip-label::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--sign-red);
+  vertical-align: 1px;
+}
+
+.chip-count {
+  padding: 0 12px;
+  border-color: transparent;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 500;
+  box-shadow: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip-remove {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.chip-remove:hover { background: var(--surface-2); color: var(--ink); }
+
+.chip-remove svg,
+.map-panel-close svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.chip-radius { padding: 0; }
+
+.chip-radius summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 26px;
+  padding: 0 11px 0 12px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.chip-radius summary::-webkit-details-marker { display: none; }
+
+.chip-radius summary::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.chip-radius[open] summary::after { transform: translateY(1px) rotate(225deg); }
+
+.chip-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1500;
+  width: max-content;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Segmented radius control: the chip menu and the panel share it. */
+.chip-menu,
+.radius-picker {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+}
+
+.chip-menu button,
+.radius-picker button {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 11px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--muted);
+  font: 600 var(--fs-sm) "Segoe UI", system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.chip-menu button:hover,
+.radius-picker button:hover { color: var(--ink); }
+
+.chip-menu button[aria-pressed="true"],
+.radius-picker button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.radius-picker button.is-custom:disabled { cursor: default; opacity: 1; }
+
+/* ---- results panel ----
+   Docked beside the map on wide screens (the map narrows); a bottom sheet over
+   the map on narrow ones, positioned by map-panel.js. */
+
+.map-panel {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: 384px;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  animation: panel-in var(--dur-slow) var(--ease-emph);
+}
+
+.map-panel[hidden] { display: none; }
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.map-panel-grip { display: none; }
+
+.map-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 14px 14px 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.map-panel-title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: 650;
+}
+
+.map-panel-tools { display: flex; align-items: center; gap: 6px; }
+
+.map-panel-tools:empty { display: none; }
+
+.map-panel-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.map-panel-close:hover { background: var(--surface-2); color: var(--ink); }
+
+.map-panel-close svg { width: 16px; height: 16px; }
+
+.map-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 20px 28px;
+}
+
+.map-panel-slot:empty { display: none; }
+
+.map-panel-slot:not(:empty) + .panel-results:not(:empty) {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.map-panel-footer { flex: none; padding: 12px 16px 14px; border-top: 1px solid var(--line); }
+
+.map-panel-footer:empty { display: none; }
+
+.map-panel-reopen {
+  position: absolute;
+  right: 14px;
+  bottom: 34px;
+  z-index: 1000;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 var(--fs-sm) "Segoe UI", system-ui, sans-serif;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  animation: chip-in var(--dur) var(--ease-emph);
+}
+
+.map-panel-reopen[hidden] { display: none; }
+
+/* results */
+
+.result-head { position: relative; padding-right: 86px; }
+
+.result-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.result-place {
+  margin: 2px 0 0;
+  font-size: 1.3rem;
+  font-weight: 650;
+  letter-spacing: -.01em;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.result-sub { margin: 3px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+
+.result-share,
+.show-more,
+.drawing-filter,
+.drawing-download {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--accent);
+  font: 600 var(--fs-xs) "Segoe UI", system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.result-share:hover,
+.show-more:hover,
+.drawing-filter:hover,
+.drawing-download:hover { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+
+.result-share { position: absolute; top: 0; right: 0; }
+
+.radius-picker { margin-top: 16px; }
+
+.result-count {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 18px 0 2px;
+}
+
+.result-count strong {
+  font-size: 2.5rem;
+  font-weight: 650;
+  letter-spacing: -.035em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-count span { color: var(--muted); font-size: var(--fs-sm); }
+
+.result-filter { margin: 6px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.result-warning {
+  margin: 12px 0 0;
+  padding: 9px 12px;
+  border-left: 3px solid var(--sign-red);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--sign-red) 9%, var(--surface));
+  font-size: var(--fs-sm);
+}
+
+.result-loading,
+.result-empty { margin: 14px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+
+.result-breakdown h4 {
+  margin: 22px 0 6px;
+  font-size: var(--fs-sm);
+  font-weight: 650;
+}
+
+.result-breakdown h4 span { color: var(--muted); font-weight: 400; }
+
+.drawing-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+
+.drawing-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-areas: "thumb text count" "thumb actions actions";
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawing-thumb {
+  grid-area: thumb;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 5px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.drawing-thumb img { max-width: 100%; max-height: 100%; }
+
+.drawing-text { grid-area: text; min-width: 0; }
+
+.drawing-text strong {
+  display: block;
+  overflow: hidden;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.drawing-text span { display: block; color: var(--muted); font-size: var(--fs-xs); }
+
+.drawing-count {
+  grid-area: count;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawing-actions { grid-area: actions; display: flex; flex-wrap: wrap; gap: 6px; }
+
+.show-more { margin-top: 12px; }
+
+.result-notes { margin-top: 20px; color: var(--muted); font-size: var(--fs-sm); }
+
+.result-notes summary { cursor: pointer; font-weight: 600; }
+
+.result-notes p { margin: 8px 0 0; }
+
+.result-notes a { color: var(--accent); }
+
+/* ---- on-map controls: radius handle, choice pins, context menu ---- */
+
+.radius-handle { background: none; border: none; }
+
+.radius-handle span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--sign-red);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(16, 24, 40, .45);
+  cursor: ew-resize;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.radius-handle:hover span,
+.radius-handle:focus-visible span { transform: scale(1.18); }
+
+.radius-tip {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 .72rem "Segoe UI", system-ui, sans-serif;
+  box-shadow: var(--shadow-md);
+}
+
+.radius-tip::before { display: none; }
+
+.choice-pin { background: none; border: none; }
+
+.choice-pin span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 4px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 700 13px "Segoe UI", system-ui, sans-serif;
+  box-shadow: var(--shadow-md);
+  transform: rotate(-45deg);
+  cursor: pointer;
+}
+
+.map-context-popup .leaflet-popup-content { margin: 6px; }
+
+.map-context button {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 var(--fs-sm) "Segoe UI", system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sign-popup .popup-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.sign-popup .popup-actions button,
+.sign-popup .popup-actions a {
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: 600 .8rem "Segoe UI", system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sign-popup .popup-actions button:hover,
+.sign-popup .popup-actions a:hover { text-decoration: underline; }
+
+/* ---- narrow screens: the panel becomes a bottom sheet ---- */
+
+@media (max-width: 720px) {
+  .map-header { padding: 16px 14px 12px; }
+
+  .map-header .brand { margin-bottom: 10px; }
+
+  .map-header .subtitle-wrap { display: none; }
+
+  .map-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: auto;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: 0 -10px 30px -12px rgba(16, 24, 40, .35);
+    animation: none;
+    will-change: transform;
+  }
+
+  .map-panel.is-animating { transition: transform var(--dur-slow) var(--ease-emph); }
+
+  .map-panel-grip {
+    display: block;
+    flex: none;
+    padding: 8px 0 2px;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .map-panel-grip::before {
+    content: '';
+    display: block;
+    width: 38px;
+    height: 4px;
+    margin: 0 auto;
+    border-radius: 2px;
+    background: var(--line-strong);
+  }
+
+  .map-panel-head { padding-top: 6px; touch-action: none; }
+
+  .map-panel-body { padding: 14px 16px 24px; }
+
+  .map-panel-reopen { bottom: 26px; }
+
+  .search-suggestions { max-height: 50vh; }
+}
+
 /* ---- dark mode ----
    Everything above is variable-driven, so only the tile dimming and the icons
    with colours baked into their data URIs need a dark variant. The two blocks
@@ -533,5 +1096,11 @@
 @media (prefers-reduced-motion: reduce) {
   .cluster-bubble:hover,
   .sign-marker:hover .sign-plate,
-  .home-link:hover { transform: none; }
+  .home-link:hover,
+  .radius-handle:hover span { transform: none; }
+
+  .map-panel,
+  .chip,
+  .map-panel-reopen,
+  .search-suggestions { animation: none; }
 }

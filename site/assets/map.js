@@ -5,6 +5,10 @@
  *
  * Zoom tiers: 10-12 cluster bubbles from per-cell counts (no data fetch),
  * 13-14 cluster bubbles binned from real points, 15-16 dots, 17+ sign SVGs.
+ *
+ * The search scope (a circle around a place, a drawing code, or both) lives
+ * here too; map-search.js and map-panel.js drive it through window.svgCadMap
+ * and listen for `svgcad:scope-changed`.
  */
 (function () {
   'use strict';
@@ -120,8 +124,13 @@
 
   map.attributionControl.addAttribution('Signs: <a href="https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2">Transport Department</a>');
 
+
   var statusEl = document.getElementById('status');
-  var filterEl = document.getElementById('filter');
+  var clearScopeEl = document.getElementById('clear-scope');
+
+  var HK = { south: 22.1, west: 113.8, north: 22.65, east: 114.5 };
+  var MIN_RADIUS = 0.05, MAX_RADIUS = 5;
+  var EXACT_CODE = /^TS\d+[A-Z]?$/;
 
   var cellSize = 0.05;
   var cellIndex = {};          // "x_y" -> sign count
@@ -133,32 +142,286 @@
   var signLayer = L.layerGroup().addTo(map);
   var clusterLayer = L.layerGroup().addTo(map);
   var queryLayer = L.layerGroup().addTo(map);
-  var activeQuery = null;
-  var selectedPoint = null;
-  var selectedLayer = L.layerGroup().addTo(map);
-  var assistantApplying = false;
+  var pinLayer = L.layerGroup().addTo(map);
   var signMarkers = {};        // marker key -> Leaflet marker (diffed on render)
-  var filterText = '';
   var fatalStatus = false;     // once set, render() must not overwrite it
-  var clearScopeEl = document.getElementById('clear-scope');
+  var applying = false;        // true while the map moves itself
+  var padding = { right: 0, bottom: 0 };
+
+  // ---- search scope ---------------------------------------------------------
+  // Two independent filters, both optional:
+  //   area: {latitude, longitude, radius_km, place}   — signs within a circle
+  //   code: {text, exact, source}                     — a drawing code
+  // An exact code ("TS101") matches one drawing; anything shorter ("115") is a
+  // substring match, as the plain code filter has always been. `source` says
+  // who owns the code: 'box' while it is just what is typed in the search box,
+  // 'chip' once it has been committed (a place was picked, a drawing chosen).
+
+  var area = null;
+  var code = null;
+  var scopeToken = 0;          // drops counts that finish after a newer change
+
+  function datasetCode(text) {
+    // "TS 101", "ts_101", "TS-101A" -> "TS101A"; anything else unchanged.
+    var compact = String(text || '').replace(/[\s_-]+/g, '').toUpperCase();
+    return EXACT_CODE.test(compact) ? compact : null;
+  }
+
+  function codeMatcher() {
+    if (!code) return null;
+    if (code.exact) {
+      var wanted = code.text;
+      return function (c) { return c.toUpperCase() === wanted; };
+    }
+    var part = code.text.toLowerCase();
+    return function (c) { return c.toLowerCase().indexOf(part) !== -1; };
+  }
+
+  function getScope() {
+    return {
+      area: area ? { latitude: area.latitude, longitude: area.longitude,
+                     radius_km: area.radius_km, place: area.place } : null,
+      code: code ? { text: code.text, exact: code.exact, source: code.source } : null
+    };
+  }
+
+  function hasScope() { return !!(area || code); }
 
   function syncScopeButton() {
-    clearScopeEl.hidden = !activeQuery && !filterEl.value.trim();
+    clearScopeEl.hidden = !hasScope();
   }
 
-  function clearScope() {
-    if (!activeQuery && !filterEl.value.trim()) return;
-    clearTimeout(filterTimer);
-    activeQuery = null;
-    filterText = '';
-    filterEl.value = '';
-    queryLayer.clearLayers();
+  function emitScope(result, loading) {
+    window.dispatchEvent(new CustomEvent('svgcad:scope-changed', {
+      detail: { scope: getScope(), result: result || null, loading: !!loading }
+    }));
+  }
+
+  // Everything that changes the scope ends here: redraw, update the URL,
+  // announce the change, then count the area (if any) and announce again.
+  function scopeChanged(opts) {
+    opts = opts || {};
+    var token = ++scopeToken;
     syncScopeButton();
+    drawArea();
+    if (!opts.fromHistory) writeUrl(opts.push !== false);
     window.dispatchEvent(new Event('svgcad:user-action'));
-    window.dispatchEvent(new Event('svgcad:scope-cleared'));
     clearSigns();
     refresh();
+    if (!area) { emitScope(null, false); return; }
+    emitScope(null, true);
+    queryRadius({ latitude: area.latitude, longitude: area.longitude,
+                  radius_km: area.radius_km, code: code })
+      .then(function (result) {
+        if (token === scopeToken) emitScope(result, false);
+      });
   }
+
+  function validArea(a) {
+    return a && Number.isFinite(a.latitude) && Number.isFinite(a.longitude) &&
+      a.latitude >= HK.south && a.latitude <= HK.north &&
+      a.longitude >= HK.west && a.longitude <= HK.east &&
+      Number.isFinite(a.radius_km) && a.radius_km >= 0.01 && a.radius_km <= MAX_RADIUS;
+  }
+
+  function cleanPlace(place) {
+    if (!place || typeof place !== 'object') return null;
+    var en = typeof place.name_en === 'string' ? place.name_en.slice(0, 160) : '';
+    var zh = typeof place.name_zh_hant === 'string' ? place.name_zh_hant.slice(0, 160) : '';
+    if (!en && !zh) return null;
+    return { name_en: en || zh, name_zh_hant: zh || en,
+             kind: typeof place.kind === 'string' ? place.kind : null,
+             source: place.source && typeof place.source.url === 'string' ? { url: place.source.url } : null };
+  }
+
+  // Set or replace the search area. `fit` (default true) frames the circle.
+  function setArea(next, opts) {
+    opts = opts || {};
+    if (!validArea(next)) return false;
+    area = { latitude: next.latitude, longitude: next.longitude,
+             radius_km: Math.round(next.radius_km * 1000) / 1000,
+             place: cleanPlace(next.place) };
+    clearChoicePins();
+    if (opts.fit !== false) fitArea();
+    scopeChanged(opts);
+    return true;
+  }
+
+  function clearArea(opts) {
+    if (!area) return false;
+    area = null;
+    clearChoicePins();
+    scopeChanged(opts);
+    return true;
+  }
+
+  function setRadius(km, opts) {
+    if (!area) return false;
+    return setArea(Object.assign({}, area, { radius_km: km }), Object.assign({ fit: false }, opts));
+  }
+
+  // text: null clears. Exact codes are normalised ("TS 101" -> "TS101").
+  function setCode(text, opts) {
+    opts = opts || {};
+    var source = opts.source || 'chip';
+    var raw = String(text == null ? '' : text).trim();
+    if (!raw) {
+      if (!code || (opts.onlySource && code.source !== opts.onlySource)) return false;
+      code = null;
+    } else {
+      var exact = datasetCode(raw);
+      var next = exact ? { text: exact, exact: true, source: source }
+                       : { text: raw.toLowerCase().slice(0, 40), exact: false, source: source };
+      if (code && code.text === next.text && code.exact === next.exact && code.source === next.source) return true;
+      code = next;
+    }
+    scopeChanged(opts);
+    return true;
+  }
+
+  function clearScope(opts) {
+    if (!hasScope()) return;
+    area = null;
+    code = null;
+    clearChoicePins();
+    scopeChanged(opts);
+    window.dispatchEvent(new Event('svgcad:scope-cleared'));
+  }
+
+  // Backwards-compatible entry point for the assistant: one call sets the
+  // area and an exact code together.
+  function applyQuery(action, opts) {
+    if (!validArea(action)) return false;
+    if (action.code && !EXACT_CODE.test(action.code)) return false;
+    code = action.code ? { text: action.code, exact: true, source: 'chip' } : null;
+    return setArea({ latitude: action.latitude, longitude: action.longitude,
+                     radius_km: action.radius_km, place: action.place }, opts);
+  }
+
+  // ---- area drawing: circle + radius handle ---------------------------------
+
+  var circle = null, handle = null;
+
+  function edgePoint(lat, lon, km) {
+    return [lat, lon + km / (111.32 * Math.cos(lat * Math.PI / 180))];
+  }
+
+  function niceRadius(km) {
+    km = Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, km));
+    return km < 1 ? Math.round(km * 20) / 20 : Math.round(km * 10) / 10;
+  }
+
+  function formatKm(km) {
+    return km < 1 ? Math.round(km * 1000) + ' m' : (Math.round(km * 10) / 10) + ' km';
+  }
+
+  function drawArea() {
+    queryLayer.clearLayers();
+    circle = handle = null;
+    if (!area) return;
+    circle = L.circle([area.latitude, area.longitude], {
+      radius: area.radius_km * 1000, color: '#c1121f', weight: 2,
+      fillColor: '#c1121f', fillOpacity: 0.07, interactive: false
+    }).addTo(queryLayer);
+    L.circleMarker([area.latitude, area.longitude], {
+      radius: 5, color: '#ffffff', weight: 2, fillColor: '#c1121f', fillOpacity: 1, interactive: false
+    }).addTo(queryLayer);
+    handle = L.marker(edgePoint(area.latitude, area.longitude, area.radius_km), {
+      draggable: true, keyboard: true, title: 'Drag to change the search radius',
+      icon: L.divIcon({ className: 'radius-handle', iconSize: [18, 18], iconAnchor: [9, 9],
+                        html: '<span></span>' })
+    }).addTo(queryLayer);
+    handle.bindTooltip(formatKm(area.radius_km), { permanent: true, direction: 'right',
+                                                   offset: [10, 0], className: 'radius-tip' });
+    handle.on('drag', function (e) {
+      var km = niceRadius(map.distance([area.latitude, area.longitude], e.target.getLatLng()) / 1000);
+      circle.setRadius(km * 1000);
+      handle.setTooltipContent(formatKm(km));
+    });
+    handle.on('dragend', function (e) {
+      var km = niceRadius(map.distance([area.latitude, area.longitude], e.target.getLatLng()) / 1000);
+      setRadius(km);
+    });
+  }
+
+  function fitArea() {
+    if (!area) return;
+    var b = L.latLng(area.latitude, area.longitude).toBounds(area.radius_km * 2000);
+    applying = true;
+    map.fitBounds(b, { paddingTopLeft: [24, 24],
+                       paddingBottomRight: [24 + padding.right, 24 + padding.bottom],
+                       maxZoom: 17, animate: false });
+    applying = false;
+  }
+
+  // ---- choice pins (assistant asks "which place?") --------------------------
+
+  function clearChoicePins() { pinLayer.clearLayers(); }
+
+  function showChoicePins(choices, onPick) {
+    clearChoicePins();
+    var points = [];
+    (choices || []).forEach(function (choice, i) {
+      if (!Number.isFinite(choice.latitude) || !Number.isFinite(choice.longitude)) return;
+      var marker = L.marker([choice.latitude, choice.longitude], {
+        title: choice.label, keyboard: true,
+        icon: L.divIcon({ className: 'choice-pin', iconSize: [28, 28], iconAnchor: [14, 28],
+                          html: '<span>' + (i + 1) + '</span>' })
+      }).addTo(pinLayer);
+      marker.bindTooltip(choice.label, { direction: 'top', offset: [0, -26], className: 'sign-tip' });
+      marker.on('click', function () { onPick(choice); });
+      points.push([choice.latitude, choice.longitude]);
+    });
+    if (points.length) {
+      applying = true;
+      map.fitBounds(L.latLngBounds(points).pad(0.3), {
+        paddingBottomRight: [padding.right, padding.bottom], maxZoom: 15, animate: false });
+      applying = false;
+    }
+  }
+
+  // ---- URL state --------------------------------------------------------------
+  // ?lat=&lng=&r=&code=&place= next to the #zoom/lat/lng view hash. A new search
+  // pushes a history entry so Back steps through searches.
+
+  function writeUrl(push) {
+    var params = new URLSearchParams(location.search);
+    ['lat', 'lng', 'r', 'code', 'place'].forEach(function (k) { params.delete(k); });
+    if (area) {
+      // Full place precision, so a shared link reproduces the exact count.
+      params.set('lat', String(Number(area.latitude.toFixed(7))));
+      params.set('lng', String(Number(area.longitude.toFixed(7))));
+      params.set('r', String(area.radius_km));
+      if (area.place) params.set('place', area.place.name_en);
+    }
+    if (code && code.source === 'chip') params.set('code', code.text);
+    var query = params.toString();
+    var url = location.pathname + (query ? '?' + query : '') + location.hash;
+    if (url === location.pathname + location.search + location.hash) return;
+    if (push) history.pushState({ svgcad: true }, '', url);
+    else history.replaceState({ svgcad: true }, '', url);
+  }
+
+  function readUrl(opts) {
+    var params = new URLSearchParams(location.search);
+    var lat = Number(params.get('lat')), lng = Number(params.get('lng')), r = Number(params.get('r'));
+    var codeText = params.get('code');
+    var nextArea = params.has('lat') && validArea({ latitude: lat, longitude: lng, radius_km: r })
+      ? { latitude: lat, longitude: lng, radius_km: r,
+          place: params.get('place') ? { name_en: params.get('place'), name_zh_hant: params.get('place') } : null }
+      : null;
+    code = codeText ? (datasetCode(codeText)
+      ? { text: datasetCode(codeText), exact: true, source: 'chip' }
+      : { text: codeText.toLowerCase().slice(0, 40), exact: false, source: 'chip' }) : null;
+    if (nextArea) return setArea(nextArea, opts);
+    area = null;
+    scopeChanged(opts);
+    return !!code;
+  }
+
+  window.addEventListener('popstate', function () {
+    readUrl({ fromHistory: true });
+  });
 
   // ---- data loading -------------------------------------------------------
 
@@ -188,7 +451,7 @@
   // Cropped marker icons (built by scripts/build_map_icons.py) and their
   // width/height aspect ratios. Losing these is survivable: markers fall back
   // to plain dots, so it only warrants a console warning.
-  fetchJson('map-icons/index.json')
+  var iconsReady = fetchJson('map-icons/index.json')
     .then(function (aspects) {
       iconAspect = aspects;
       iconAvailable = new Set(Object.keys(aspects));
@@ -212,9 +475,8 @@
   function loadCell(key) {
     if (cellCache[key]) return Promise.resolve(cellCache[key]);
     if (!cellPending[key]) {
-      // One automatic retry absorbs a transient network blip. Cell sizes are
-      // very uneven — Kowloon's is 890 KB against a 36 KB median — so the
-      // dense areas are by far the likeliest to fail.
+      // One automatic retry absorbs a transient network blip; the dense,
+      // larger files are the likeliest to fail.
       //
       // Either way the pending entry is dropped when it settles: caching a
       // rejected promise here would make every later loadCell() replay that
@@ -238,16 +500,12 @@
     return cellPending[key];
   }
 
-  // Names of the files covering the current view. Usually one per cell, but a
+  // Names of the files covering a lat/lng box. Usually one per cell, but a
   // cell dense enough to have been split (see scripts/build_map_data.py)
-  // contributes only the parts the view actually touches — Kowloon's cell is
+  // contributes only the parts the box actually touches — Kowloon's cell is
   // 26k signs, and pulling all of it to look at one junction is what used to
   // make that area so slow and failure-prone.
-  //
-  // Padded to match visibleRows(): a row in that margin is drawn, so its file
-  // has to have been fetched.
-  function visibleCellKeys() {
-    var b = map.getBounds().pad(0.05);
+  function cellKeysForBounds(b) {
     var keys = [];
     var x0 = Math.floor(b.getWest() / cellSize), x1 = Math.floor(b.getEast() / cellSize);
     var y0 = Math.floor(b.getSouth() / cellSize), y1 = Math.floor(b.getNorth() / cellSize);
@@ -275,19 +533,23 @@
     return keys;
   }
 
+  // Padded to match visibleRows(): a row in that margin is drawn, so its file
+  // has to have been fetched.
+  function visibleCellKeys() {
+    return cellKeysForBounds(map.getBounds().pad(0.05));
+  }
+
   function visibleRows() {
     var bounds = map.getBounds().pad(0.05);
+    var match = codeMatcher();
     var rows = [];
     visibleCellKeys().forEach(function (key) {
       var cell = cellCache[key];
       if (!cell) return;
       for (var i = 0; i < cell.length; i++) {
         var r = cell[i];
-        if (activeQuery) {
-          if (activeQuery.code && r[0].toUpperCase() !== activeQuery.code) continue;
-          if (distanceKm(activeQuery.latitude, activeQuery.longitude, r[2], r[1]) >
-              activeQuery.radius_km) continue;
-        } else if (filterText && r[0].toLowerCase().indexOf(filterText) === -1) continue;
+        if (match && !match(r[0])) continue;
+        if (area && distanceKm(area.latitude, area.longitude, r[2], r[1]) > area.radius_km) continue;
         if (bounds.contains([r[2], r[1]])) rows.push(r);
       }
     });
@@ -299,6 +561,45 @@
     var dp = p2 - p1, dl = (bLon - aLon) * Math.PI / 180;
     var h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
     return 6371.0088 * 2 * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  // Count every surveyed sign within a circle, not just the ones in view. The
+  // same box-then-haversine method as MapData.query in src/svg2dxf/server/geo.py,
+  // so the public map and the Docker backend report the same numbers.
+  // q.code may be a scope code object ({text, exact}) or an exact code string.
+  function queryRadius(q) {
+    if (!validArea(q)) return Promise.reject(new Error('Invalid search area'));
+    var c = typeof q.code === 'string' ? { text: datasetCode(q.code) || q.code, exact: !!datasetCode(q.code) } : q.code;
+    var match = c ? (c.exact
+      ? function (x) { return x.toUpperCase() === c.text; }
+      : function (x) { return x.toLowerCase().indexOf(c.text.toLowerCase()) !== -1; }) : null;
+    var latDelta = q.radius_km / 110.5;
+    var lonDelta = q.radius_km / (111.3 * Math.cos(q.latitude * Math.PI / 180));
+    var box = L.latLngBounds([q.latitude - latDelta, q.longitude - lonDelta],
+                             [q.latitude + latDelta, q.longitude + lonDelta]);
+    return indexReady.then(function () {
+      var keys = cellKeysForBounds(box);
+      var missing = [];
+      return Promise.all(keys.map(function (key) {
+        return loadCell(key).catch(function () { missing.push(key); return []; });
+      })).then(function (cells) {
+        var counts = {}, total = 0;
+        cells.forEach(function (cell) {
+          for (var i = 0; i < cell.length; i++) {
+            var r = cell[i];
+            if (r[2] < box.getSouth() || r[2] > box.getNorth() ||
+                r[1] < box.getWest() || r[1] > box.getEast()) continue;
+            if (match && !match(r[0])) continue;
+            if (distanceKm(q.latitude, q.longitude, r[2], r[1]) > q.radius_km) continue;
+            var k = r[0].toUpperCase();
+            counts[k] = (counts[k] || 0) + 1;
+            total++;
+          }
+        });
+        return { matched_total: total, code_counts: counts,
+                 data_complete: !missing.length, missing_cells: missing.sort() };
+      });
+    });
   }
 
   // ---- cluster bubbles (zoom < 15) ---------------------------------------
@@ -327,22 +628,44 @@
     return marker;
   }
 
+  // Per drawing, how many signs each cell holds (site/map-codes.json, built by
+  // scripts/build_site_indexes.py). Fetched only once an exact code is
+  // filtered, so the low zooms can show that one drawing across Hong Kong.
+  var codeCells = null, codeCellsPending = null;
+
+  function codeCellsFor(c) {
+    if (codeCells) return codeCells[c] || {};
+    if (!codeCellsPending) {
+      codeCellsPending = fetchJson('map-codes.json')
+        .then(function (data) { codeCells = data; refresh(); })
+        .catch(function (err) { console.warn('Per-drawing counts unavailable:', err.message); });
+    }
+    return null;
+  }
+
   // Zoom 10-12: one bubble per data cell, from precomputed counts.
   function renderCellBubbles() {
     clusterLayer.clearLayers();
     var b = map.getBounds().pad(0.1);
+    var perCode = code && code.exact ? codeCellsFor(code.text) : null;
+    var counts = perCode || cellIndex;
     var total = 0;
-    Object.keys(cellIndex).forEach(function (key) {
+    Object.keys(counts).forEach(function (key) {
       var xy = key.split('_');
       var lon = (Number(xy[0]) + 0.5) * cellSize;
       var lat = (Number(xy[1]) + 0.5) * cellSize;
       if (!b.contains([lat, lon])) return;
-      total += cellIndex[key];
-      clusterLayer.addLayer(bubbleMarker(lat, lon, cellIndex[key]));
+      total += counts[key];
+      clusterLayer.addLayer(bubbleMarker(lat, lon, counts[key]));
     });
+    if (perCode) {
+      setStatus(total ? compactCount(total) + ' ' + siteCode(code.text) + ' signs in view'
+                      : 'No ' + siteCode(code.text) + ' signs here');
+      return;
+    }
     setStatus(total
       ? compactCount(total) + ' signs in view' +
-        (filterText ? ' — zoom in to apply the filter' : '')
+        (code ? ' — zoom in to apply the filter' : '')
       : '');
   }
 
@@ -367,26 +690,26 @@
     });
     setStatus(rows.length
       ? compactCount(rows.length) + ' signs in view'
-      : (filterText ? 'No signs match "' + filterText + '" here' : ''));
+      : (code ? 'No signs match "' + siteCode(code.text) + '" here' : ''));
   }
 
   // ---- sign markers (zoom >= 15) ------------------------------------------
 
-  function siteCode(code) {
+  function siteCode(c) {
     // dataset "TS115" -> site "TS_115"
-    return code.indexOf('TS') === 0 ? 'TS_' + code.slice(2) : code;
+    return c.toUpperCase().indexOf('TS') === 0 ? 'TS_' + c.slice(2).toUpperCase() : c;
   }
 
   function iconSize(zoom) {
     return zoom >= 19 ? 34 : zoom >= 18 ? 28 : 22;
   }
 
-  function popupHtml(code, angle) {
-    var sc = siteCode(code);
+  function popupHtml(c, angle, lat, lon) {
+    var sc = siteCode(c);
     var hasIcon = iconAvailable && iconAvailable.has(sc);
     var h = '<div class="sign-popup">';
-    if (hasIcon) h += '<img src="map-icons/' + sc + '.svg" alt="' + code + '">';
-    h += '<div class="code">' + code + '</div>';
+    if (hasIcon) h += '<img src="map-icons/' + sc + '.svg" alt="' + c + '">';
+    h += '<div class="code">' + c + '</div>';
     h += '<div class="meta">' + (angle != null
       ? 'Facing ' + angle + '&deg; <span class="dir" style="transform:rotate(' +
         angle + 'deg)">&#9650;</span>'
@@ -395,13 +718,20 @@
       h += '<div class="dl"><a href="svgs/' + sc + '.svg" download>SVG</a>' +
            '<a href="dxfs/' + sc + '.dxf" download>DXF</a></div>';
     }
+    if (EXACT_CODE.test(c)) {
+      h += '<div class="popup-actions">' +
+           '<button type="button" data-popup-action="nearby" data-code="' + c +
+           '" data-lat="' + lat + '" data-lng="' + lon + '">Signs like this nearby</button>' +
+           (hasIcon ? '<a href="index.html?q=' + sc + '">Open in gallery</a>' : '') +
+           '</div>';
+    }
     h += '</div>';
     return h;
   }
 
   function makeMarker(r, useIcons, zoom) {
-    var code = r[0], lon = r[1], lat = r[2], angle = r[3];
-    var sc = siteCode(code);
+    var c = r[0], lon = r[1], lat = r[2], angle = r[3];
+    var sc = siteCode(c);
     var marker;
     if (useIcons && iconAvailable && iconAvailable.has(sc)) {
       var size = iconSize(zoom);
@@ -431,8 +761,8 @@
         fillOpacity: 0.9
       });
     }
-    marker.bindPopup(popupHtml(code, angle));
-    marker.bindTooltip(code, { direction: 'top', className: 'sign-tip' });
+    marker.bindPopup(popupHtml(c, angle, lat, lon));
+    marker.bindTooltip(c, { direction: 'top', className: 'sign-tip' });
     return marker;
   }
 
@@ -467,7 +797,7 @@
 
     setStatus(rows.length
       ? rows.length.toLocaleString() + ' sign' + (rows.length === 1 ? '' : 's') + ' in view'
-      : (filterText ? 'No signs match "' + filterText + '" here' : ''));
+      : (code ? 'No signs match "' + siteCode(code.text) + '" here' : ''));
   }
 
   function clearSigns() {
@@ -479,7 +809,7 @@
 
   function render() {
     var zoom = map.getZoom();
-    if (activeQuery && zoom < DOT_ZOOM) {
+    if (area && zoom < DOT_ZOOM) {
       clearSigns();
       renderBinnedBubbles();
       return;
@@ -496,7 +826,7 @@
   }
 
   function refresh() {
-    if (map.getZoom() < BIN_ZOOM && !activeQuery) { render(); return; }
+    if (map.getZoom() < BIN_ZOOM && !area) { render(); return; }
     var missing = visibleCellKeys().filter(function (k) { return !cellCache[k]; });
     if (!missing.length) { render(); return; }
     setStatus('Loading signs…');
@@ -526,79 +856,84 @@
 
   map.on('moveend zoomend', function () {
     var c = map.getCenter();
-    history.replaceState(null, '',
+    // Fragment-only URL keeps the ?search params; keep the history state too.
+    history.replaceState(history.state, '',
       '#' + map.getZoom() + '/' + c.lat.toFixed(5) + '/' + c.lng.toFixed(5));
     refresh();
+  });
+
+  map.on('movestart', function () {
+    if (!applying) window.dispatchEvent(new Event('svgcad:user-action'));
+  });
+
+  clearScopeEl.addEventListener('click', function () { clearScope(); });
+
+  // Right-click (long-press on touch) offers a search around that point.
+  map.on('contextmenu', function (e) {
+    var menu = L.DomUtil.create('div', 'map-context');
+    var btn = L.DomUtil.create('button', '', menu);
+    btn.type = 'button';
+    btn.textContent = 'Search around here';
+    var popup = L.popup({ className: 'map-context-popup', closeButton: false, offset: [0, -4] })
+      .setLatLng(e.latlng).setContent(menu).openOn(map);
+    L.DomEvent.on(btn, 'click', function () {
+      map.closePopup(popup);
+      setArea({ latitude: e.latlng.lat, longitude: e.latlng.lng,
+                radius_km: area ? area.radius_km : 0.5,
+                place: { name_en: 'Selected point', name_zh_hant: '已選位置', kind: 'map_point' } });
+    });
+    setTimeout(function () { btn.focus(); }, 0);
+  });
+
+  // Popup buttons are plain HTML strings, so handle them by delegation.
+  map.getContainer().addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-popup-action="nearby"]');
+    if (!btn) return;
+    var lat = Number(btn.dataset.lat), lng = Number(btn.dataset.lng);
+    map.closePopup();
+    code = { text: btn.dataset.code, exact: true, source: 'chip' };
+    setArea({ latitude: lat, longitude: lng, radius_km: 0.5,
+              place: { name_en: 'Near ' + siteCode(btn.dataset.code),
+                       name_zh_hant: siteCode(btn.dataset.code) + ' 附近', kind: 'map_point' } });
   });
 
   // Debug/console handle (also lets tests drive the map).
   window._signsMap = map;
 
-  var filterTimer;
-  filterEl.addEventListener('input', function () {
-    var hadQuery = !!activeQuery;
-    queryLayer.clearLayers();
-    activeQuery = null;
-    syncScopeButton();
-    window.dispatchEvent(new Event('svgcad:user-action'));
-    if (hadQuery) window.dispatchEvent(new Event('svgcad:scope-cleared'));
-    clearTimeout(filterTimer);
-    filterTimer = setTimeout(function () {
-      filterText = filterEl.value.trim().toLowerCase();
-      clearSigns();   // filter changes what a key means — rebuild
-      refresh();
-    }, 150);
-  });
-
-  clearScopeEl.addEventListener('click', clearScope);
-
   window.svgCadMap = {
+    map: map,
     ready: function () { return indexReady; },
+    iconsReady: function () { return iconsReady; },
     currentPoint: function () {
-      var c = selectedPoint || map.getCenter();
-      return { latitude: c.lat, longitude: c.lng,
-        source: selectedPoint ? 'selected' : 'center' };
+      var c = area ? L.latLng(area.latitude, area.longitude) : map.getCenter();
+      return { latitude: c.lat, longitude: c.lng, source: area ? 'selected' : 'center' };
     },
+    getScope: getScope,
+    setArea: setArea,
+    setRadius: setRadius,
+    clearArea: clearArea,
+    setCode: setCode,
     clearScope: clearScope,
-    clearCodeFilter: function () {
-      if (activeQuery || !filterEl.value.trim()) return;
-      filterEl.value = '';
-      filterEl.dispatchEvent(new Event('input', { bubbles: true }));
+    clearCodeFilter: function () { setCode(null, { onlySource: 'box' }); },
+    applyQuery: applyQuery,
+    queryRadius: queryRadius,
+    showChoicePins: showChoicePins,
+    clearChoicePins: clearChoicePins,
+    datasetCode: datasetCode,
+    siteCode: siteCode,
+    hasIcon: function (c) { return !!(iconAvailable && iconAvailable.has(siteCode(c))); },
+    formatKm: formatKm,
+    setPadding: function (p) {
+      padding = { right: Math.max(0, p.right || 0), bottom: Math.max(0, p.bottom || 0) };
     },
-    applyQuery: function (action) {
-      if (!action || !Number.isFinite(action.latitude) || !Number.isFinite(action.longitude) ||
-          action.latitude < 22.1 || action.latitude > 22.65 ||
-          action.longitude < 113.8 || action.longitude > 114.5 ||
-          !Number.isFinite(action.radius_km) || action.radius_km < 0.01 || action.radius_km > 5) return false;
-      if (action.code && !/^TS\d+[A-Z]?$/.test(action.code)) return false;
-      filterText = action.code ? action.code.toLowerCase() : '';
-      filterEl.value = action.code || '';
-      activeQuery = { latitude: action.latitude, longitude: action.longitude,
-        radius_km: action.radius_km, code: action.code || null };
-      syncScopeButton();
-      selectedPoint = null;
-      selectedLayer.clearLayers();
-      queryLayer.clearLayers();
-      L.circle([action.latitude, action.longitude], {
-        radius: action.radius_km * 1000, color: '#c1121f', weight: 2,
-        fillColor: '#c1121f', fillOpacity: 0.08
-      }).addTo(queryLayer);
-      assistantApplying = true;
-      map.setView([action.latitude, action.longitude], 15);
-      assistantApplying = false;
-      clearSigns();
-      refresh();
-      return true;
-    }
+    fitArea: fitArea,
+    invalidateSize: function () { map.invalidateSize({ pan: false }); }
   };
-  map.on('click', function (event) {
-    window.dispatchEvent(new Event('svgcad:user-action'));
-    selectedPoint = event.latlng;
-    selectedLayer.clearLayers();
-    L.circleMarker(selectedPoint, { radius: 7, color: '#c1121f',
-      weight: 2, fillColor: '#fff', fillOpacity: 1 }).addTo(selectedLayer);
-  });
-  map.on('movestart', function () {
-    if (!assistantApplying) window.dispatchEvent(new Event('svgcad:user-action'));
+
+  // A shared link restores its search; keep the hash view if it has one.
+  indexReady.then(function () {
+    if (/[?&](lat|code)=/.test(location.search)) {
+      readUrl({ push: false, fit: !/^#\d/.test(location.hash) });
+    }
   });
 })();

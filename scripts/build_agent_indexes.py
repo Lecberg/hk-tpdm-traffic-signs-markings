@@ -11,6 +11,8 @@ from pathlib import Path
 
 from shapely.geometry import shape
 
+from build_site_indexes import publish
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = "https://www.had.gov.hk/psi/hong-kong-administrative-boundaries/hksar_18_district_boundary.json"
@@ -112,3 +114,4 @@ def build_sign_queue():
 if __name__ == "__main__":
     build_districts(sys.argv[1])
     build_sign_queue()
+    publish()

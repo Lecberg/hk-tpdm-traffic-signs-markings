@@ -6,9 +6,9 @@
 <title>HK Traffic Signs Map — TPDM Signs at Their Real Locations</title>
 <meta name="description" content="Interactive map of Hong Kong traffic signs at their surveyed locations, from the Transport Department's Digitized Traffic Aids Drawings open data.">
 <link rel="stylesheet" href="assets/vendor/leaflet.css">
-<link rel="stylesheet" href="assets/style.css?v=13">
-<link rel="stylesheet" href="assets/map.css?v=17">
-<link rel="stylesheet" href="assets/assistant.css?v=20261001b">
+<link rel="stylesheet" href="assets/style.css?v=20261012">
+<link rel="stylesheet" href="assets/map.css?v=20261012">
+<link rel="stylesheet" href="assets/assistant.css?v=20261012">
 <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 <!-- Blocking on purpose: applies the stored theme before the first paint. -->
 <script src="assets/theme.js?v=12"></script>
@@ -29,16 +29,10 @@
     </div>
     <div class="controls">
       <div id="map-search" class="map-search-shell">
-        <details id="map-search-mode" class="assistant-choice" data-label="Search mode" hidden>
-          <summary>Codes</summary>
-          <div class="assistant-choice-menu" role="group" aria-label="Search modes">
-            <button type="button" data-value="codes">Codes</button>
-            <button type="button" data-value="ask">Ask assistant</button>
-          </div>
-        </details>
-        <input id="filter" type="search" placeholder="Filter by code, e.g. 115…" autocomplete="off" aria-label="Filter signs by code">
-        <input id="map-ask-input" type="search" placeholder="Ask about signs or places…" autocomplete="off" aria-label="Ask the assistant" hidden>
-        <button id="map-ask-submit" type="button" hidden>Send</button>
+        <input id="filter" type="search" placeholder="Search a place, code or sign name…" autocomplete="off"
+               aria-label="Search places, drawing codes or sign names" role="combobox"
+               aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggestions">
+        <div id="search-suggestions" class="search-suggestions" role="listbox" aria-label="Suggestions" hidden></div>
       </div>
       <nav class="section-nav" aria-label="Site sections">
         <a href="index.html">Gallery</a>
@@ -50,17 +44,24 @@
       </button>
     </div>
     <div class="map-status-row">
+      <div id="scope-chips" class="scope-chips" aria-label="Active filters" hidden></div>
       <p id="status" class="count" aria-live="polite"></p>
       <button id="clear-scope" type="button" hidden>Show all signs</button>
     </div>
   </div>
 </header>
 
-<div id="map" role="application" aria-label="Map of Hong Kong traffic signs"></div>
+<div class="map-body">
+  <div id="map" role="application" aria-label="Map of Hong Kong traffic signs"></div>
+  <aside id="map-panel" class="map-panel" hidden></aside>
+</div>
 
 <script src="assets/vendor/leaflet.js"></script>
-<script src="assets/map.js?v=15"></script>
+<script src="assets/map.js?v=20261012"></script>
+<script src="assets/places.js?v=20261012"></script>
+<script src="assets/map-search.js?v=20261012"></script>
+<script src="assets/map-panel.js?v=20261012"></script>
 <script src="assets/dxf-download.js?v=12"></script>
-<script src="assets/assistant.js?v=20261001b"></script>
+<script src="assets/assistant.js?v=20261012"></script>
 </body>
 </html>

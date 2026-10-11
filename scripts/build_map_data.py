@@ -163,3 +163,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # The per-drawing map indexes are derived from these cells.
+    from build_site_indexes import publish
+    publish()

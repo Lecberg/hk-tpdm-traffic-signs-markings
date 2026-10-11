@@ -9,6 +9,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from build_site_indexes import publish
+
 
 ROOT = Path(__file__).resolve().parents[1]
 

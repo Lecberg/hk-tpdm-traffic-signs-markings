@@ -483,11 +483,26 @@ main { max-width: 1200px; margin: 0 auto; padding: 26px 20px 72px; }
 .card.in:hover .thumb img { transform: scale(1.04); }
 
 .card-code {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
   font-weight: 600;
   font-size: var(--fs-md);
   letter-spacing: .01em;
   font-variant-numeric: tabular-nums;
 }
+
+.card-map {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.card-map:hover { color: var(--accent); text-decoration: underline; }
 
 .card-actions { display: flex; gap: 8px; margin-top: auto; }
 

@@ -23,6 +23,7 @@
 
   var all = [];       // full manifest
   var thumbs = null;  // codes that have a WebP thumb; the rest show their SVG
+  var surveyCounts = {};  // site code -> surveyed signs on the map
   var filtered = [];  // current filter/search result
   var rendered = 0;   // how many of `filtered` are in the DOM
   var cat = "ALL";
@@ -54,11 +55,14 @@
     // Optional. Losing this list only costs bytes, not cards: every thumb
     // falls back to the SVG the gallery used before, so a failed fetch here
     // must not take the grid down with it.
-    getJson("thumbs/index.json").catch(function () { return []; })
+    getJson("thumbs/index.json").catch(function () { return []; }),
+    // Optional too: without it the cards just lose their "Map" link.
+    getJson("survey-counts.json").catch(function () { return {}; })
   ])
     .then(function (res) {
       all = res[0];
       thumbs = new Set(res[1]);
+      surveyCounts = res[2];
       grid.setAttribute("aria-busy", "false");
       apply(true);
     })
@@ -156,6 +160,15 @@
     var code = document.createElement("div");
     code.className = "card-code";
     code.textContent = e.code;
+    var surveyed = surveyCounts[e.code];
+    if (surveyed) {
+      var onMap = document.createElement("a");
+      onMap.className = "card-map";
+      onMap.href = "map.html?code=" + e.code.replace("_", "");
+      onMap.textContent = "Map · " + surveyed.toLocaleString();
+      onMap.title = "Show the " + surveyed.toLocaleString() + " surveyed " + e.code + " signs on the map";
+      code.appendChild(onMap);
+    }
 
     var actions = document.createElement("div");
     actions.className = "card-actions";
