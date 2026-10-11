@@ -35,7 +35,6 @@ services:
       XDG_CACHE_HOME: /tmp/cache
       SVG_CAD_SITE: /app/site
       SVG_CAD_DATA: /app/data
-      SVG_CAD_TEMP: /tmp
     expose:
       - "8000"
     read_only: true

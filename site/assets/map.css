@@ -964,6 +964,8 @@
   cursor: pointer;
 }
 
+.choice-pin b { transform: rotate(45deg); }
+
 .map-context-popup .leaflet-popup-content { margin: 6px; }
 
 .map-context button {
@@ -1009,6 +1011,9 @@
   .map-header .brand { margin-bottom: 10px; }
 
   .map-header .subtitle-wrap { display: none; }
+
+  /* The count chip already says how many; save the line. */
+  .scope-chips:not([hidden]) ~ .count { display: none; }
 
   .map-panel {
     position: absolute;

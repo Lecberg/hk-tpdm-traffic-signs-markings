@@ -38,7 +38,7 @@ def select(client, turn, operation="resume", **changes):
 @pytest.fixture
 def agent_client(tmp_path):
     provider = Planner(plan(sign_query="Stop"), plan(action="refine", place_query="", sign_query="", radius_km=1))
-    app = create_app(temp_dir=tmp_path, provider=provider)
+    app = create_app(provider=provider)
     app.testing = True
     return app.test_client(), provider
 
@@ -95,7 +95,7 @@ def test_invalid_and_stale_choices_leave_workflow_waiting(agent_client):
 def test_category_filter_and_no_marking_location_claims(tmp_path):
     provider = Planner(plan(action="drawings", place_query="", sign_query="RM1001", category="RM"),
                        plan(sign_query="", category="RM"))
-    client = create_app(temp_dir=tmp_path, provider=provider).test_client()
+    client = create_app(provider=provider).test_client()
     drawing = start(client, "Show RM1001").json['turn']
     assert drawing['status'] == 'complete'
     assert drawing['blocks'][0]['items'][0]['code'] == 'RM_1001'
@@ -107,7 +107,7 @@ def test_category_filter_and_no_marking_location_claims(tmp_path):
 
 def test_page_point_must_be_explicit_and_validated(tmp_path):
     provider = Planner(plan(place_query="", sign_query="Stop", use_map_point=True))
-    client = create_app(temp_dir=tmp_path, provider=provider).test_client()
+    client = create_app(provider=provider).test_client()
     turn = start(client, "Stop signs near this pin", context={"page": "map", "map_point": {
         "latitude": 22.3193, "longitude": 114.1694, "source": "selected"}}).json['turn']
     assert turn['status'] == 'complete'
@@ -137,14 +137,64 @@ def test_duplicate_search_does_not_call_provider_again(agent_client):
 
 @pytest.mark.parametrize('radius', [-1, 6, float('nan'), True])
 def test_invalid_model_radius_never_reaches_map(tmp_path, radius):
-    client = create_app(temp_dir=tmp_path, provider=Planner(plan(radius_km=radius))).test_client()
+    client = create_app(provider=Planner(plan(radius_km=radius))).test_client()
     turn = start(client).json['turn']
     assert turn['status'] == 'failed'
     assert not turn['blocks']
 
 
 def test_no_provider_keeps_manual_tools_available(tmp_path):
-    client = create_app(temp_dir=tmp_path).test_client()
+    client = create_app().test_client()
     assert not client.get('/api/capabilities').json['features']['search_agent']
     assert start(client).status_code == 503
     assert client.get('/api/signs?q=RM1001').status_code == 200
+
+
+MONG_KOK = {"latitude": 22.320104, "longitude": 114.171488}
+
+
+def scope_context(**changes):
+    return {"page": "map", "scope": {**MONG_KOK, "radius_km": 0.3, "code": "TS101",
+                                     "place": "Mong Kok", **changes}}
+
+
+@pytest.mark.parametrize('scope', [
+    {**MONG_KOK, "radius_km": 9},                                   # radius out of range
+    {"latitude": 0, "longitude": 114.1, "radius_km": 1},            # outside Hong Kong
+    {**MONG_KOK, "radius_km": 1, "code": "DROP TABLE"},             # not a sign code
+    {**MONG_KOK, "radius_km": 1, "extra": True},                    # unknown field
+    {**MONG_KOK, "radius_km": 1, "place": "x" * 200},               # oversized label
+])
+def test_map_scope_is_validated(tmp_path, scope):
+    client = create_app(provider=Planner(plan())).test_client()
+    assert start(client, context={"page": "map", "scope": scope}).status_code == 400
+
+
+def test_refinement_follows_hand_edited_map_scope(agent_client):
+    client, provider = agent_client
+    resumed = select(client, start(client).json['turn']).json['turn']
+    assert resumed['search']['radius_km'] == 0.3
+    # The visitor widened the circle to 2 km and removed the TS101 chip by hand;
+    # a refinement must start from that, keeping the confirmed place.
+    provider.plans[:] = [plan(action="refine", place_query="", sign_query="", radius_km=0)]
+    followup = start(client, "Show the same area again",
+                     context=scope_context(radius_km=2, code=None)).json['turn']
+    assert followup['status'] == 'complete'
+    block = next(b for b in followup['blocks'] if b['type'] == 'map')
+    assert block['query_scope']['radius_km'] == 2
+    assert block['query_scope']['code'] is None
+    assert followup['search']['place'] == resumed['search']['place']
+
+
+def test_moved_scope_becomes_a_map_point_and_needs_no_prior_search(tmp_path):
+    provider = Planner(plan(action="refine", place_query="", sign_query="", radius_km=1))
+    client = create_app(provider=provider).test_client()
+    moved = {"latitude": 22.3, "longitude": 114.17}
+    turn = start(client, "Make it 1 km", context=scope_context(**moved, place="Selected point")).json['turn']
+    assert turn['status'] == 'complete'
+    assert turn['search']['place']['kind'] == 'map_point'
+    assert turn['search']['place']['name_en'] == 'Selected point'
+    block = next(b for b in turn['blocks'] if b['type'] == 'map')
+    assert block['query_scope']['center'] == [22.3, 114.17]
+    assert block['query_scope']['radius_km'] == 1
+    assert block['query_scope']['code'] == 'TS101'

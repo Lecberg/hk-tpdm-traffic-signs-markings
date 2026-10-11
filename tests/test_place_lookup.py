@@ -2,7 +2,7 @@
 
 import io
 import json
-from types import SimpleNamespace
+import uuid
 
 from svg2dxf.server import create_app
 from svg2dxf.server import places as places_module
@@ -35,7 +35,7 @@ def fake_service(monkeypatch, rows):
 
 def test_saved_places_first_and_external_bilingual_points(tmp_path, monkeypatch):
     calls = fake_service(monkeypatch, [row()])
-    client = create_app(temp_dir=tmp_path).test_client()
+    client = create_app().test_client()
     local = client.get('/api/places?q=Mong%20Kok').json
     assert local['lookup_status'] == 'local'
     assert local['results'][0]['name_en'] == 'Mong Kok'
@@ -68,7 +68,7 @@ def test_place_choices_deduplicate_validate_and_limit(tmp_path, monkeypatch):
     rows.extend([row(name="Outside", x=0, y=0), row(name="Bad", x=float('nan')),
                  {"nameEN": "Missing grid", "nameZH": "沒有座標"}])
     fake_service(monkeypatch, rows)
-    client = create_app(temp_dir=tmp_path).test_client()
+    client = create_app().test_client()
     result = client.get('/api/places?q=Hospital').json
     assert result['lookup_status'] == 'external'
     assert result['matched_total'] == 12
@@ -79,7 +79,7 @@ def test_place_choices_deduplicate_validate_and_limit(tmp_path, monkeypatch):
 
 def test_no_match_failure_and_rate_limit(tmp_path, monkeypatch):
     calls = fake_service(monkeypatch, [])
-    client = create_app(temp_dir=tmp_path).test_client()
+    client = create_app().test_client()
     assert client.get('/api/places?q=Nothing%20here').json['lookup_status'] == 'no_match'
     for index in range(29):
         assert client.get(f'/api/places?q=Unknown{index}').json['lookup_status'] == 'no_match'
@@ -91,7 +91,7 @@ def test_no_match_failure_and_rate_limit(tmp_path, monkeypatch):
         raise TimeoutError('service timed out')
 
     monkeypatch.setattr(places_module, 'urlopen', fail)
-    other = create_app(temp_dir=tmp_path).test_client()
+    other = create_app().test_client()
     unavailable = other.get('/api/places?q=An%20unknown%20place').json
     assert unavailable['lookup_status'] == 'unavailable'
     assert unavailable['results'] == []
@@ -99,51 +99,38 @@ def test_no_match_failure_and_rate_limit(tmp_path, monkeypatch):
     assert other.get('/api/places?q=').status_code == 400
 
 
-def test_chat_place_card_uses_service_result_not_model_prose(tmp_path, monkeypatch):
+class Planner:
+    def __init__(self, plan):
+        self.plan = plan
+
+    def plan_search(self, message, previous, timeout):
+        return dict(self.plan)
+
+
+NEARBY = {"action": "nearby", "place_query": "Queen Mary Hospital", "sign_query": "",
+          "radius_km": 0.5, "category": "TS", "use_map_point": False, "clear_sign_filter": False}
+
+
+def search(client, message):
+    return client.post('/api/agent/search', json={"request_id": str(uuid.uuid4()), "message": message})
+
+
+def test_agent_place_choices_come_from_the_lookup_service(tmp_path, monkeypatch):
     fake_service(monkeypatch, [row()])
-
-    class Call:
-        id = 'place_1'
-        function = SimpleNamespace(name='resolve_place', arguments='{"query":"Queen Mary Hospital"}')
-
-        def model_dump(self, exclude_none=True):
-            return {'id': self.id, 'type': 'function',
-                    'function': {'name': self.function.name, 'arguments': self.function.arguments}}
-
-    class Provider:
-        def complete(self, messages, timeout, require_tool=False):
-            calls = [Call()] if require_tool else []
-            return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(
-                tool_calls=calls, content='The hospital is at invented coordinates 0, 0.'))])
-
-    client = create_app(temp_dir=tmp_path, provider=Provider()).test_client()
-    turn = client.post('/api/chat', json={'message': 'Find Queen Mary Hospital'}).json['turn']
-    assert turn['blocks'][0]['type'] == 'places'
-    assert turn['blocks'][0]['lookup_status'] == 'external'
-    assert turn['blocks'][0]['items'][0]['name_en'] == 'QUEEN MARY HOSPITAL'
-    assert 'invented' not in json.dumps(turn)
-    assert not turn['actions']  # A place choice never opens the map automatically.
+    client = create_app(provider=Planner(NEARBY)).test_client()
+    turn = search(client, 'Signs near Queen Mary Hospital').json['turn']
+    assert turn['status'] == 'waiting'
+    item = turn['pending']['choices'][0]['item']
+    assert item['name_en'] == 'QUEEN MARY HOSPITAL'
+    assert item['source']['agency'] == 'Lands Department'
+    assert 22.26 < item['latitude'] < 22.28
+    assert not turn['actions']  # A place choice never moves the map by itself.
 
 
-def test_chat_rejects_guessed_place_coordinates(tmp_path):
-    class Call:
-        id = 'guessed_1'
-        function = SimpleNamespace(name='find_nearby_signs', arguments=json.dumps({
-            'latitude': 22.2704, 'longitude': 114.1305, 'radius_km': 0.5}))
-
-        def model_dump(self, exclude_none=True):
-            return {'id': self.id, 'type': 'function',
-                    'function': {'name': self.function.name, 'arguments': self.function.arguments}}
-
-    class Provider:
-        def complete(self, messages, timeout, require_tool=False):
-            calls = [Call()] if require_tool else []
-            return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(
-                tool_calls=calls, content='There are 999 signs nearby.'))])
-
-    client = create_app(temp_dir=tmp_path, provider=Provider()).test_client()
-    turn = client.post('/api/chat', json={'message': 'How many signs are near Queen Mary Hospital?'}).json['turn']
-    assert turn['tool_results'][0]['result']['error'] == 'unverified_point'
-    assert turn['blocks'][0]['type'] == 'notice'
-    assert not turn['actions']
-    assert '999' not in json.dumps(turn)
+def test_agent_plan_cannot_carry_guessed_coordinates(tmp_path):
+    guessed = {**NEARBY, "latitude": 22.2704, "longitude": 114.1305}
+    client = create_app(provider=Planner(guessed)).test_client()
+    turn = search(client, 'How many signs are near Queen Mary Hospital?').json['turn']
+    assert turn['status'] == 'failed'
+    assert not turn['blocks'] and not turn['actions']
+    assert '22.2704' not in json.dumps(turn)

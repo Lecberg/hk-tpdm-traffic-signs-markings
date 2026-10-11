@@ -1,1173 +1,569 @@
+/* Docker edition only: the natural-language search agent.
+ *
+ * On the map it lives inside the results panel (map-panel.js) and the search
+ * box (map-search.js): "Ask the assistant" is one more suggestion, the agent's
+ * turns sit above the results, and a finished search applies itself to the
+ * map. On the gallery it only hands sentences over to the map.
+ *
+ * The public site ships runtime-config.json with api_enabled false, so none
+ * of this runs there.
+ */
 (function () {
   'use strict';
 
-  if (!window.svgCadMap && !window.svgCadGallery) return;
+  var onMap = !!(window.svgCadMap && window.svgCadPanel && window.svgCadSearch);
+  var onGallery = !onMap && !!window.svgCadGallery;
+  if (!onMap && !onGallery) return;
 
   fetch('runtime-config.json', { cache: 'no-store' })
-    .then(function (response) { if (!response.ok) throw new Error('config'); return response.json(); })
+    .then(function (r) { if (!r.ok) throw new Error('config'); return r.json(); })
     .then(function (config) {
-      if (config.api_enabled === true && config.api_version === 1) start();
-    }).catch(function () { /* The public static edition needs no API. */ });
+      if (config.api_enabled !== true || config.api_version !== 1) return null;
+      return fetch('/api/capabilities', { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('capabilities'); return r.json(); });
+    })
+    .then(function (cap) {
+      if (!cap) return;
+      if (cap.api_version !== 1) throw new Error('API version mismatch');
+      var enabled = !!(cap.features && cap.features.search_agent);
+      if (onMap) startMap(enabled); else if (enabled) startGallery();
+    })
+    .catch(function () { /* The public static edition needs no API. */ });
 
-  function start() {
-    var isMap = !!window.svgCadMap;
+  // A request reads as a question for the agent rather than a place name.
+  function looksLikeSentence(text) {
+    return text.trim().split(/\s+/).length >= 3 ||
+      /\b(near|nearby|within|around|metres?|meters?|km|kilomet(re|er)s?)\b|附近|公里|米內/i.test(text);
+  }
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function button(text, onClick, cls) {
+    var b = el('button', cls, text);
+    b.type = 'button';
+    b.addEventListener('click', onClick);
+    return b;
+  }
+
+  // ---- gallery: hand sentences over to the map --------------------------------
+
+  function startGallery() {
+    var box = document.getElementById('search');
+    if (!box) return;
+    var ask = button('Ask on the map →', function () { go(); }, 'gallery-ask');
+    ask.hidden = !looksLikeSentence(box.value);   // the visitor may have typed already
+    box.insertAdjacentElement('afterend', ask);
+    function go() {
+      var text = box.value.trim();
+      if (text) location.href = 'map.html?ask=' + encodeURIComponent(text.slice(0, 2000));
+    }
+    box.addEventListener('input', function () { ask.hidden = !looksLikeSentence(box.value); });
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && looksLikeSentence(box.value)) { e.preventDefault(); go(); }
+    });
+  }
+
+  // ---- map: the agent inside the results panel ----------------------------------
+
+  function startMap(agentEnabled) {
+    var mapApi = window.svgCadMap, panelApi = window.svgCadPanel;
     var language = sessionStorage.getItem('svgcad_language') === 'zh-Hant' ? 'zh-Hant' : 'en';
-    var generation = 0;
-    var controller = null;
-    var uploadId = null;
-    var activeCode = null;
-    var pendingApplied = false;
-    var lastFocus = null;
+    var zh = function () { return language === 'zh-Hant'; };
+    var turns = [], busy = false, waiting = false;
     var words = {
-      en: { open: 'Assistant', close: 'Close', title: 'Traffic sign assistant',
-        search: 'Find signs', searchHint: 'Code or sourced description', find: 'Find',
-        places: 'Find a place', placeHint: 'Place name', near: 'Signs near map point or centre',
-        radius: 'Radius (km)', query: 'Count signs', upload: 'Convert an SVG',
-        convert: 'Convert', chat: 'Ask the assistant', send: 'Send', reset: 'Reset',
-        noChat: 'Chat needs a configured model service. Search and conversion still work.',
-        privacy: 'Chat messages and tool results go to the configured model service.',
-        codeOnly: 'Code only; no sourced description', noResults: 'No sourced match. Try a code.',
-        applied: 'Applied to the page', pending: 'Open map', selected: 'Map centre',
-        error: 'Request failed. Please retry.', busy: 'Working…',
-        source: 'Source', showGallery: 'Show these in gallery',
-        reviewed: 'sourced bilingual labels', results: 'result(s)',
-        sourceChecked: 'Source checked; human review pending',
-        placeMissing: 'No place found. Try a more specific name or use a map point.',
-        placeUnavailable: 'The place lookup service is unavailable. Try again or use a map point.',
-        placeBusy: 'Place lookup is busy. Try again shortly.',
-        placeLimited: 'Only the first 10 places are shown. Refine the name to see others.',
-        locationPoint: 'Location point, not a guaranteed entrance',
-        landsSource: 'Lands Department',
-        hadSource: 'Home Affairs Department',
-        placeGuide: 'Map points may not mark entrances; district points mark centres.',
-        selectPlace: 'Select',
-        placeCount: 'Showing {shown} of {total} places',
-        externalSearch: 'Unlisted names are sent to the Lands Department for lookup.',
-        choosePlace: 'Choose a place', placesFound: 'place(s)',
-        records: 'surveyed records', incomplete: 'incomplete data',
-        showing: 'showing first', chooseSvg: 'Choose an SVG file',
-        downloadDxf: 'Download DXF', converted: 'Converted. Download expires in one hour.',
-        uploadOnly: 'Upload for chat', uploaded: 'SVG uploaded for this session.',
-        ready: 'Ready', resetDone: 'Reset', provider: 'Provider',
-        signsTab: 'Signs', mapTab: 'Map', convertTab: 'Convert', chatTab: 'Chat',
-        configure: 'Configure API', setupIntro: 'Chat needs a configured model service.',
-        setupCopy: 'Copy .env.example to .env in this project folder.',
-        setupChoose: 'Set AI_PROVIDER and its matching key. Custom also needs CUSTOM_API_BASE_URL and CUSTOM_MODEL.',
-        setupRestart: 'Run this command in the project folder, then refresh this page:',
-        setupPrivate: 'Put keys in .env, not in this page.',
-        checkChat: 'Could not check chat. Check that the backend is running.',
-        drawingCodes: 'drawing codes', filterCodes: 'Filter drawing codes',
-        showAll: 'Show all', showLess: 'Show less', noCodes: 'No matching codes',
-        centrePoint: 'District centre point, not a boundary',
-        unverified: 'not yet validated', validated: 'live test passed', experimental: 'experimental',
-        noMatches: 'No checked match was found', clarify: 'Give a code, place, or map point.',
-        help: 'Search signs, count signs on the map, or convert an SVG.',
+      en: { title: 'Map assistant', reopen: 'Assistant', records: 'surveyed records',
+        incomplete: 'Incomplete data', selected: 'Selected point', choosePlace: 'Choose a place',
+        chooseDrawing: 'Choose a drawing', codeOnly: 'Code only; no sourced description',
+        centrePoint: 'District centre point, not a boundary', select: 'Select', source: 'Source',
+        showing: 'showing first', busy: 'Working…', error: 'Request failed. Please retry.',
         limits: 'The count uses all matching records. The list may show fewer.',
-        askSign: 'Ask about this drawing', latest: 'Latest reply',
-        chatHistory: 'Chat history' },
-      'zh-Hant': { open: '助手', close: '關閉', title: '交通標誌助手',
-        search: '搜尋標誌', searchHint: '編號或有來源的描述', find: '搜尋',
-        places: '搜尋地點', placeHint: '地點名稱', near: '查詢地圖選點或中心附近標誌',
-        radius: '半徑（公里）', query: '統計標誌', upload: '轉換 SVG',
-        convert: '轉換', chat: '詢問助手', send: '發送', reset: '重設',
-        noChat: '聊天需要設定模型服務。搜尋和轉換仍可使用。',
-        privacy: '聊天內容和工具結果會傳送至設定的模型服務。',
-        codeOnly: '只有編號，沒有附來源的描述', noResults: '找不到有來源的結果，請嘗試編號。',
-        applied: '已套用到頁面', pending: '開啟地圖', selected: '地圖中心',
-        error: '請求失敗，請重試。', busy: '處理中…',
-        source: '來源', showGallery: '在圖庫顯示',
-        reviewed: '個有來源的雙語標籤', results: '個結果',
-        sourceChecked: '已核對來源；尚待人工審核',
-        placeMissing: '找不到地點，請嘗試更具體的名稱或在地圖上選點。',
-        placeUnavailable: '地點查詢服務暫時無法使用，請稍後再試或在地圖上選點。',
-        placeBusy: '地點查詢繁忙，請稍後再試。',
-        placeLimited: '只顯示首 10 個地點，請縮窄搜尋以查看其他結果。',
-        locationPoint: '位置參考點，未必是建築物入口',
-        landsSource: '地政總署',
-        hadSource: '民政事務總署',
-        placeGuide: '地圖位置未必是入口；區域位置是中心參考點。',
-        selectPlace: '選擇',
-        placeCount: '顯示 {shown} / {total} 個地點',
-        externalSearch: '未列出的地名會傳送至地政總署查詢。',
-        choosePlace: '請選擇地點', placesFound: '個地點',
-        records: '個已測量的標誌紀錄', incomplete: '資料不完整',
-        showing: '顯示首', chooseSvg: '請選擇 SVG 檔案',
-        downloadDxf: '下載 DXF', converted: '轉換完成。下載連結一小時後到期。',
-        uploadOnly: '上傳供聊天使用', uploaded: 'SVG 已上傳至此工作階段。',
-        ready: '就緒', resetDone: '已重設', provider: '供應商',
-        signsTab: '標誌', mapTab: '地圖', convertTab: '轉換', chatTab: '聊天',
-        configure: '設定 API', setupIntro: '聊天需要設定模型服務。',
-        setupCopy: '在此專案資料夾將 .env.example 複製為 .env。',
-        setupChoose: '設定 AI_PROVIDER 及對應金鑰。自訂服務亦需要 CUSTOM_API_BASE_URL 和 CUSTOM_MODEL。',
-        setupRestart: '在專案資料夾執行以下指令，然後重新整理頁面：',
-        setupPrivate: '請將金鑰填入 .env，不要貼在此頁面。',
-        checkChat: '無法檢查聊天狀態，請確認後端正在執行。',
-        drawingCodes: '個圖紙編號', filterCodes: '篩選圖紙編號',
-        showAll: '顯示全部', showLess: '收起', noCodes: '沒有符合的編號',
-        centrePoint: '區域中心參考點，並非邊界',
-        unverified: '尚未驗證', validated: '即時測試通過', experimental: '實驗中',
-        noMatches: '找不到已核實的結果', clarify: '請提供編號、地點或地圖位置。',
-        help: '可搜尋標誌、查詢地圖或轉換 SVG。',
+        placeGuide: 'Map points may not mark entrances; district points mark centres.',
+        lands: 'Lands Department', had: 'Home Affairs Department',
+        privacy: 'Requests and search results go to the configured model service.',
+        noAgent: 'The assistant needs a configured model service. Map search still works.',
+        request: 'Ask the assistant', refine: 'Continue or refine', run: 'Run search',
+        placeholder: 'Find signs near a place, or ask for a drawing…', examples: 'Examples',
+        about: 'LangGraph · session memory', reset: 'New session',
+        memory: 'Search settings stay in this session. Restarting the backend clears them.',
+        pickAbove: 'Choose a result above, or a numbered pin on the map.',
+        emptyTitle: 'Ask in your own words.',
+        emptyBody: 'Try “stop signs near Mong Kok within 500 metres”, then refine it.',
+        askLabel: 'Ask the assistant', showOnMap: 'Show on map', viewDrawings: 'View drawings' },
+      'zh-Hant': { title: '地圖助手', reopen: '助手', records: '個已測量的標誌紀錄',
+        incomplete: '資料不完整', selected: '已選位置', choosePlace: '請選擇地點',
+        chooseDrawing: '選擇圖紙', codeOnly: '只有編號，沒有附來源的描述',
+        centrePoint: '區域中心參考點，並非邊界', select: '選擇', source: '來源',
+        showing: '顯示首', busy: '處理中…', error: '請求失敗，請重試。',
         limits: '數量包括全部符合的紀錄，清單可能只顯示部分。',
-        askSign: '詢問這張圖紙', latest: '最新回覆',
-        chatHistory: '聊天紀錄' }
+        placeGuide: '地圖位置未必是入口；區域位置是中心參考點。',
+        lands: '地政總署', had: '民政事務總署',
+        privacy: '搜尋內容和結果會傳送至設定的模型服務。',
+        noAgent: '助手需要設定模型服務。地圖搜尋仍可使用。',
+        request: '詢問助手', refine: '繼續或調整搜尋', run: '執行搜尋',
+        placeholder: '搜尋某地點附近的標誌，或查詢圖紙…', examples: '例子',
+        about: 'LangGraph · 工作階段記憶', reset: '新工作階段',
+        memory: '搜尋設定只保留在此工作階段，重新啟動後端會清除。',
+        pickAbove: '請選擇上方結果，或地圖上的編號標記。',
+        emptyTitle: '用你自己的話提問。',
+        emptyBody: '例如「旺角 500 米內的停車標誌」，然後再調整。',
+        askLabel: '詢問助手', showOnMap: '在地圖顯示', viewDrawings: '查看圖紙' }
     };
     function t(key) { return words[language][key]; }
-    function el(tag, cls, text) {
-      var item = document.createElement(tag);
-      if (cls) item.className = cls;
-      if (text != null) item.textContent = text;
-      return item;
+    function placeText(place, stem) {
+      return place[stem + (zh() ? '_zh_hant' : '_en')] || place[stem + (zh() ? '_en' : '_zh_hant')] || '';
     }
-    function button(text, onClick, cls) {
-      var item = el('button', cls, text);
-      item.type = 'button';
-      item.addEventListener('click', onClick);
-      return item;
-    }
-    function setupChoiceMenu(root, initial, onSelect) {
-      var summary = root.querySelector('summary');
-      var choices = Array.prototype.slice.call(root.querySelectorAll('button[data-value]'));
-      function select(value, notify) {
-        var selected = choices.find(function (choice) { return choice.dataset.value === value; });
-        if (!selected) return;
-        root.dataset.value = value;
-        summary.textContent = selected.textContent;
-        summary.setAttribute('aria-label', root.dataset.label + ': ' + selected.textContent);
-        choices.forEach(function (choice) {
-          choice.setAttribute('aria-pressed', choice === selected ? 'true' : 'false');
-        });
-        if (notify) onSelect(value);
-      }
-      choices.forEach(function (choice) {
-        choice.setAttribute('aria-label', choice.textContent);
-        choice.addEventListener('click', function () {
-          var changed = root.dataset.value !== choice.dataset.value;
-          select(choice.dataset.value, changed);
-          root.open = false;
-          if (root.contains(document.activeElement)) summary.focus();
-        });
-      });
-      root.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && root.open) {
-          event.preventDefault(); event.stopPropagation();
-          root.open = false; summary.focus(); return;
-        }
-        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' &&
-            event.key !== 'Home' && event.key !== 'End') return;
-        event.preventDefault();
-        root.open = true;
-        var index = choices.indexOf(document.activeElement);
-        if (event.key === 'Home') index = 0;
-        else if (event.key === 'End') index = choices.length - 1;
-        else if (index < 0) index = event.key === 'ArrowDown' ? 0 : choices.length - 1;
-        else index = (index + (event.key === 'ArrowDown' ? 1 : -1) + choices.length) % choices.length;
-        choices[index].focus();
-      });
-      document.addEventListener('pointerdown', function (event) {
-        if (root.open && !root.contains(event.target)) root.open = false;
-      });
-      select(initial, false);
-    }
-    function label(parent, text, control) {
-      var holder = el('label', '', text);
-      holder.appendChild(control);
-      parent.appendChild(holder);
-      return holder;
-    }
-    function input(type, placeholder) {
-      var item = el('input');
-      item.type = type; item.placeholder = placeholder;
-      return item;
-    }
-    function section(title, parent) {
-      var area = el('section');
-      area.appendChild(el('h3', '', title));
-      parent.appendChild(area);
-      return area;
-    }
-    function status(text) { statusEl.textContent = text; }
-    function clearResults(target) { target.textContent = ''; }
-    function api(path, options) {
-      if (controller) controller.abort();
-      controller = new AbortController();
-      var signal = controller.signal;
-      var opts = Object.assign({ credentials: 'same-origin', signal: signal }, options || {});
-      return fetch('/api/' + path, opts).then(function (response) {
-        return response.json().then(function (data) {
-          if (!response.ok) throw new Error(data.error && data.error.message || 'HTTP ' + response.status);
-          return data;
-        });
-      });
-    }
-    function jsonPost(path, data) {
-      return api(path, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                         body: JSON.stringify(data) });
-    }
-    function run(promise, done) {
-      var mine = ++generation;
-      status(t('busy'));
-      promise.then(function (data) {
-        if (mine !== generation) return;
-        done(data);
-      }).catch(function (error) {
-        if (mine !== generation || error.name === 'AbortError') return;
-        status(error.message || t('error'));
-      });
-    }
-    window.addEventListener('svgcad:user-action', function () {
-      generation++;
-      if (controller) controller.abort();
-    });
     function safeAsset(path, code, kind) {
       return typeof path === 'string' && path === kind + 's/' + code + '.' + kind ? path : null;
     }
-    function showSign(sign, target) {
-      if (!sign || !/^(TS|RM)_\d+[A-Z]?$/.test(sign.code)) return;
-      var card = el('div', 'assistant-result');
-      var svg = safeAsset(sign.downloads && sign.downloads.svg, sign.code, 'svg');
-      var dxf = safeAsset(sign.downloads && sign.downloads.dxf, sign.code, 'dxf');
-      if (svg) {
-        var previewBox = el('div', 'assistant-preview');
-        if (sign.category === 'RM') previewBox.classList.add('assistant-preview-marking');
-        var preview = el('img'); preview.src = svg; preview.alt = sign.code;
-        previewBox.appendChild(preview);
-        card.appendChild(previewBox);
-      }
-      card.appendChild(el('strong', '', sign.code));
-      var meta = sign.metadata;
-      card.appendChild(el('p', 'assistant-small', meta ?
-        (language === 'zh-Hant' ? meta.name_zh_hant : meta.name_en) : t('codeOnly')));
-      if (sign.metadata_status === 'source_checked')
-        card.appendChild(el('p', 'assistant-small', t('sourceChecked')));
-      if (meta && meta.source && /^https:\/\//.test(meta.source.url)) {
-        var source = el('a', 'assistant-link', t('source'));
-        source.href = meta.source.url; source.target = '_blank'; source.rel = 'noopener noreferrer';
-        card.appendChild(source);
-      }
-      [['SVG', svg], ['DXF', dxf]].forEach(function (pair) {
-        if (!pair[1]) return;
-        var link = el('a', 'assistant-link', pair[0]);
-        link.href = pair[1]; link.download = '';
-        card.appendChild(link);
+
+    // -- panel header tools: language and a fresh session --
+    var tools = el('div', 'assistant-tools');
+    var langMenu = el('details', 'assistant-choice assistant-language-menu');
+    langMenu.dataset.label = 'Language';
+    langMenu.appendChild(el('summary'));
+    var langList = el('div', 'assistant-choice-menu');
+    langList.setAttribute('role', 'group');
+    [['en', 'English'], ['zh-Hant', '繁體中文']].forEach(function (pair) {
+      var b = button(pair[1], function () {
+        langMenu.open = false;
+        if (pair[0] !== language) setLanguage(pair[0]);
       });
-      card.appendChild(button(t('askSign'), function () {
-        activeCode = sign.code;
-        selectView('chat');
-        if (!chatInput.disabled) {
-          chatInput.value = language === 'zh-Hant' ? '請顯示圖紙 ' + sign.code : 'Show drawing ' + sign.code;
-          chatInput.focus();
-        }
-      }));
-      target.appendChild(card);
+      b.dataset.value = pair[0];
+      langList.appendChild(b);
+    });
+    langMenu.appendChild(langList);
+    var resetBtn = button('', function () {
+      if (busy) return;
+      fetch('/api/session/reset', { method: 'POST', credentials: 'same-origin' })
+        .then(function (r) { if (!r.ok) throw new Error('reset'); })
+        .then(function () { turns = []; mapApi.clearChoicePins(); render(); feedback.textContent = ''; })
+        .catch(function () { feedback.textContent = t('error'); });
+    }, 'assistant-reset');
+    tools.appendChild(langMenu);
+    tools.appendChild(resetBtn);
+    document.addEventListener('pointerdown', function (e) {
+      if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false;
+    });
+
+    // -- agent section (above the results) and composer (panel footer) --
+    var section = el('section', 'assistant-agent');
+    section.setAttribute('aria-label', 'Map assistant');
+    var historyEl = el('div', 'assistant-agent-history');
+    historyEl.setAttribute('role', 'log');
+    historyEl.setAttribute('aria-label', 'Assistant searches');
+    section.appendChild(historyEl);
+
+    var composer = el('div', 'assistant-agent-composer');
+    var composerLabel = el('label', 'assistant-agent-composer-label');
+    composerLabel.htmlFor = 'assistant-agent-input';
+    var row = el('div', 'assistant-agent-compose-row');
+    var input = el('textarea');
+    input.id = 'assistant-agent-input';
+    input.rows = 2;
+    input.maxLength = 2000;
+    var run = button('', function () { send(input.value); }, 'assistant-primary');
+    row.appendChild(input);
+    row.appendChild(run);
+    var feedback = el('p', 'assistant-agent-feedback');
+    feedback.setAttribute('role', 'status');
+    var meta = el('div', 'assistant-agent-composer-meta');
+    var examples = el('details', 'assistant-agent-examples');
+    var examplesSummary = el('summary');
+    examples.appendChild(examplesSummary);
+    var exampleList = el('div');
+    ['Stop signs near Mong Kok within 500 metres', 'Show drawing RM1001', 'Make it 1 kilometre'].forEach(function (text) {
+      exampleList.appendChild(button(text, function () { input.value = text; examples.open = false; input.focus(); }));
+    });
+    examples.appendChild(exampleList);
+    var about = el('details', 'assistant-agent-about');
+    var aboutSummary = el('summary');
+    var aboutMemory = el('p');
+    var aboutPrivacy = el('p');
+    about.appendChild(aboutSummary);
+    about.appendChild(aboutMemory);
+    about.appendChild(aboutPrivacy);
+    meta.appendChild(examples);
+    meta.appendChild(about);
+    composer.appendChild(composerLabel);
+    composer.appendChild(row);
+    composer.appendChild(feedback);
+    composer.appendChild(meta);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(input.value); }
+    });
+
+    panelApi.mount(tools, { slot: 'tools' });
+    panelApi.mount(section, { slot: 'top' });
+    panelApi.mount(composer, { slot: 'bottom' });
+
+    // -- the search box offers the assistant as a suggestion --
+    window.svgCadSearch.addProvider(function (text) {
+      if (!agentEnabled || waiting) return [];
+      return [{ kind: 'ask', group: t('askLabel'), label: '“' + text.slice(0, 120) + '”',
+                secondary: t('request'), primary: looksLikeSentence(text),
+                onSelect: function (value) { send(value); } }];
+    });
+
+    function setLanguage(value) {
+      language = value;
+      sessionStorage.setItem('svgcad_language', language);
+      applyWords();
+      render();
     }
-    function showSearch(data) {
-      clearResults(searchResults);
-      searchResults.appendChild(el('p', 'assistant-small', data.matched_total + ' ' + t('results') + '; ' +
-        (data.coverage.verified_bilingual + data.coverage.source_checked_bilingual) +
-        '/' + data.coverage.total_drawings + ' ' + t('reviewed')));
-      if (!data.results.length) searchResults.appendChild(el('p', '', t('noResults')));
-      data.results.forEach(function (sign) { showSign(sign, searchResults); });
-      status('');
-      if (window.svgCadGallery && data.results.length) {
-        searchResults.insertBefore(button(t('showGallery'), function () {
-          status(window.svgCadGallery.setExactCodes(data.results.map(function (item) { return item.code; }))
-            ? t('applied') : t('error'));
-        }), searchResults.children[1] || null);
-      }
+
+    function applyWords() {
+      langMenu.querySelector('summary').textContent = language === 'zh-Hant' ? '繁體中文' : 'English';
+      langList.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-pressed', b.dataset.value === language ? 'true' : 'false');
+      });
+      panelApi.setTitle(t('title'));
+      panelApi.setReopenLabel(t('reopen'));
+      resetBtn.textContent = t('reset');
+      run.textContent = t('run');
+      input.placeholder = t('placeholder');
+      input.setAttribute('aria-label', t('request'));
+      examplesSummary.textContent = t('examples');
+      aboutSummary.textContent = agentEnabled ? t('about') : t('noAgent');
+      aboutMemory.textContent = t('memory');
+      aboutPrivacy.textContent = t('privacy');
     }
-    function placeText(place, stem) {
-      return place[stem + (language === 'zh-Hant' ? '_zh_hant' : '_en')] ||
-        place[stem + (language === 'zh-Hant' ? '_en' : '_zh_hant')] || '';
+
+    function updateControls() {
+      input.disabled = !agentEnabled || busy || waiting;
+      run.disabled = input.disabled;
+      exampleList.querySelectorAll('button').forEach(function (b) { b.disabled = input.disabled; });
+      historyEl.querySelectorAll('button[data-agent-choice]').forEach(function (b) {
+        b.disabled = busy || b.dataset.agentActive !== 'true';
+      });
+      section.setAttribute('aria-busy', busy ? 'true' : 'false');
+      composer.classList.toggle('is-waiting', waiting);
+      composerLabel.textContent = turns.length ? t('refine') : t('request');
     }
-    function placeNotice(data, target) {
-      if (data.lookup_status === 'unavailable') target.appendChild(el('p', 'assistant-small', t('placeUnavailable')));
-      else if (data.lookup_status === 'rate_limited') target.appendChild(el('p', 'assistant-small', t('placeBusy')));
-      else if (!(data.results || data.items || []).length)
-        target.appendChild(el('p', 'assistant-small', t('placeMissing')));
-    }
-    function showPlace(place, target, resultTarget) {
-      var card = el('div', 'assistant-place');
-      var description = el('div', 'assistant-place-description');
-      var title = placeText(place, 'name');
-      description.appendChild(el('strong', '', title));
-      var address = placeText(place, 'address');
-      var district = placeText(place, 'district');
-      var subtitle = [place.kind === 'district_center' ? t('centrePoint') : '',
-        district, address].filter(Boolean).join(' · ');
-      if (subtitle) {
-        var meta = el('p', 'assistant-small assistant-place-meta', subtitle);
-        meta.title = subtitle;
-        description.appendChild(meta);
-      }
-      card.appendChild(description);
-      var choose = button(t('selectPlace'), function () {
-        var action = { latitude: place.latitude, longitude: place.longitude, radius_km: 0.5 };
-        run(jsonPost('map/query', action), function (result) {
-          target.querySelectorAll('.assistant-place').forEach(function (item) {
-            item.classList.toggle('assistant-place-selected', item === card);
+
+    // -- rendering --------------------------------------------------------------
+
+    function render() {
+      historyEl.textContent = '';
+      waiting = turns.some(function (turn) { return turn.status === 'waiting'; });
+      if (!turns.length) {
+        var empty = el('div', 'assistant-agent-empty');
+        empty.appendChild(el('h4', '', t('emptyTitle')));
+        empty.appendChild(el('p', '', agentEnabled ? t('emptyBody') : t('noAgent')));
+        historyEl.appendChild(empty);
+      } else {
+        historyEl.appendChild(renderTurn(turns[turns.length - 1], true));
+        if (turns.length > 1) {
+          var previous = el('details', 'assistant-agent-previous');
+          previous.appendChild(el('summary', '', (zh() ? '之前的搜尋' : 'Previous searches') + ' (' + (turns.length - 1) + ')'));
+          turns.slice(0, -1).reverse().forEach(function (turn) {
+            var saved = el('details', 'assistant-agent-saved');
+            var summary = el('summary');
+            summary.appendChild(el('span', '', turn.message));
+            var mapBlock = (turn.blocks || []).find(function (b) { return b.type === 'map'; });
+            if (mapBlock) summary.appendChild(el('small', '', mapBlock.matched_total.toLocaleString() + ' ' + t('records')));
+            saved.appendChild(summary);
+            saved.appendChild(renderTurn(turn, false));
+            previous.appendChild(saved);
           });
-          showMapResult(result, action, resultTarget, true);
-        });
-      });
-      choose.setAttribute('aria-label', t('selectPlace') + ': ' + title);
-      card.appendChild(choose); target.appendChild(card);
+          historyEl.appendChild(previous);
+        }
+      }
+      if (waiting) feedback.textContent = t('pickAbove');
+      updateControls();
+      showPins();
     }
-    function showPlaceSources(items, target) {
-      if (!items.length) return;
-      var note = el('p', 'assistant-small', t('placeGuide') + ' ' + t('source') + ': ');
+
+    function renderTurn(turn, latest) {
+      var entry = el('article', 'assistant-agent-turn');
+      entry.dataset.agentTurn = turn.id;
+      var top = el('div', 'assistant-agent-turn-top');
+      top.appendChild(el('span', 'assistant-agent-kicker', latest ? (zh() ? '目前搜尋' : 'Latest search') : (zh() ? '之前的結果' : 'Saved result')));
+      var statuses = zh() ?
+        { complete: '完成', waiting: '等待選擇', working: '處理中', failed: '未完成', cancelled: '已取消' } :
+        { complete: 'Complete', waiting: 'Your choice', working: 'Working', failed: 'Failed', cancelled: 'Cancelled' };
+      var badge = el('span', 'assistant-agent-badge', statuses[turn.status] || turn.status);
+      badge.dataset.status = turn.status;
+      top.appendChild(badge);
+      entry.appendChild(top);
+      entry.appendChild(el('p', 'assistant-agent-question', turn.message));
+
+      var card = el('div', 'assistant-agent-result-card');
+      entry.appendChild(card);
+      var mapBlock = (turn.blocks || []).find(function (b) { return b.type === 'map'; });
+      var scope = turn.search || {};
+      if (mapBlock) {
+        card.appendChild(el('h4', '', placeText(scope.place || {}, 'name') || t('selected')));
+        var scopeRow = el('div', 'assistant-agent-scope');
+        scopeRow.appendChild(el('span', '', scope.radius_km + ' km'));
+        scopeRow.appendChild(el('span', '', scope.drawing && scope.drawing.code || (zh() ? '全部交通標誌' : 'All traffic signs')));
+        card.appendChild(scopeRow);
+        var count = el('div', 'assistant-agent-count');
+        count.appendChild(el('strong', '', mapBlock.matched_total.toLocaleString()));
+        count.appendChild(el('span', '', t('records')));
+        card.appendChild(count);
+        if (!mapBlock.data_complete) card.appendChild(el('p', 'assistant-agent-warning', t('incomplete')));
+        var actions = el('div', 'assistant-agent-actions');
+        renderActions(turn, actions);
+        card.appendChild(actions);
+      } else if (!turn.pending) {
+        card.appendChild(el('p', 'assistant-agent-answer', turn.answer));
+      }
+
+      if (turn.pending && turn.status === 'waiting') {
+        card.appendChild(el('h4', '', turn.pending.kind === 'place' ? t('choosePlace') : t('chooseDrawing')));
+        var list = el('ol', 'assistant-agent-choices');
+        turn.pending.choices.forEach(function (choice) {
+          var li = el('li', 'assistant-agent-choice');
+          var text = el('div', 'assistant-agent-choice-text');
+          var item = choice.item || {};
+          text.appendChild(el('strong', '', turn.pending.kind === 'place' ? placeText(item, 'name') : choice.label));
+          var extra = turn.pending.kind === 'place' ?
+            [placeText(item, 'district'), placeText(item, 'address'), item.kind === 'district_center' ? t('centrePoint') : ''].filter(Boolean).join(' · ') :
+            (item.metadata && placeText(item.metadata, 'name') || t('codeOnly'));
+          if (extra) text.appendChild(el('span', '', extra));
+          li.appendChild(text);
+          var choose = button(t('select'), function () { resume(turn, choice); });
+          choose.setAttribute('aria-label', t('select') + ': ' + choice.label);
+          choose.dataset.agentChoice = 'true';
+          choose.dataset.agentActive = 'true';
+          li.appendChild(choose);
+          list.appendChild(li);
+        });
+        card.appendChild(list);
+        if (turn.pending.kind === 'place') card.appendChild(placeSources(turn.pending.choices.map(function (c) { return c.item || {}; })));
+        var cancel = button(zh() ? '取消搜尋' : 'Cancel search', function () {
+          request('cancel', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id });
+        }, 'assistant-agent-cancel');
+        cancel.dataset.agentChoice = 'true';
+        cancel.dataset.agentActive = 'true';
+        card.appendChild(cancel);
+      }
+
+      var seen = {};
+      var drawings = el('div', 'assistant-agent-drawings');
+      (turn.blocks || []).forEach(function (block) {
+        if (block.type === 'signs') block.items.forEach(function (sign) {
+          if (seen[sign.code]) return;
+          seen[sign.code] = true;
+          showDrawing(sign, drawings);
+        });
+        else if (block.type === 'notice') card.appendChild(el('p', 'assistant-agent-warning', block.message));
+      });
+      if (drawings.children.length) card.appendChild(drawings);
+
+      if (mapBlock) {
+        var notes = el('details', 'assistant-agent-data-notes');
+        notes.appendChild(el('summary', '', zh() ? '資料說明' : 'Data notes'));
+        notes.appendChild(el('p', '', zh() ? '紀錄數量並非獨立路牌數量。' : 'Counts are surveyed records, not necessarily unique physical signs.'));
+        if (mapBlock.truncated) notes.appendChild(el('p', '', t('limits')));
+        card.appendChild(notes);
+      } else if (!turn.pending) {
+        var drawingActions = el('div', 'assistant-agent-actions');
+        renderActions(turn, drawingActions);
+        card.appendChild(drawingActions);
+      }
+
+      if ((turn.trace || []).length) {
+        var trace = el('details', 'assistant-agent-trace');
+        trace.appendChild(el('summary', '', (zh() ? '執行步驟' : 'How it ran') + ' · ' + turn.trace.length + (zh() ? ' 步' : ' steps')));
+        var steps = el('ol');
+        turn.trace.forEach(function (step) {
+          var li = el('li');
+          li.appendChild(el('code', '', step.node));
+          li.appendChild(el('span', '', step.detail));
+          steps.appendChild(li);
+        });
+        trace.appendChild(steps);
+        entry.appendChild(trace);
+      }
+      return entry;
+    }
+
+    function placeSources(items) {
+      var note = el('p', 'assistant-agent-sources', t('placeGuide') + ' ' + t('source') + ': ');
       var added = {};
       items.forEach(function (place) {
         var url = place.source && place.source.url;
-        var key = /^https:\/\/www\.map\.gov\.hk\/gs\/api\//.test(url) ? 'landsSource' :
-          /^https:\/\/www\.had\.gov\.hk\//.test(url) ? 'hadSource' : null;
+        var key = /^https:\/\/www\.map\.gov\.hk\/gs\/api\//.test(url) ? 'lands' :
+          /^https:\/\/www\.had\.gov\.hk\//.test(url) ? 'had' : null;
         if (!key || added[key]) return;
         added[key] = true;
         if (Object.keys(added).length > 1) note.appendChild(document.createTextNode(' · '));
         var link = el('a', '', t(key));
-        link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         note.appendChild(link);
       });
-      target.appendChild(note);
-    }
-    function showMapResult(data, action, target, compact) {
-      var targetResults = target || mapResults;
-      clearResults(targetResults);
-      targetResults.appendChild(el('p', '', data.matched_total + ' ' + t('records') +
-        (data.data_complete ? '' : ' (' + t('incomplete') + ')') +
-        (data.truncated ? '; ' + t('showing') + ' ' + data.returned_records.length : '')));
-      var codeTarget = targetResults;
-      if (compact && (data.available_drawings || []).length) {
-        codeTarget = el('details', 'assistant-place-codes');
-        codeTarget.appendChild(el('summary', '', (data.available_drawings || []).length + ' ' + t('drawingCodes')));
-        targetResults.appendChild(codeTarget);
-      }
-      var detailResults = el('div', 'assistant-detail'); codeTarget.appendChild(detailResults);
-      var codes = data.available_drawings.filter(function (code) { return /^TS_\d+[A-Z]?$/.test(code); });
-      if (codes.length) {
-        var filterLabel = el('label', 'assistant-small', t('filterCodes'));
-        var filter = input('search', t('filterCodes'));
-        filterLabel.appendChild(filter); codeTarget.appendChild(filterLabel);
-        var codeList = el('div', 'assistant-code-list'); codeTarget.appendChild(codeList);
-        var showAll = false;
-        function renderCodes() {
-          clearResults(codeList);
-          var matches = codes.filter(function (code) {
-            return code.toLowerCase().indexOf(filter.value.trim().toLowerCase()) !== -1;
-          });
-          var visible = showAll || filter.value.trim() ? matches : matches.slice(0, 12);
-          visible.forEach(function (code) {
-            codeList.appendChild(button(code, function () {
-              run(api('signs/' + encodeURIComponent(code)), function (detail) {
-                clearResults(detailResults); showSign(detail, detailResults); status(code);
-              });
-            }));
-          });
-          if (!matches.length) codeList.appendChild(el('p', 'assistant-small', t('noCodes')));
-          if (!filter.value.trim() && matches.length > 12) {
-            codeList.appendChild(button((showAll ? t('showLess') : t('showAll')) +
-              ' ' + matches.length + ' ' + t('drawingCodes'), function () {
-                showAll = !showAll; renderCodes();
-              }, 'assistant-more'));
-          }
-        }
-        filter.addEventListener('input', renderCodes); renderCodes();
-      }
-      if (isMap) {
-        var token = generation;
-        status(t('busy'));
-        window.svgCadMap.ready().then(function (ready) {
-          if (token !== generation) return;
-          status(ready && window.svgCadMap.applyQuery(action) ? t('applied') : t('error'));
-        }).catch(function () { if (token === generation) status(t('error')); });
-      } else {
-        targetResults.prepend(button(t('pending'), function () {
-          sessionStorage.setItem('svgcad_map_action', JSON.stringify({ time: Date.now(), action: action }));
-          location.href = 'map.html';
-        }));
-        status(t('pending'));
-      }
+      return note;
     }
 
-    var opener = button(t('open'), function () {
-      lastFocus = document.activeElement;
-      panel.hidden = false; opener.hidden = true; close.focus();
-    }, 'assistant-open');
-    document.body.appendChild(opener);
-    var panel = el('aside', 'assistant-panel');
-    panel.hidden = true; panel.setAttribute('aria-label', t('title'));
-    var top = el('div', 'assistant-top');
-    top.appendChild(el('h2', '', t('title')));
-    var languageSelect = el('details', 'assistant-choice assistant-language-menu');
-    languageSelect.dataset.label = 'Language';
-    languageSelect.appendChild(el('summary', '', 'English'));
-    var languageChoices = el('div', 'assistant-choice-menu');
-    languageChoices.setAttribute('role', 'group');
-    languageChoices.setAttribute('aria-label', 'Languages');
-    [['en', 'English'], ['zh-Hant', '繁體中文']].forEach(function (pair) {
-      var option = el('button', '', pair[1]);
-      option.type = 'button'; option.dataset.value = pair[0];
-      languageChoices.appendChild(option);
-    });
-    languageSelect.appendChild(languageChoices);
-    setupChoiceMenu(languageSelect, language, changeLanguage);
-    top.appendChild(languageSelect);
-    var close = button(t('close'), function () {
-      panel.hidden = true; opener.hidden = false;
-      (lastFocus || opener).focus();
-    });
-    top.appendChild(close); panel.appendChild(top);
-    var taskNav = el('div', 'assistant-tasks');
-    taskNav.setAttribute('role', 'tablist');
-    taskNav.setAttribute('aria-label', t('title'));
-    panel.appendChild(taskNav);
-    var taskViews = el('div', 'assistant-views'); panel.appendChild(taskViews);
-    var viewKeys = ['agent', 'signs', 'map', 'convert', 'chat'];
-    var viewLabels = { agent: 'agentTab', signs: 'signsTab', map: 'mapTab', convert: 'convertTab', chat: 'chatTab' };
-    words.en.agentTab = 'Agent'; words['zh-Hant'].agentTab = '代理';
-    var views = {}, tabs = {};
-    function selectView(key) {
-      viewKeys.forEach(function (name) {
-        var selected = name === key;
-        tabs[name].setAttribute('aria-selected', selected ? 'true' : 'false');
-        tabs[name].tabIndex = selected ? 0 : -1;
-        views[name].hidden = !selected;
-      });
-      if (key === 'chat' && chatResults) scrollToLatest();
-      if (key === 'agent' && agentHistory) focusLatestAgentTurn();
-      status('');
+    function mapActionOf(turn) {
+      return (turn.actions || []).find(function (a) { return a.type === 'open_map'; });
     }
-    viewKeys.forEach(function (key, index) {
-      var tab = button(t(viewLabels[key]), function () { selectView(key); }, 'assistant-task');
-      tab.id = 'assistant-tab-' + key;
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-controls', 'assistant-view-' + key);
-      tab.addEventListener('keydown', function (event) {
-        var next = event.key === 'ArrowRight' ? index + 1 :
-          event.key === 'ArrowLeft' ? index - 1 :
-          event.key === 'Home' ? 0 : event.key === 'End' ? viewKeys.length - 1 : -1;
-        if (next < 0 && event.key !== 'ArrowLeft') return;
-        if (next === -1 && event.key === 'ArrowLeft') next = viewKeys.length - 1;
-        if (next >= viewKeys.length) next = 0;
-        event.preventDefault(); selectView(viewKeys[next]); tabs[viewKeys[next]].focus();
-      });
-      tabs[key] = tab; taskNav.appendChild(tab);
-      var view = el('div', 'assistant-view');
-      if (key === 'chat') view.classList.add('assistant-chat-disabled');
-      view.id = 'assistant-view-' + key;
-      view.setAttribute('role', 'tabpanel');
-      view.setAttribute('aria-labelledby', tab.id);
-      views[key] = view; taskViews.appendChild(view);
-    });
-    var statusEl = el('p', 'assistant-status');
-    statusEl.setAttribute('role', 'status'); top.insertAdjacentElement('afterend', statusEl);
-    selectView('signs');
-    var searchSection = section(t('search'), views.signs);
-    var searchRow = el('div', 'assistant-row');
-    var searchInput = input('search', t('searchHint'));
-    searchInput.setAttribute('aria-label', t('search'));
-    searchRow.appendChild(searchInput);
-    var searchButton = button(t('find'), function () {
-      if (!searchInput.value.trim()) return;
-      run(api('signs?q=' + encodeURIComponent(searchInput.value.trim())), showSearch);
-    }, 'assistant-primary');
-    searchRow.appendChild(searchButton);
-    searchSection.appendChild(searchRow);
-    var searchResults = el('div', 'assistant-results'); searchSection.appendChild(searchResults);
 
-    var placeSection = section(t('places'), views.map);
-    var placeRow = el('div', 'assistant-row');
-    var placeInput = input('search', t('placeHint'));
-    placeInput.setAttribute('aria-label', t('places')); placeRow.appendChild(placeInput);
-    var placeButton = button(t('find'), function () {
-      if (!placeInput.value.trim()) return;
-      run(api('places?q=' + encodeURIComponent(placeInput.value.trim())), function (data) {
-        clearResults(placeResults);
-        clearResults(placeMapResults);
-        if (data.results.length) placeResults.appendChild(el('p', 'assistant-small',
-          t('placeCount').replace('{shown}', data.results.length).replace('{total}', data.matched_total)));
-        placeNotice(data, placeResults);
-        data.results.forEach(function (place) { showPlace(place, placeResults, placeMapResults); });
-        showPlaceSources(data.results, placeResults);
-        status('');
+    function applyTurn(turn) {
+      var action = mapActionOf(turn);
+      if (!action) return false;
+      return mapApi.applyQuery({
+        latitude: action.latitude, longitude: action.longitude,
+        radius_km: action.radius_km || 0.5, code: action.code || null,
+        place: (turn.search && turn.search.place) || null
       });
-    });
-    placeRow.appendChild(placeButton);
-    placeSection.appendChild(placeRow);
-    var placePrivacy = el('p', 'assistant-small', t('externalSearch'));
-    placeSection.appendChild(placePrivacy);
-    var placeResults = el('div', 'assistant-results'); placeSection.appendChild(placeResults);
-    var placeMapResults = el('div', 'assistant-results assistant-place-outcome');
-    placeSection.appendChild(placeMapResults);
+    }
 
-    var mapSection, radiusLabel, mapButton;
-    if (isMap) {
-      mapSection = section(t('near'), views.map);
-      var radius = input('number', '0.5'); radius.value = '0.5';
-      radius.min = '0.01'; radius.max = '5'; radius.step = '0.1';
-      radiusLabel = label(mapSection, t('radius'), radius);
-      mapButton = button(t('query'), function () {
-        var point = window.svgCadMap.currentPoint();
-        var action = { latitude: point.latitude, longitude: point.longitude,
-                       radius_km: Number(radius.value) };
-        run(jsonPost('map/query', action), function (result) { showMapResult(result, action); });
-      });
-      mapSection.appendChild(mapButton);
-    }
-    var mapResults = el('div', 'assistant-results');
-    (mapSection || placeSection).appendChild(mapResults);
-    if (isMap) window.addEventListener('svgcad:scope-cleared', function () {
-      clearResults(placeMapResults);
-      clearResults(mapResults);
-      panel.querySelectorAll('.assistant-place-selected').forEach(function (item) {
-        item.classList.remove('assistant-place-selected');
-      });
-      panel.querySelectorAll('.assistant-place-outcome').forEach(clearResults);
-      status('');
-    });
-
-    var uploadSection = section(t('upload'), views.convert);
-    var fileInput = input('file', ''); fileInput.accept = '.svg,image/svg+xml';
-    fileInput.setAttribute('aria-label', 'SVG file');
-    fileInput.addEventListener('change', function () { uploadId = null; });
-    uploadSection.appendChild(fileInput);
-    var options = el('div', 'assistant-options');
-    var curve = input('number', ''); curve.value = '0.05'; curve.step = 'any';
-    var snap = input('number', ''); snap.value = '0.01'; snap.step = 'any';
-    var scale = input('number', ''); scale.value = '1'; scale.step = 'any';
-    label(options, 'Curve tolerance', curve); label(options, 'Snap tolerance', snap);
-    label(options, 'Scale', scale); uploadSection.appendChild(options);
-    function uploadSelected() {
-      var form = new FormData(); form.append('file', fileInput.files[0]);
-      return api('uploads', { method: 'POST', body: form }).then(function (uploaded) {
-        uploadId = uploaded.upload_id;
-        return uploaded;
-      });
-    }
-    var uploadButton = button(t('uploadOnly'), function () {
-      if (!fileInput.files.length) { status(t('chooseSvg')); return; }
-      run(uploadSelected(), function () { status(t('uploaded')); });
-    });
-    uploadSection.appendChild(uploadButton);
-    var convertButton = button(t('convert'), function () {
-      if (!fileInput.files.length) { status(t('chooseSvg')); return; }
-      run((uploadId ? Promise.resolve() : uploadSelected()).then(function () {
-        return jsonPost('conversions', { upload_id: uploadId, curve_tol: Number(curve.value),
-          snap_tol: Number(snap.value), scale: Number(scale.value) });
-      }), function (data) {
-        clearResults(convertResults);
-        var link = el('a', 'assistant-link', t('downloadDxf'));
-        if (/^\/api\/files\/[A-Za-z0-9_-]+$/.test(data.download_url)) link.href = data.download_url;
-        link.download = ''; convertResults.appendChild(link);
-        (data.stats.warnings || []).forEach(function (warning) {
-          convertResults.appendChild(el('p', 'assistant-small', warning));
-        });
-        status(t('converted'));
-      });
-    }, 'assistant-primary');
-    uploadSection.appendChild(convertButton);
-    var convertResults = el('div', 'assistant-results'); uploadSection.appendChild(convertResults);
-
-    var chatSection = section(t('chat'), views.chat);
-    var providerName = '';
-    var providerModel = '';
-    var providerValidation = '';
-    var chatPending = false;
-    var chatAvailable = null;
-    var queuedMapQuestion = null;
-    var providerLine = el('p', 'assistant-small');
-    chatSection.appendChild(providerLine);
-    function showProvider() {
-      if (!providerName) return;
-      var names = { openai: 'OpenAI', deepseek: 'DeepSeek', vercel: 'Vercel AI Gateway',
-        custom: language === 'zh-Hant' ? '自訂' : 'Custom' };
-      providerLine.textContent = t('provider') + ': ' + (names[providerName] || providerName) +
-        (providerModel ? ' · ' + providerModel : '') +
-        (providerValidation ? ' · ' + (t(providerValidation) || providerValidation) : '');
-    }
-    var chatSetup = el('div', 'assistant-setup');
-    var setupIntro = el('p', '', t('setupIntro')); chatSetup.appendChild(setupIntro);
-    var setupDetails = el('details');
-    var setupSummary = el('summary', '', t('configure')); setupDetails.appendChild(setupSummary);
-    var setupCopy = el('p', '', t('setupCopy')); setupDetails.appendChild(setupCopy);
-    var setupChoose = el('p', '', t('setupChoose')); setupDetails.appendChild(setupChoose);
-    var providerList = el('ul');
-    ['openai → OPENAI_API_KEY', 'deepseek → DEEPSEEK_API_KEY',
-      'vercel → AI_GATEWAY_API_KEY + AI_GATEWAY_MODEL',
-      'custom → CUSTOM_API_BASE_URL + CUSTOM_MODEL + CUSTOM_API_KEY'].forEach(function (entry) {
-      providerList.appendChild(el('li', '', entry));
-    });
-    setupDetails.appendChild(providerList);
-    var setupRestart = el('p', '', t('setupRestart')); setupDetails.appendChild(setupRestart);
-    setupDetails.appendChild(el('code', 'assistant-command',
-      'docker compose up -d --force-recreate backend'));
-    var setupPrivate = el('p', 'assistant-small', t('setupPrivate'));
-    setupDetails.appendChild(setupPrivate);
-    chatSetup.appendChild(setupDetails); chatSection.appendChild(chatSetup);
-    var chatReady = el('div', 'assistant-chat-ready'); chatReady.hidden = true; chatSection.appendChild(chatReady);
-    var chatInput = el('textarea'); chatInput.maxLength = 2000;
-    chatInput.disabled = true;
-    chatInput.setAttribute('aria-label', t('chat'));
-    chatReady.appendChild(chatInput);
-    function openMapAction(action) {
-      var query = { latitude: action.latitude, longitude: action.longitude,
-                    radius_km: action.radius_km || 0.5 };
-      if (action.code) query.code = action.code;
-      if (isMap) {
-        window.svgCadMap.ready().then(function (ready) {
-          status(ready && window.svgCadMap.applyQuery(query) ? t('applied') : t('error'));
-        }).catch(function () { status(t('error')); });
-      } else {
-        sessionStorage.setItem('svgcad_map_action', JSON.stringify({ time: Date.now(), action: query }));
-        location.href = 'map.html';
-      }
-    }
-    function renderTurn(turn) {
-      if (!turn || !turn.id) return;
-      var existing = chatResults.querySelector('[data-turn-id="' + turn.id + '"]');
-      if (existing) existing.remove();
-      var entry = el('article', 'assistant-turn');
-      entry.dataset.turnId = turn.id;
-      entry.appendChild(el('p', 'assistant-question', turn.message));
-      entry.appendChild(el('p', 'assistant-answer', turn.status === 'working' ? t('busy') : turn.answer));
-      (turn.blocks || []).forEach(function (block) {
-        if (block.type === 'signs') {
-          if (!block.items.length) entry.appendChild(el('p', 'assistant-small', t('noMatches')));
-          block.items.forEach(function (sign) { showSign(sign, entry); });
-          if (block.truncated) entry.appendChild(el('p', 'assistant-small', t('limits')));
-        } else if (block.type === 'places') {
-          placeNotice(block, entry);
-          var placeList = el('div', 'assistant-place-list'); entry.appendChild(placeList);
-          var placeOutcome = el('div', 'assistant-place-outcome');
-          block.items.forEach(function (place) { showPlace(place, placeList, placeOutcome); });
-          showPlaceSources(block.items, entry);
-          entry.appendChild(placeOutcome);
-        } else if (block.type === 'map') {
-          entry.appendChild(el('p', 'assistant-small', block.matched_total + ' ' + t('records') +
-            (block.truncated ? ' · ' + t('limits') : '') +
-            (!block.data_complete ? ' · ' + t('incomplete') : '')));
-          var codeList = el('div', 'assistant-code-list');
-          (block.available_drawings || []).slice(0, 20).forEach(function (code) {
-            codeList.appendChild(button(code, function () {
-              api('signs/' + encodeURIComponent(code)).then(function (sign) { showSign(sign, entry); });
-            }));
-          });
-          entry.appendChild(codeList);
-          if ((block.available_drawings || []).length > 20)
-            entry.appendChild(el('p', 'assistant-small', t('showing') + ' 20 ' + t('drawingCodes')));
-        } else if (block.type === 'conversion') {
-          if (/^\/api\/files\/[A-Za-z0-9_-]+$/.test(block.download_url || '')) {
-            var link = el('a', 'assistant-link', t('downloadDxf'));
-            link.href = block.download_url; link.download = ''; entry.appendChild(link);
-          }
-          (block.stats && block.stats.warnings || []).forEach(function (warning) {
-            entry.appendChild(el('p', 'assistant-small', warning));
-          });
-        } else if (block.type === 'notice') {
-          entry.appendChild(el('p', 'assistant-small', block.message));
-        } else if (block.type === 'help' || block.type === 'clarify') {
-          entry.appendChild(el('p', 'assistant-small', t(block.type)));
-        }
-      });
-      (turn.actions || []).forEach(function (action) {
-        if (action.type === 'open_map')
-          entry.appendChild(button(t('pending'), function () { openMapAction(action); }));
-        if (action.type === 'show_gallery')
-          entry.appendChild(button(t('showGallery'), function () {
-            if (window.svgCadGallery)
-              status(window.svgCadGallery.setExactCodes(action.codes) ? t('applied') : t('error'));
-            else {
-              sessionStorage.setItem('svgcad_gallery_codes', JSON.stringify(action.codes));
-              location.href = 'index.html';
-            }
+    function renderActions(turn, target) {
+      (turn.actions || []).slice().sort(function (a, b) {
+        return (a.type === 'open_map' ? 0 : 1) - (b.type === 'open_map' ? 0 : 1);
+      }).forEach(function (action) {
+        if (action.type === 'open_map') {
+          target.appendChild(button(t('showOnMap'), function () { applyTurn(turn); }, 'assistant-primary'));
+        } else if (action.type === 'show_gallery') {
+          target.appendChild(button(t('viewDrawings'), function () {
+            sessionStorage.setItem('svgcad_gallery_codes', JSON.stringify(action.codes));
+            location.href = 'index.html';
           }));
-      });
-      chatResults.appendChild(entry);
-      scrollToLatest();
-    }
-    var send = button(t('send'), function () {
-      var message = chatInput.value.trim();
-      if (!message || chatPending) return;
-      var context = { page: isMap ? 'map' : 'gallery' };
-      if (isMap) context.map_point = window.svgCadMap.currentPoint();
-      if (activeCode) context.active_code = activeCode;
-      var request = { turn_id: crypto.randomUUID(), message: message, language: language,
-                      context: context, upload_id: uploadId };
-      chatPending = true; send.disabled = true; status(t('busy'));
-      fetch('/api/chat', { method: 'POST', credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request) })
-        .then(function (response) { return response.json().then(function (data) {
-          if (!response.ok) throw new Error(data.error && data.error.message || t('error'));
-          return data;
-        }); })
-        .then(function (data) {
-          renderTurn(data.turn); chatInput.value = ''; status(t('ready'));
-        }).catch(function (error) { status(error.message || t('error')); })
-        .finally(function () { chatPending = false; send.disabled = false; });
-    }, 'assistant-primary');
-    send.disabled = true;
-    chatReady.appendChild(send);
-    var privacy = el('p', 'assistant-small', t('privacy')); chatReady.appendChild(privacy);
-    var chatResults = el('div', 'assistant-results assistant-chat-history');
-    chatResults.setAttribute('role', 'log');
-    chatResults.setAttribute('aria-label', t('chatHistory'));
-    chatSection.insertBefore(chatResults, chatReady);
-    var latestButton = button(t('latest'), scrollToLatest, 'assistant-latest');
-    latestButton.hidden = true;
-    chatSection.insertBefore(latestButton, chatReady);
-    function updateLatestButton() {
-      latestButton.hidden = chatResults.scrollHeight - chatResults.scrollTop - chatResults.clientHeight < 80;
-    }
-    function scrollToLatest() {
-      chatResults.scrollTop = chatResults.scrollHeight;
-      updateLatestButton();
-    }
-    chatResults.addEventListener('scroll', updateLatestButton);
-    var mapAskInput = null;
-    function sendQueuedMapQuestion() {
-      if (!queuedMapQuestion || chatPending || send.disabled || chatReady.hidden) return;
-      if (chatInput.value.trim() !== queuedMapQuestion) {
-        queuedMapQuestion = null;
-        return;
-      }
-      queuedMapQuestion = null;
-      mapAskInput.value = '';
-      send.click();
-    }
-    if (isMap) {
-      var mapSearch = document.getElementById('map-search');
-      var mapSearchMode = document.getElementById('map-search-mode');
-      var mapCodeInput = document.getElementById('filter');
-      mapAskInput = document.getElementById('map-ask-input');
-      var mapAskSubmit = document.getElementById('map-ask-submit');
-      mapSearch.classList.add('assistant-search-enabled');
-      mapSearchMode.hidden = false;
-      setupChoiceMenu(mapSearchMode, 'codes', function (mode) {
-        var asking = mode === 'ask';
-        if (asking) window.svgCadMap.clearCodeFilter();
-        mapCodeInput.hidden = asking;
-        mapAskInput.hidden = !asking;
-        mapAskSubmit.hidden = !asking;
-        (asking ? mapAskInput : mapCodeInput).focus();
-      });
-      mapAskSubmit.addEventListener('click', function () {
-        var question = mapAskInput.value.trim();
-        if (!question) { mapAskInput.focus(); return; }
-        if (panel.hidden) opener.click();
-        selectView('chat');
-        if (chatPending) { status(t('busy')); return; }
-        chatInput.value = question;
-        if (chatAvailable === false) { status(t('noChat')); return; }
-        if (chatAvailable === 'error') { status(t('checkChat')); return; }
-        queuedMapQuestion = question;
-        if (chatAvailable === null) status(t('busy'));
-        sendQueuedMapQuestion();
-      });
-      mapAskInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { event.preventDefault(); mapAskSubmit.click(); }
+        }
       });
     }
-    var reset = button(t('reset'), function () {
-      if (chatPending || agentBusy) { status(t('busy')); return; }
-      jsonPost('session/reset', {}).then(function () {
-        uploadId = null;
-        activeCode = null;
-        [searchResults, placeResults, placeMapResults, mapResults, convertResults, chatResults].forEach(clearResults);
-        chatInput.value = '';
-        agentTurns = []; agentHistory.textContent = ''; agentInput.value = ''; agentWaiting = false;
-        updateAgentControls();
-        status(t('resetDone'));
-      }).catch(function (error) { status(error.message || t('error')); });
-    }, 'assistant-reset');
-    chatSection.appendChild(reset);
 
-    var agentSection = section('Search agent', views.agent);
-    var agentHeading = el('div', 'assistant-agent-heading');
-    agentHeading.appendChild(agentSection.querySelector('h3'));
-    agentHeading.appendChild(el('span', 'assistant-agent-prototype', 'Prototype'));
-    agentSection.appendChild(agentHeading);
-    var agentIntro = el('p', 'assistant-small',
-      'Search settings stay in this session. Restarting the backend clears them.');
-    var agentHistory = el('div', 'assistant-agent-history');
-    agentHistory.setAttribute('role', 'log'); agentHistory.setAttribute('aria-label', 'Agent search history');
-    agentSection.appendChild(agentHistory);
-    var agentComposer = el('div', 'assistant-agent-composer'); agentSection.appendChild(agentComposer);
-    var agentComposerLabel = el('label', 'assistant-agent-composer-label', 'Your request');
-    agentComposerLabel.htmlFor = 'assistant-agent-input'; agentComposer.appendChild(agentComposerLabel);
-    var agentComposeRow = el('div', 'assistant-agent-compose-row'); agentComposer.appendChild(agentComposeRow);
-    var agentExamples = el('details', 'assistant-agent-examples');
-    var agentExamplesSummary = el('summary', '', 'Examples'); agentExamples.appendChild(agentExamplesSummary);
-    var agentExampleList = el('div'); agentExamples.appendChild(agentExampleList);
-    ['Stop signs near Mong Kok within 500 metres', 'Show drawing RM1001', 'Make it 1 kilometre'].forEach(function (example) {
-      agentExampleList.appendChild(button(example, function () {
-        agentInput.value = example; agentExamples.open = false; agentInput.focus();
-      }));
-    });
-    var agentInput = el('textarea'); agentInput.maxLength = 2000;
-    agentInput.id = 'assistant-agent-input'; agentInput.rows = 2;
-    agentInput.placeholder = 'Find signs near a place, or ask for a drawing…';
-    agentInput.setAttribute('aria-label', 'Agent search request'); agentInput.disabled = true;
-    agentComposeRow.appendChild(agentInput);
-    var agentBusy = false, agentWaiting = false, agentEnabled = false, agentTurns = [];
-    var agentRun = button('Run search', function () {
-      var message = agentInput.value.trim();
-      if (!message || agentBusy || agentWaiting || !agentEnabled) return;
-      var context = { page: isMap ? 'map' : 'gallery' };
-      if (isMap) context.map_point = window.svgCadMap.currentPoint();
-      agentRequest('search', { message: message, language: language, context: context });
-    }, 'assistant-primary');
-    agentRun.disabled = true; agentComposeRow.appendChild(agentRun);
-    agentInput.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); agentRun.click(); }
-    });
-    var agentFeedback = el('p', 'assistant-small'); agentFeedback.setAttribute('role', 'status');
-    agentComposer.appendChild(agentFeedback);
-    var agentComposerMeta = el('div', 'assistant-agent-composer-meta'); agentComposer.appendChild(agentComposerMeta);
-    agentComposerMeta.appendChild(agentExamples);
-    var agentAbout = el('details', 'assistant-agent-about'); agentComposerMeta.appendChild(agentAbout);
-    var agentMode = el('summary', '', 'LangGraph · session memory'); agentAbout.appendChild(agentMode);
-    agentAbout.appendChild(agentIntro);
-    var agentPrivacy = el('p', 'assistant-small', t('privacy')); agentAbout.appendChild(agentPrivacy);
-
-    function updateAgentControls() {
-      agentInput.disabled = !agentEnabled || agentBusy || agentWaiting;
-      agentRun.disabled = agentInput.disabled;
-      agentExamples.querySelectorAll('button').forEach(function (item) { item.disabled = agentInput.disabled; });
-      agentHistory.querySelectorAll('button[data-agent-choice]').forEach(function (item) {
-        item.disabled = agentBusy || item.dataset.agentActive !== 'true';
-      });
-      agentSection.setAttribute('aria-busy', agentBusy ? 'true' : 'false');
-      agentComposer.classList.toggle('is-waiting', agentWaiting);
-      agentComposerLabel.textContent = agentTurns.length ?
-        (language === 'zh-Hant' ? '繼續或調整搜尋' : 'Continue or refine') :
-        (language === 'zh-Hant' ? '你的搜尋' : 'Your request');
-    }
-    function renderAgentHistory() {
-      agentHistory.textContent = '';
-      agentWaiting = agentTurns.some(function (turn) { return turn.status === 'waiting'; });
-      if (!agentTurns.length) {
-        var empty = el('div', 'assistant-agent-empty');
-        empty.appendChild(el('span', 'assistant-agent-empty-mark', '↗'));
-        empty.appendChild(el('h4', '', language === 'zh-Hant' ? '從地點或圖紙開始' : 'Start with a place or drawing.'));
-        empty.appendChild(el('p', 'assistant-small', language === 'zh-Hant' ?
-          '搜尋附近標誌、選擇地點，再調整半徑。' : 'Find nearby signs, choose a location, then adjust your search.'));
-        agentHistory.appendChild(empty);
-      } else {
-        agentHistory.appendChild(renderAgentTurn(agentTurns[agentTurns.length - 1], true));
-        if (agentTurns.length > 1) {
-          var previous = el('details', 'assistant-agent-previous');
-          previous.appendChild(el('summary', '',
-            (language === 'zh-Hant' ? '之前的搜尋' : 'Previous searches') + ' (' + (agentTurns.length - 1) + ')'));
-          agentTurns.slice(0, -1).reverse().forEach(function (turn) {
-            var saved = el('details', 'assistant-agent-saved');
-            var summary = el('summary'); summary.appendChild(el('span', '', turn.message));
-            var mapBlock = (turn.blocks || []).find(function (block) { return block.type === 'map'; });
-            if (mapBlock) summary.appendChild(el('small', '', mapBlock.matched_total.toLocaleString() + ' ' + t('records')));
-            saved.appendChild(summary); saved.appendChild(renderAgentTurn(turn, false));
-            previous.appendChild(saved);
-          });
-          agentHistory.appendChild(previous);
-        }
-      }
-      if (agentWaiting) agentFeedback.textContent = language === 'zh-Hant' ?
-        '請選擇上方結果以繼續。' : 'Choose a result above to continue.';
-      updateAgentControls(); focusLatestAgentTurn();
-    }
-    function renderAgentTurn(turn, latest) {
-        var entry = el('article', 'assistant-turn assistant-agent-turn'); entry.dataset.agentTurn = turn.id;
-        var header = el('div', 'assistant-agent-turn-top');
-        header.appendChild(el('span', 'assistant-agent-kicker', latest ?
-          (language === 'zh-Hant' ? '目前搜尋' : 'Latest search') :
-          (language === 'zh-Hant' ? '之前的結果' : 'Saved result')));
-        var statuses = language === 'zh-Hant' ?
-          { complete: '完成', waiting: '等待選擇', working: '處理中', failed: '未完成', cancelled: '已取消' } :
-          { complete: 'Complete', waiting: 'Your choice', working: 'Working', failed: 'Failed', cancelled: 'Cancelled' };
-        var badge = el('span', 'assistant-agent-badge', statuses[turn.status] || turn.status);
-        badge.dataset.status = turn.status; header.appendChild(badge);
-        entry.appendChild(header);
-        entry.appendChild(el('p', 'assistant-question', turn.message));
-        var mapBlock = (turn.blocks || []).find(function (block) { return block.type === 'map'; });
-        var resultCard = el('div', 'assistant-agent-result-card'); entry.appendChild(resultCard);
-        var scope = turn.search || {};
-        if (mapBlock) {
-          resultCard.appendChild(el('h4', '', placeText(scope.place || {}, 'name') || t('selected')));
-          var scopeRow = el('div', 'assistant-agent-scope');
-          scopeRow.appendChild(el('span', '', scope.radius_km + ' km'));
-          scopeRow.appendChild(el('span', '', scope.drawing && scope.drawing.code ||
-            (language === 'zh-Hant' ? '全部交通標誌' : 'All traffic signs')));
-          resultCard.appendChild(scopeRow);
-          var count = el('div', 'assistant-agent-count');
-          count.appendChild(el('strong', '', mapBlock.matched_total.toLocaleString()));
-          count.appendChild(el('span', '', t('records'))); resultCard.appendChild(count);
-          if (!mapBlock.data_complete) resultCard.appendChild(el('p', 'assistant-agent-warning', t('incomplete')));
-          var actions = el('div', 'assistant-agent-actions');
-          renderAgentActions(turn.actions || [], actions); resultCard.appendChild(actions);
-        } else if (!turn.pending) {
-          resultCard.appendChild(el('p', 'assistant-answer', turn.answer));
-        }
-        if (turn.pending && turn.status === 'waiting') {
-          resultCard.appendChild(el('h4', '', turn.pending.kind === 'place' ? t('choosePlace') :
-            (language === 'zh-Hant' ? '選擇圖紙' : 'Choose a drawing')));
-          var choices = el('div', 'assistant-agent-choices');
-          turn.pending.choices.forEach(function (choice) {
-            var card = el('div', 'assistant-place'); var description = el('div', 'assistant-place-description');
-            var item = choice.item;
-            description.appendChild(el('strong', '', turn.pending.kind === 'place' ? placeText(item, 'name') : choice.label));
-            var extra = turn.pending.kind === 'place' ?
-              [placeText(item, 'district'), placeText(item, 'address'), item.kind === 'district_center' ? t('centrePoint') : ''].filter(Boolean).join(' · ') :
-              (item.metadata && placeText(item.metadata, 'name') || t('codeOnly'));
-            if (extra) description.appendChild(el('p', 'assistant-small', extra));
-            card.appendChild(description);
-            var choose = button(t('selectPlace'), function () {
-              agentRequest('resume', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id, choice_id: choice.id });
-            });
-            choose.setAttribute('aria-label', t('selectPlace') + ': ' + choice.label);
-            choose.dataset.agentChoice = 'true'; choose.dataset.agentActive = 'true';
-            card.appendChild(choose); choices.appendChild(card);
-          });
-          resultCard.appendChild(choices);
-          if (turn.pending.kind === 'place') {
-            var sources = el('details', 'assistant-agent-data-notes');
-            sources.appendChild(el('summary', '', language === 'zh-Hant' ? '位置及來源說明' : 'Location & sources'));
-            showPlaceSources(turn.pending.choices.map(function (c) { return c.item; }), sources);
-            resultCard.appendChild(sources);
-          }
-          var cancel = button(language === 'zh-Hant' ? '取消搜尋' : 'Cancel search', function () {
-            agentRequest('cancel', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id });
-          });
-          cancel.dataset.agentChoice = 'true'; cancel.dataset.agentActive = 'true'; resultCard.appendChild(cancel);
-        }
-        var seen = {};
-        var drawingList = el('div', 'assistant-agent-drawings');
-        (turn.blocks || []).forEach(function (block) {
-          if (block.type === 'signs') block.items.forEach(function (sign) {
-            if (seen[sign.code]) return;
-            seen[sign.code] = true; showAgentDrawing(sign, drawingList);
-          });
-          else if (block.type === 'notice') resultCard.appendChild(el('p', 'assistant-agent-warning', block.message));
-        });
-        if (drawingList.children.length) resultCard.appendChild(drawingList);
-        if (mapBlock) {
-          var additional = (mapBlock.available_drawings || []).filter(function (code) { return !seen[code]; });
-          if (additional.length) {
-            var more = el('details', 'assistant-agent-more-drawings');
-            more.appendChild(el('summary', '', (language === 'zh-Hant' ? '可下載圖紙' : 'Available drawings') + ' (' + additional.length + ')'));
-            var drawings = el('div', 'assistant-code-list');
-            var selectedDrawing = el('div');
-            additional.slice(0, 20).forEach(function (code) {
-              drawings.appendChild(button(code, function () {
-                fetch('/api/signs/' + encodeURIComponent(code)).then(function (r) {
-                  if (!r.ok) throw new Error('drawing'); return r.json();
-                }).then(function (sign) {
-                  selectedDrawing.textContent = ''; showAgentDrawing(sign, selectedDrawing);
-                }).catch(function () { status(t('error')); });
-              }));
-            });
-            more.appendChild(drawings); more.appendChild(selectedDrawing);
-            if (additional.length > 20) more.appendChild(el('p', 'assistant-small', t('showing') + ' 20'));
-            resultCard.appendChild(more);
-          }
-          var notes = el('details', 'assistant-agent-data-notes');
-          notes.appendChild(el('summary', '', language === 'zh-Hant' ? '資料說明' : 'Data notes'));
-          notes.appendChild(el('p', 'assistant-small', language === 'zh-Hant' ?
-            '紀錄數量並非獨立路牌數量。' : 'Counts are surveyed records, not necessarily unique physical signs.'));
-          if (mapBlock.truncated) notes.appendChild(el('p', 'assistant-small', t('limits')));
-          resultCard.appendChild(notes);
-        } else if (!turn.pending) {
-          var drawingActions = el('div', 'assistant-agent-actions');
-          renderAgentActions(turn.actions || [], drawingActions); resultCard.appendChild(drawingActions);
-        }
-        if ((turn.trace || []).length) {
-          var trace = el('details', 'assistant-agent-trace');
-          trace.appendChild(el('summary', '',
-            (language === 'zh-Hant' ? '執行步驟' : 'How it ran') + ' · ' + turn.trace.length +
-            (language === 'zh-Hant' ? ' 步' : ' steps')));
-          var steps = el('ol');
-          turn.trace.forEach(function (step) {
-            var li = el('li'); li.appendChild(el('code', '', step.node));
-            li.appendChild(el('span', '', step.detail)); steps.appendChild(li);
-          });
-          trace.appendChild(steps); entry.appendChild(trace);
-        }
-        return entry;
-    }
-    function renderAgentActions(actions, target) {
-        actions.slice().sort(function (a, b) {
-          return (a.type === 'open_map' ? 0 : 1) - (b.type === 'open_map' ? 0 : 1);
-        }).forEach(function (action) {
-          if (action.type === 'open_map') target.appendChild(button(t('pending'), function () { openMapAction(action); }, 'assistant-primary'));
-          else if (action.type === 'show_gallery') target.appendChild(button(language === 'zh-Hant' ? '查看圖紙' : 'View drawings', function () {
-            if (window.svgCadGallery) window.svgCadGallery.setExactCodes(action.codes);
-            else { sessionStorage.setItem('svgcad_gallery_codes', JSON.stringify(action.codes)); location.href = 'index.html'; }
-          }));
-        });
-    }
-    function showAgentDrawing(sign, target) {
+    function showDrawing(sign, target) {
       if (!sign || !/^(TS|RM)_\d+[A-Z]?$/.test(sign.code)) return;
       var card = el('div', 'assistant-agent-drawing');
       var svg = safeAsset(sign.downloads && sign.downloads.svg, sign.code, 'svg');
       var dxf = safeAsset(sign.downloads && sign.downloads.dxf, sign.code, 'dxf');
       if (svg) {
         var preview = el('div', 'assistant-agent-thumbnail');
-        if (sign.category === 'RM') preview.classList.add('assistant-preview-marking');
-        var image = el('img'); image.src = svg; image.alt = sign.code; preview.appendChild(image); card.appendChild(preview);
+        if (sign.category === 'RM') preview.classList.add('is-marking');
+        var img = el('img');
+        img.src = svg;
+        img.alt = sign.code;
+        preview.appendChild(img);
+        card.appendChild(preview);
       }
       var detail = el('div', 'assistant-agent-drawing-detail');
       detail.appendChild(el('strong', '', sign.metadata ? placeText(sign.metadata, 'name') : sign.code));
-      detail.appendChild(el('span', 'assistant-small', sign.metadata ? sign.code : t('codeOnly')));
+      detail.appendChild(el('span', '', sign.metadata ? sign.code : t('codeOnly')));
       var links = el('div', 'assistant-agent-downloads');
       [['SVG', svg], ['DXF', dxf]].forEach(function (pair) {
         if (!pair[1]) return;
-        var link = el('a', 'assistant-link', pair[0]); link.href = pair[1]; link.download = ''; links.appendChild(link);
+        var a = el('a', 'assistant-link', pair[0]);
+        a.href = pair[1];
+        a.download = '';
+        links.appendChild(a);
       });
       if (sign.metadata && sign.metadata.source && /^https:\/\//.test(sign.metadata.source.url)) {
-        var source = el('a', 'assistant-agent-source', t('source'));
-        source.href = sign.metadata.source.url; source.target = '_blank'; source.rel = 'noopener noreferrer'; links.appendChild(source);
+        var src = el('a', 'assistant-agent-source', t('source'));
+        src.href = sign.metadata.source.url;
+        src.target = '_blank';
+        src.rel = 'noopener noreferrer';
+        links.appendChild(src);
       }
-      detail.appendChild(links); card.appendChild(detail); target.appendChild(card);
+      detail.appendChild(links);
+      card.appendChild(detail);
+      target.appendChild(card);
     }
-    function focusLatestAgentTurn() {
-      if (agentHistory) agentHistory.scrollTop = 0;
+
+    // Pending place choices double as numbered pins on the map.
+    function showPins() {
+      var turn = turns.find(function (x) { return x.status === 'waiting' && x.pending && x.pending.kind === 'place'; });
+      if (!turn) { mapApi.clearChoicePins(); return; }
+      mapApi.showChoicePins(turn.pending.choices.map(function (choice) {
+        var item = choice.item || {};
+        return { id: choice.id, label: choice.label, latitude: item.latitude, longitude: item.longitude };
+      }), function (pin) {
+        var choice = turn.pending.choices.find(function (c) { return c.id === pin.id; });
+        if (choice) resume(turn, choice);
+      });
     }
-    function agentRequest(operation, payload) {
-      if (agentBusy) return;
-      agentBusy = true; updateAgentControls(); agentFeedback.textContent = t('busy');
+
+    // -- requests -------------------------------------------------------------------
+
+    function context() {
+      var ctx = { page: 'map', map_point: mapApi.currentPoint() };
+      var scope = mapApi.getScope();
+      if (scope.area) {
+        // What is on screen now, so "make it 1 km" refines that even after
+        // the chips were changed by hand.
+        ctx.scope = { latitude: scope.area.latitude, longitude: scope.area.longitude,
+                      radius_km: scope.area.radius_km,
+                      code: scope.code && scope.code.exact ? scope.code.text : null,
+                      place: scope.area.place ? scope.area.place.name_en : null };
+      }
+      return ctx;
+    }
+
+    function send(text) {
+      var message = String(text || '').trim();
+      if (!message || busy || waiting || !agentEnabled) return;
+      panelApi.open({ fit: false, sheet: 'half' });
+      request('search', { message: message, language: language, context: context() });
+    }
+
+    function resume(turn, choice) {
+      request('resume', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id, choice_id: choice.id });
+    }
+
+    function request(operation, payload) {
+      if (busy) return;
+      busy = true;
+      updateControls();
+      feedback.textContent = t('busy');
       payload.request_id = crypto.randomUUID();
-      fetch('/api/agent/' + operation, { method: 'POST', credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-        .then(function (response) { return response.json().then(function (data) {
-          if (!response.ok) throw new Error(data.error && data.error.message || t('error')); return data;
-        }); }).then(function (data) {
-          var index = agentTurns.findIndex(function (turn) { return turn.id === data.turn.id; });
-          if (index < 0) agentTurns.push(data.turn); else agentTurns[index] = data.turn;
-          agentTurns = agentTurns.slice(-8); agentInput.value = '';
-          renderAgentHistory();
-          agentFeedback.textContent = data.turn.status === 'waiting' ?
-            (language === 'zh-Hant' ? '請選擇上方結果以繼續。' : 'Choose a result above to continue.') : '';
-        }).catch(function (error) { agentFeedback.textContent = error.message; })
-        .finally(function () { agentBusy = false; updateAgentControls(); });
+      fetch('/api/agent/' + operation, {
+        method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      }).then(function (r) {
+        return r.json().then(function (data) {
+          if (!r.ok) throw new Error(data.error && data.error.message || t('error'));
+          return data;
+        });
+      }).then(function (data) {
+        var index = turns.findIndex(function (turn) { return turn.id === data.turn.id; });
+        if (index < 0) turns.push(data.turn); else turns[index] = data.turn;
+        turns = turns.slice(-8);
+        input.value = '';
+        feedback.textContent = data.turn.status === 'waiting' ? t('pickAbove') : '';
+        busy = false;
+        render();
+        panelApi.scrollToTop();
+        if (data.turn.status === 'complete') applyTurn(data.turn);
+      }).catch(function (error) {
+        feedback.textContent = error.message;
+      }).finally(function () {
+        busy = false;
+        updateControls();
+      });
     }
+
+    applyWords();
+    render();
+
     fetch('/api/agent/history', { credentials: 'same-origin', cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('history'); return r.json(); })
-      .then(function (data) { agentTurns = data.turns || []; renderAgentHistory(); })
-      .catch(function () { /* Existing manual searches remain available. */ });
-    document.body.appendChild(panel);
-    if (new URLSearchParams(location.search).get('agent') === '1') {
-      opener.click(); selectView('agent');
-    }
-
-    function changeLanguage(value) {
-      var oldStatus = statusEl.textContent;
-      language = value;
-      sessionStorage.setItem('svgcad_language', language);
-      opener.textContent = t('open'); close.textContent = t('close');
-      top.querySelector('h2').textContent = t('title');
-      panel.setAttribute('aria-label', t('title'));
-      taskNav.setAttribute('aria-label', t('title'));
-      viewKeys.forEach(function (key) { tabs[key].textContent = t(viewLabels[key]); });
-      searchSection.querySelector('h3').textContent = t('search');
-      searchInput.placeholder = t('searchHint'); placeInput.placeholder = t('placeHint');
-      searchInput.setAttribute('aria-label', t('search'));
-      placeInput.setAttribute('aria-label', t('places'));
-      searchButton.textContent = t('find'); placeButton.textContent = t('find');
-      placeSection.querySelector('h3').textContent = t('places');
-      placePrivacy.textContent = t('externalSearch');
-      if (mapSection) {
-        mapSection.querySelector('h3').textContent = t('near');
-        radiusLabel.firstChild.textContent = t('radius');
-        mapButton.textContent = t('query');
-      }
-      uploadSection.querySelector('h3').textContent = t('upload');
-      uploadButton.textContent = t('uploadOnly');
-      convertButton.textContent = t('convert');
-      chatSection.querySelector('h3').textContent = t('chat');
-      chatInput.setAttribute('aria-label', t('chat'));
-      privacy.textContent = t('privacy'); send.textContent = t('send'); reset.textContent = t('reset');
-      latestButton.textContent = t('latest');
-      chatResults.setAttribute('aria-label', t('chatHistory'));
-      agentSection.querySelector('h3').textContent = language === 'zh-Hant' ? '搜尋代理' : 'Search agent';
-      agentRun.textContent = language === 'zh-Hant' ? '執行搜尋' : 'Run search';
-      agentPrivacy.textContent = t('privacy'); renderAgentHistory();
-      setupIntro.textContent = t('setupIntro'); setupSummary.textContent = t('configure');
-      setupCopy.textContent = t('setupCopy'); setupChoose.textContent = t('setupChoose');
-      setupRestart.textContent = t('setupRestart'); setupPrivate.textContent = t('setupPrivate');
-      showProvider();
-      if (oldStatus === words.en.noChat || oldStatus === words['zh-Hant'].noChat)
-        status(t('noChat'));
-    }
-    panel.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') close.click();
-    });
-
-    fetch('/api/capabilities', { credentials: 'same-origin', cache: 'no-store' })
-      .then(function (response) {
-        if (!response.ok) throw new Error('capabilities');
-        return response.json();
-      }).then(function (cap) {
-        if (cap.api_version !== 1) throw new Error('API version mismatch');
-        var blockedMapQuestion = false;
-        chatAvailable = !!cap.chat_available;
-        agentEnabled = !!(cap.features && cap.features.search_agent);
-        agentMode.textContent = agentEnabled ? 'LangGraph · session memory' : t('noChat');
-        updateAgentControls();
-        providerName = cap.configured_provider || '';
-        providerModel = cap.chat_available ? cap.model || '' : '';
-        providerValidation = cap.provider_validation || '';
-        showProvider();
-        chatInput.disabled = true;
-        send.disabled = true;
-        chatReady.hidden = !cap.chat_available;
-        chatSetup.hidden = !!cap.chat_available;
-        views.chat.classList.toggle('assistant-chat-disabled', !cap.chat_available);
-        if (cap.chat_available) {
-          fetch('/api/session', { credentials: 'same-origin', cache: 'no-store' })
-            .then(function (response) { if (!response.ok) throw new Error('session'); return response.json(); })
-            .then(function () {
-              chatInput.disabled = false; send.disabled = false;
-              sendQueuedMapQuestion();
-            })
-            .catch(function () {
-              chatAvailable = 'error';
-              queuedMapQuestion = null;
-              status(t('error'));
-            });
-        } else if (queuedMapQuestion) {
-          queuedMapQuestion = null;
-          blockedMapQuestion = true;
-          status(t('noChat'));
+      .then(function (data) {
+        turns = data.turns || [];
+        render();
+        if (turns.length) panelApi.open({ fit: false });
+      })
+      .catch(function () { /* Map search works without saved history. */ })
+      .then(function () {
+        // ?ask= comes from the gallery. Drop it from the URL before sending so
+        // a reload can't send the same question twice.
+        var params = new URLSearchParams(location.search);
+        var ask = params.get('ask');
+        if (params.get('agent') === '1') panelApi.open({ fit: false });
+        if (ask) {
+          params.delete('ask');
+          var query = params.toString();
+          window.history.replaceState(window.history.state, '', location.pathname + (query ? '?' + query : '') + location.hash);
+          send(ask);
         }
-        if (!pendingApplied && !blockedMapQuestion) status('');
-      }).catch(function () {
-        chatAvailable = 'error';
-        queuedMapQuestion = null;
-        setupIntro.textContent = t('checkChat');
-        if (!pendingApplied) status(t('error'));
       });
-    function restoreHistory(attempt) {
-      fetch('/api/chat/history', { credentials: 'same-origin', cache: 'no-store' })
-        .then(function (response) { if (!response.ok) throw new Error('history'); return response.json(); })
-        .then(function (data) {
-          (data.turns || []).forEach(renderTurn);
-          if ((data.turns || []).some(function (turn) { return turn.status === 'working'; }) && attempt < 35)
-            setTimeout(function () { restoreHistory(attempt + 1); }, 2000);
-        }).catch(function () { /* Search and chat still work without saved history. */ });
-    }
-    restoreHistory(0);
-    if (isMap) {
-      try {
-        var pending = JSON.parse(sessionStorage.getItem('svgcad_map_action') || 'null');
-        sessionStorage.removeItem('svgcad_map_action');
-        if (pending && Date.now() - pending.time < 60000) {
-          panel.hidden = false; opener.hidden = true;
-          selectView('map');
-          var token = generation;
-          window.svgCadMap.ready().then(function (ready) {
-            if (token !== generation) return;
-            pendingApplied = ready && window.svgCadMap.applyQuery(pending.action);
-            status(pendingApplied ? t('applied') : t('error'));
-          }).catch(function () { if (token === generation) status(t('error')); });
-        }
-      } catch (error) { sessionStorage.removeItem('svgcad_map_action'); }
-    }
   }
 })();

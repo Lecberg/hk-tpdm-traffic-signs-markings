@@ -27,7 +27,7 @@ def main():
                 continue
             key, value = line.split("=", 1)
             os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
-    app = create_app(temp_dir=ROOT / "tmp" / "agent-prototype")
+    app = create_app()
 
     @app.get("/runtime-config.json")
     def runtime():

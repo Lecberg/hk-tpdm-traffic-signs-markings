@@ -1,4 +1,4 @@
-"""Turn checked tool output into the only factual cards shown by chat."""
+"""Turn checked tool output into the only factual cards the assistant shows."""
 
 
 def present(tool_results):
@@ -42,9 +42,4 @@ def present(tool_results):
                 actions.append({"type": "open_map", "latitude": scope["center"][0],
                                 "longitude": scope["center"][1], "radius_km": scope["radius_km"],
                                 "code": scope["code"]})
-        elif name == "convert_uploaded_svg":
-            blocks.append({"type": "conversion", "download_url": result["download_url"],
-                           "stats": result["stats"], "expires_in": result["expires_in"]})
-        elif name == "help_or_clarify":
-            blocks.append({"type": result["kind"]})
     return blocks, actions

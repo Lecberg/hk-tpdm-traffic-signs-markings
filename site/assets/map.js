@@ -366,7 +366,7 @@
       var marker = L.marker([choice.latitude, choice.longitude], {
         title: choice.label, keyboard: true,
         icon: L.divIcon({ className: 'choice-pin', iconSize: [28, 28], iconAnchor: [14, 28],
-                          html: '<span>' + (i + 1) + '</span>' })
+                          html: '<span><b>' + (i + 1) + '</b></span>' })
       }).addTo(pinLayer);
       marker.bindTooltip(choice.label, { direction: 'top', offset: [0, -26], className: 'sign-tip' });
       marker.on('click', function () { onPick(choice); });
