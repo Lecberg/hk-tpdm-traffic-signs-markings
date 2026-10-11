@@ -16,20 +16,36 @@ The public site needs no installation or API key. It does not include the assist
 
 ## Run the Docker version with the assistant
 
-The Docker version runs on your computer. It has the same Gallery and Map sections. The **Assistant** button appears only in the Map section.
+The Docker version runs on your computer. It has the same Gallery and Map sections. The **Assistant** button appears in both sections.
 
-![Assistant map search showing surveyed signs near Mong Kok](docs/assistant-screenshot.png)
+![Assistant Agent search showing surveyed Stop signs within 1 km of Mong Kok](docs/assistant-screenshot.png)
 
-This example searches Mong Kok and highlights the surveyed signs within 0.5 km.
+This example asks the Agent for “Stop signs near Mong Kok within 500 metres”, then “Make it 1 kilometre”. It finds 36 surveyed Stop signs and highlights them on the map.
 
-The assistant has four tabs:
+The assistant has five tabs:
 
+- **Agent (prototype):** A LangGraph search workflow that pauses for place/drawing selection and remembers confirmed settings for follow-ups.
 - **Signs:** Find drawings by code or available description.
 - **Map:** Find a place and count nearby surveyed signs.
 - **Convert:** Turn an SVG file into a DXF file.
 - **Chat:** Ask a connected AI model about signs and map results.
 
 Signs, Map, and Convert work without an AI key. Chat needs a supported model service.
+
+Agent also needs a configured model service. Try “Stop signs near Mong Kok within 500 metres”, select a place, then ask “Make it 1 kilometre”. Counts come from surveyed records; drawings and download links come from the catalog. Road-marking drawings are searchable by code, but surveyed road-marking locations are not available.
+
+Agent state is held in memory for the current session (one-hour inactivity expiry). Page refreshes retain it; backend/Docker restarts and session reset clear it. The Agent tab shows execution steps, not private model reasoning. Model messages go to your configured provider; no additional tracing service is enabled.
+
+### Run the prototype without Docker
+
+Use Python 3.10+ (3.12 recommended), install the agent extras, and configure `.env` as below:
+
+```sh
+pip install -e ".[agent]"
+python scripts/run_agent_prototype.py --port 8518
+```
+
+Open **http://localhost:8518/map.html?agent=1**. This development server binds only to localhost and leaves the public site's API disabled. Use Docker for the normal deployment.
 
 ### Start it
 

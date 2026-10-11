@@ -70,6 +70,38 @@ class ChatCompletionsProvider:
             options.update(max_completion_tokens=700, parallel_tool_calls=False)
         return self.client.chat.completions.create(**options)
 
+    def plan_search(self, message, previous, timeout):
+        from .search_agent import SEARCH_TOOL
+        prompt = (
+            "Interpret a Hong Kong traffic-sign/road-marking search. Call plan_search exactly once. "
+            "Use action nearby for counts or sign locations near a place; drawings for artwork searches; "
+            "refine for changes to the previous search; help for help or unrelated requests. "
+            "place_query and sign_query are short search terms, not whole sentences. "
+            "Never invent a drawing code: use the user's code or a plain description for catalog lookup. "
+            "Use singular descriptions (e.g. stop signs -> Stop). Empty query strings mean unspecified. "
+            "For all signs/any signs with no particular drawing type, leave sign_query empty. "
+            "radius_km is kilometres (500 metres = 0.5); use 0 when not specified. "
+            "category is TS for traffic signs, RM for road-marking drawings, ALL if unspecified. "
+            "use_map_point only if the user explicitly refers to the pin, selected point, or map centre. "
+            "clear_sign_filter only when the user asks to remove the sign filter/show all signs. "
+            "For refinements retain other settings by leaving queries empty and radius_km 0. "
+            "Road-marking locations are unavailable, but drawing-code search is supported. "
+            "Previous confirmed search: " + json.dumps(previous, ensure_ascii=False))
+        options = {"model": self.model, "messages": [
+            {"role": "system", "content": prompt}, {"role": "user", "content": message}],
+            "tools": [SEARCH_TOOL], "tool_choice": "required", "timeout": timeout}
+        if self.provider_name == "deepseek":
+            options.update(max_tokens=500, extra_body={"thinking": {"type": "disabled"}})
+        elif self.provider_name == "custom":
+            options.update(max_tokens=500)
+        else:
+            options.update(max_completion_tokens=500, parallel_tool_calls=False)
+        response = self.client.chat.completions.create(**options)
+        calls = response.choices[0].message.tool_calls or []
+        if len(calls) != 1 or calls[0].function.name != "plan_search":
+            raise ValueError("The model did not return a search plan. Please retry.")
+        return json.loads(calls[0].function.arguments)
+
 
 def provider_from_env(environ):
     name = environ.get("AI_PROVIDER", "deepseek").strip().lower()

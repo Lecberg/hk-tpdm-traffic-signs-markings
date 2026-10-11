@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  if (!window.svgCadMap) return;
+  if (!window.svgCadMap && !window.svgCadGallery) return;
 
   fetch('runtime-config.json', { cache: 'no-store' })
     .then(function (response) { if (!response.ok) throw new Error('config'); return response.json(); })
@@ -422,8 +422,9 @@
     taskNav.setAttribute('aria-label', t('title'));
     panel.appendChild(taskNav);
     var taskViews = el('div', 'assistant-views'); panel.appendChild(taskViews);
-    var viewKeys = ['signs', 'map', 'convert', 'chat'];
-    var viewLabels = { signs: 'signsTab', map: 'mapTab', convert: 'convertTab', chat: 'chatTab' };
+    var viewKeys = ['agent', 'signs', 'map', 'convert', 'chat'];
+    var viewLabels = { agent: 'agentTab', signs: 'signsTab', map: 'mapTab', convert: 'convertTab', chat: 'chatTab' };
+    words.en.agentTab = 'Agent'; words['zh-Hant'].agentTab = '代理';
     var views = {}, tabs = {};
     function selectView(key) {
       viewKeys.forEach(function (name) {
@@ -433,6 +434,7 @@
         views[name].hidden = !selected;
       });
       if (key === 'chat' && chatResults) scrollToLatest();
+      if (key === 'agent' && agentHistory) focusLatestAgentTurn();
       status('');
     }
     viewKeys.forEach(function (key, index) {
@@ -766,17 +768,293 @@
       });
     }
     var reset = button(t('reset'), function () {
-      if (chatPending) { status(t('busy')); return; }
+      if (chatPending || agentBusy) { status(t('busy')); return; }
       jsonPost('session/reset', {}).then(function () {
         uploadId = null;
         activeCode = null;
         [searchResults, placeResults, placeMapResults, mapResults, convertResults, chatResults].forEach(clearResults);
         chatInput.value = '';
+        agentTurns = []; agentHistory.textContent = ''; agentInput.value = ''; agentWaiting = false;
+        updateAgentControls();
         status(t('resetDone'));
       }).catch(function (error) { status(error.message || t('error')); });
     }, 'assistant-reset');
     chatSection.appendChild(reset);
+
+    var agentSection = section('Search agent', views.agent);
+    var agentHeading = el('div', 'assistant-agent-heading');
+    agentHeading.appendChild(agentSection.querySelector('h3'));
+    agentHeading.appendChild(el('span', 'assistant-agent-prototype', 'Prototype'));
+    agentSection.appendChild(agentHeading);
+    var agentIntro = el('p', 'assistant-small',
+      'Search settings stay in this session. Restarting the backend clears them.');
+    var agentHistory = el('div', 'assistant-agent-history');
+    agentHistory.setAttribute('role', 'log'); agentHistory.setAttribute('aria-label', 'Agent search history');
+    agentSection.appendChild(agentHistory);
+    var agentComposer = el('div', 'assistant-agent-composer'); agentSection.appendChild(agentComposer);
+    var agentComposerLabel = el('label', 'assistant-agent-composer-label', 'Your request');
+    agentComposerLabel.htmlFor = 'assistant-agent-input'; agentComposer.appendChild(agentComposerLabel);
+    var agentComposeRow = el('div', 'assistant-agent-compose-row'); agentComposer.appendChild(agentComposeRow);
+    var agentExamples = el('details', 'assistant-agent-examples');
+    var agentExamplesSummary = el('summary', '', 'Examples'); agentExamples.appendChild(agentExamplesSummary);
+    var agentExampleList = el('div'); agentExamples.appendChild(agentExampleList);
+    ['Stop signs near Mong Kok within 500 metres', 'Show drawing RM1001', 'Make it 1 kilometre'].forEach(function (example) {
+      agentExampleList.appendChild(button(example, function () {
+        agentInput.value = example; agentExamples.open = false; agentInput.focus();
+      }));
+    });
+    var agentInput = el('textarea'); agentInput.maxLength = 2000;
+    agentInput.id = 'assistant-agent-input'; agentInput.rows = 2;
+    agentInput.placeholder = 'Find signs near a place, or ask for a drawing…';
+    agentInput.setAttribute('aria-label', 'Agent search request'); agentInput.disabled = true;
+    agentComposeRow.appendChild(agentInput);
+    var agentBusy = false, agentWaiting = false, agentEnabled = false, agentTurns = [];
+    var agentRun = button('Run search', function () {
+      var message = agentInput.value.trim();
+      if (!message || agentBusy || agentWaiting || !agentEnabled) return;
+      var context = { page: isMap ? 'map' : 'gallery' };
+      if (isMap) context.map_point = window.svgCadMap.currentPoint();
+      agentRequest('search', { message: message, language: language, context: context });
+    }, 'assistant-primary');
+    agentRun.disabled = true; agentComposeRow.appendChild(agentRun);
+    agentInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); agentRun.click(); }
+    });
+    var agentFeedback = el('p', 'assistant-small'); agentFeedback.setAttribute('role', 'status');
+    agentComposer.appendChild(agentFeedback);
+    var agentComposerMeta = el('div', 'assistant-agent-composer-meta'); agentComposer.appendChild(agentComposerMeta);
+    agentComposerMeta.appendChild(agentExamples);
+    var agentAbout = el('details', 'assistant-agent-about'); agentComposerMeta.appendChild(agentAbout);
+    var agentMode = el('summary', '', 'LangGraph · session memory'); agentAbout.appendChild(agentMode);
+    agentAbout.appendChild(agentIntro);
+    var agentPrivacy = el('p', 'assistant-small', t('privacy')); agentAbout.appendChild(agentPrivacy);
+
+    function updateAgentControls() {
+      agentInput.disabled = !agentEnabled || agentBusy || agentWaiting;
+      agentRun.disabled = agentInput.disabled;
+      agentExamples.querySelectorAll('button').forEach(function (item) { item.disabled = agentInput.disabled; });
+      agentHistory.querySelectorAll('button[data-agent-choice]').forEach(function (item) {
+        item.disabled = agentBusy || item.dataset.agentActive !== 'true';
+      });
+      agentSection.setAttribute('aria-busy', agentBusy ? 'true' : 'false');
+      agentComposer.classList.toggle('is-waiting', agentWaiting);
+      agentComposerLabel.textContent = agentTurns.length ?
+        (language === 'zh-Hant' ? '繼續或調整搜尋' : 'Continue or refine') :
+        (language === 'zh-Hant' ? '你的搜尋' : 'Your request');
+    }
+    function renderAgentHistory() {
+      agentHistory.textContent = '';
+      agentWaiting = agentTurns.some(function (turn) { return turn.status === 'waiting'; });
+      if (!agentTurns.length) {
+        var empty = el('div', 'assistant-agent-empty');
+        empty.appendChild(el('span', 'assistant-agent-empty-mark', '↗'));
+        empty.appendChild(el('h4', '', language === 'zh-Hant' ? '從地點或圖紙開始' : 'Start with a place or drawing.'));
+        empty.appendChild(el('p', 'assistant-small', language === 'zh-Hant' ?
+          '搜尋附近標誌、選擇地點，再調整半徑。' : 'Find nearby signs, choose a location, then adjust your search.'));
+        agentHistory.appendChild(empty);
+      } else {
+        agentHistory.appendChild(renderAgentTurn(agentTurns[agentTurns.length - 1], true));
+        if (agentTurns.length > 1) {
+          var previous = el('details', 'assistant-agent-previous');
+          previous.appendChild(el('summary', '',
+            (language === 'zh-Hant' ? '之前的搜尋' : 'Previous searches') + ' (' + (agentTurns.length - 1) + ')'));
+          agentTurns.slice(0, -1).reverse().forEach(function (turn) {
+            var saved = el('details', 'assistant-agent-saved');
+            var summary = el('summary'); summary.appendChild(el('span', '', turn.message));
+            var mapBlock = (turn.blocks || []).find(function (block) { return block.type === 'map'; });
+            if (mapBlock) summary.appendChild(el('small', '', mapBlock.matched_total.toLocaleString() + ' ' + t('records')));
+            saved.appendChild(summary); saved.appendChild(renderAgentTurn(turn, false));
+            previous.appendChild(saved);
+          });
+          agentHistory.appendChild(previous);
+        }
+      }
+      if (agentWaiting) agentFeedback.textContent = language === 'zh-Hant' ?
+        '請選擇上方結果以繼續。' : 'Choose a result above to continue.';
+      updateAgentControls(); focusLatestAgentTurn();
+    }
+    function renderAgentTurn(turn, latest) {
+        var entry = el('article', 'assistant-turn assistant-agent-turn'); entry.dataset.agentTurn = turn.id;
+        var header = el('div', 'assistant-agent-turn-top');
+        header.appendChild(el('span', 'assistant-agent-kicker', latest ?
+          (language === 'zh-Hant' ? '目前搜尋' : 'Latest search') :
+          (language === 'zh-Hant' ? '之前的結果' : 'Saved result')));
+        var statuses = language === 'zh-Hant' ?
+          { complete: '完成', waiting: '等待選擇', working: '處理中', failed: '未完成', cancelled: '已取消' } :
+          { complete: 'Complete', waiting: 'Your choice', working: 'Working', failed: 'Failed', cancelled: 'Cancelled' };
+        var badge = el('span', 'assistant-agent-badge', statuses[turn.status] || turn.status);
+        badge.dataset.status = turn.status; header.appendChild(badge);
+        entry.appendChild(header);
+        entry.appendChild(el('p', 'assistant-question', turn.message));
+        var mapBlock = (turn.blocks || []).find(function (block) { return block.type === 'map'; });
+        var resultCard = el('div', 'assistant-agent-result-card'); entry.appendChild(resultCard);
+        var scope = turn.search || {};
+        if (mapBlock) {
+          resultCard.appendChild(el('h4', '', placeText(scope.place || {}, 'name') || t('selected')));
+          var scopeRow = el('div', 'assistant-agent-scope');
+          scopeRow.appendChild(el('span', '', scope.radius_km + ' km'));
+          scopeRow.appendChild(el('span', '', scope.drawing && scope.drawing.code ||
+            (language === 'zh-Hant' ? '全部交通標誌' : 'All traffic signs')));
+          resultCard.appendChild(scopeRow);
+          var count = el('div', 'assistant-agent-count');
+          count.appendChild(el('strong', '', mapBlock.matched_total.toLocaleString()));
+          count.appendChild(el('span', '', t('records'))); resultCard.appendChild(count);
+          if (!mapBlock.data_complete) resultCard.appendChild(el('p', 'assistant-agent-warning', t('incomplete')));
+          var actions = el('div', 'assistant-agent-actions');
+          renderAgentActions(turn.actions || [], actions); resultCard.appendChild(actions);
+        } else if (!turn.pending) {
+          resultCard.appendChild(el('p', 'assistant-answer', turn.answer));
+        }
+        if (turn.pending && turn.status === 'waiting') {
+          resultCard.appendChild(el('h4', '', turn.pending.kind === 'place' ? t('choosePlace') :
+            (language === 'zh-Hant' ? '選擇圖紙' : 'Choose a drawing')));
+          var choices = el('div', 'assistant-agent-choices');
+          turn.pending.choices.forEach(function (choice) {
+            var card = el('div', 'assistant-place'); var description = el('div', 'assistant-place-description');
+            var item = choice.item;
+            description.appendChild(el('strong', '', turn.pending.kind === 'place' ? placeText(item, 'name') : choice.label));
+            var extra = turn.pending.kind === 'place' ?
+              [placeText(item, 'district'), placeText(item, 'address'), item.kind === 'district_center' ? t('centrePoint') : ''].filter(Boolean).join(' · ') :
+              (item.metadata && placeText(item.metadata, 'name') || t('codeOnly'));
+            if (extra) description.appendChild(el('p', 'assistant-small', extra));
+            card.appendChild(description);
+            var choose = button(t('selectPlace'), function () {
+              agentRequest('resume', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id, choice_id: choice.id });
+            });
+            choose.setAttribute('aria-label', t('selectPlace') + ': ' + choice.label);
+            choose.dataset.agentChoice = 'true'; choose.dataset.agentActive = 'true';
+            card.appendChild(choose); choices.appendChild(card);
+          });
+          resultCard.appendChild(choices);
+          if (turn.pending.kind === 'place') {
+            var sources = el('details', 'assistant-agent-data-notes');
+            sources.appendChild(el('summary', '', language === 'zh-Hant' ? '位置及來源說明' : 'Location & sources'));
+            showPlaceSources(turn.pending.choices.map(function (c) { return c.item; }), sources);
+            resultCard.appendChild(sources);
+          }
+          var cancel = button(language === 'zh-Hant' ? '取消搜尋' : 'Cancel search', function () {
+            agentRequest('cancel', { turn_id: turn.id, interrupt_id: turn.pending.interrupt_id });
+          });
+          cancel.dataset.agentChoice = 'true'; cancel.dataset.agentActive = 'true'; resultCard.appendChild(cancel);
+        }
+        var seen = {};
+        var drawingList = el('div', 'assistant-agent-drawings');
+        (turn.blocks || []).forEach(function (block) {
+          if (block.type === 'signs') block.items.forEach(function (sign) {
+            if (seen[sign.code]) return;
+            seen[sign.code] = true; showAgentDrawing(sign, drawingList);
+          });
+          else if (block.type === 'notice') resultCard.appendChild(el('p', 'assistant-agent-warning', block.message));
+        });
+        if (drawingList.children.length) resultCard.appendChild(drawingList);
+        if (mapBlock) {
+          var additional = (mapBlock.available_drawings || []).filter(function (code) { return !seen[code]; });
+          if (additional.length) {
+            var more = el('details', 'assistant-agent-more-drawings');
+            more.appendChild(el('summary', '', (language === 'zh-Hant' ? '可下載圖紙' : 'Available drawings') + ' (' + additional.length + ')'));
+            var drawings = el('div', 'assistant-code-list');
+            var selectedDrawing = el('div');
+            additional.slice(0, 20).forEach(function (code) {
+              drawings.appendChild(button(code, function () {
+                fetch('/api/signs/' + encodeURIComponent(code)).then(function (r) {
+                  if (!r.ok) throw new Error('drawing'); return r.json();
+                }).then(function (sign) {
+                  selectedDrawing.textContent = ''; showAgentDrawing(sign, selectedDrawing);
+                }).catch(function () { status(t('error')); });
+              }));
+            });
+            more.appendChild(drawings); more.appendChild(selectedDrawing);
+            if (additional.length > 20) more.appendChild(el('p', 'assistant-small', t('showing') + ' 20'));
+            resultCard.appendChild(more);
+          }
+          var notes = el('details', 'assistant-agent-data-notes');
+          notes.appendChild(el('summary', '', language === 'zh-Hant' ? '資料說明' : 'Data notes'));
+          notes.appendChild(el('p', 'assistant-small', language === 'zh-Hant' ?
+            '紀錄數量並非獨立路牌數量。' : 'Counts are surveyed records, not necessarily unique physical signs.'));
+          if (mapBlock.truncated) notes.appendChild(el('p', 'assistant-small', t('limits')));
+          resultCard.appendChild(notes);
+        } else if (!turn.pending) {
+          var drawingActions = el('div', 'assistant-agent-actions');
+          renderAgentActions(turn.actions || [], drawingActions); resultCard.appendChild(drawingActions);
+        }
+        if ((turn.trace || []).length) {
+          var trace = el('details', 'assistant-agent-trace');
+          trace.appendChild(el('summary', '',
+            (language === 'zh-Hant' ? '執行步驟' : 'How it ran') + ' · ' + turn.trace.length +
+            (language === 'zh-Hant' ? ' 步' : ' steps')));
+          var steps = el('ol');
+          turn.trace.forEach(function (step) {
+            var li = el('li'); li.appendChild(el('code', '', step.node));
+            li.appendChild(el('span', '', step.detail)); steps.appendChild(li);
+          });
+          trace.appendChild(steps); entry.appendChild(trace);
+        }
+        return entry;
+    }
+    function renderAgentActions(actions, target) {
+        actions.slice().sort(function (a, b) {
+          return (a.type === 'open_map' ? 0 : 1) - (b.type === 'open_map' ? 0 : 1);
+        }).forEach(function (action) {
+          if (action.type === 'open_map') target.appendChild(button(t('pending'), function () { openMapAction(action); }, 'assistant-primary'));
+          else if (action.type === 'show_gallery') target.appendChild(button(language === 'zh-Hant' ? '查看圖紙' : 'View drawings', function () {
+            if (window.svgCadGallery) window.svgCadGallery.setExactCodes(action.codes);
+            else { sessionStorage.setItem('svgcad_gallery_codes', JSON.stringify(action.codes)); location.href = 'index.html'; }
+          }));
+        });
+    }
+    function showAgentDrawing(sign, target) {
+      if (!sign || !/^(TS|RM)_\d+[A-Z]?$/.test(sign.code)) return;
+      var card = el('div', 'assistant-agent-drawing');
+      var svg = safeAsset(sign.downloads && sign.downloads.svg, sign.code, 'svg');
+      var dxf = safeAsset(sign.downloads && sign.downloads.dxf, sign.code, 'dxf');
+      if (svg) {
+        var preview = el('div', 'assistant-agent-thumbnail');
+        if (sign.category === 'RM') preview.classList.add('assistant-preview-marking');
+        var image = el('img'); image.src = svg; image.alt = sign.code; preview.appendChild(image); card.appendChild(preview);
+      }
+      var detail = el('div', 'assistant-agent-drawing-detail');
+      detail.appendChild(el('strong', '', sign.metadata ? placeText(sign.metadata, 'name') : sign.code));
+      detail.appendChild(el('span', 'assistant-small', sign.metadata ? sign.code : t('codeOnly')));
+      var links = el('div', 'assistant-agent-downloads');
+      [['SVG', svg], ['DXF', dxf]].forEach(function (pair) {
+        if (!pair[1]) return;
+        var link = el('a', 'assistant-link', pair[0]); link.href = pair[1]; link.download = ''; links.appendChild(link);
+      });
+      if (sign.metadata && sign.metadata.source && /^https:\/\//.test(sign.metadata.source.url)) {
+        var source = el('a', 'assistant-agent-source', t('source'));
+        source.href = sign.metadata.source.url; source.target = '_blank'; source.rel = 'noopener noreferrer'; links.appendChild(source);
+      }
+      detail.appendChild(links); card.appendChild(detail); target.appendChild(card);
+    }
+    function focusLatestAgentTurn() {
+      if (agentHistory) agentHistory.scrollTop = 0;
+    }
+    function agentRequest(operation, payload) {
+      if (agentBusy) return;
+      agentBusy = true; updateAgentControls(); agentFeedback.textContent = t('busy');
+      payload.request_id = crypto.randomUUID();
+      fetch('/api/agent/' + operation, { method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(function (response) { return response.json().then(function (data) {
+          if (!response.ok) throw new Error(data.error && data.error.message || t('error')); return data;
+        }); }).then(function (data) {
+          var index = agentTurns.findIndex(function (turn) { return turn.id === data.turn.id; });
+          if (index < 0) agentTurns.push(data.turn); else agentTurns[index] = data.turn;
+          agentTurns = agentTurns.slice(-8); agentInput.value = '';
+          renderAgentHistory();
+          agentFeedback.textContent = data.turn.status === 'waiting' ?
+            (language === 'zh-Hant' ? '請選擇上方結果以繼續。' : 'Choose a result above to continue.') : '';
+        }).catch(function (error) { agentFeedback.textContent = error.message; })
+        .finally(function () { agentBusy = false; updateAgentControls(); });
+    }
+    fetch('/api/agent/history', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('history'); return r.json(); })
+      .then(function (data) { agentTurns = data.turns || []; renderAgentHistory(); })
+      .catch(function () { /* Existing manual searches remain available. */ });
     document.body.appendChild(panel);
+    if (new URLSearchParams(location.search).get('agent') === '1') {
+      opener.click(); selectView('agent');
+    }
 
     function changeLanguage(value) {
       var oldStatus = statusEl.textContent;
@@ -807,6 +1085,9 @@
       privacy.textContent = t('privacy'); send.textContent = t('send'); reset.textContent = t('reset');
       latestButton.textContent = t('latest');
       chatResults.setAttribute('aria-label', t('chatHistory'));
+      agentSection.querySelector('h3').textContent = language === 'zh-Hant' ? '搜尋代理' : 'Search agent';
+      agentRun.textContent = language === 'zh-Hant' ? '執行搜尋' : 'Run search';
+      agentPrivacy.textContent = t('privacy'); renderAgentHistory();
       setupIntro.textContent = t('setupIntro'); setupSummary.textContent = t('configure');
       setupCopy.textContent = t('setupCopy'); setupChoose.textContent = t('setupChoose');
       setupRestart.textContent = t('setupRestart'); setupPrivate.textContent = t('setupPrivate');
@@ -826,6 +1107,9 @@
         if (cap.api_version !== 1) throw new Error('API version mismatch');
         var blockedMapQuestion = false;
         chatAvailable = !!cap.chat_available;
+        agentEnabled = !!(cap.features && cap.features.search_agent);
+        agentMode.textContent = agentEnabled ? 'LangGraph · session memory' : t('noChat');
+        updateAgentControls();
         providerName = cap.configured_provider || '';
         providerModel = cap.chat_available ? cap.model || '' : '';
         providerValidation = cap.provider_validation || '';

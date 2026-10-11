@@ -124,6 +124,13 @@ def create_app(site_dir=None, data_dir=None, temp_dir=None, provider=None):
     global_chat_times = []
     provider_name, model, configured_provider = provider_from_env(os.environ)
     provider = provider or configured_provider
+    search_agent = None
+    if provider and hasattr(provider, "plan_search"):
+        from .search_agent import SearchAgent
+        search_agent = SearchAgent(provider,
+                                   lambda query, category: catalog.search(query, 20, category),
+                                   lambda query, remaining: place_lookup.search(query, remaining),
+                                   lambda args: map_query(args))
     validation_path = data / "provider-validation.json"
     validation = json.loads(validation_path.read_text(encoding="utf-8")) if validation_path.is_file() else {}
 
@@ -133,7 +140,11 @@ def create_app(site_dir=None, data_dir=None, temp_dir=None, provider=None):
             old = [sid for sid, state in sessions.items()
                    if now - state["seen"] > TTL and not state["chat_lock"].locked()]
             for sid in old:
-                shutil.rmtree(sessions.pop(sid)["path"], ignore_errors=True)
+                state = sessions.pop(sid)
+                if search_agent:
+                    for turn in state["agent_turns"]:
+                        search_agent.forget(turn["thread_id"])
+                shutil.rmtree(state["path"], ignore_errors=True)
 
     def session(create=True):
         expire()
@@ -151,8 +162,9 @@ def create_app(site_dir=None, data_dir=None, temp_dir=None, provider=None):
             sid = secrets.token_urlsafe(24)
             path = Path(tempfile.mkdtemp(prefix="svgcad_", dir=scratch))
             state = {"path": path, "seen": time.time(), "uploads": {}, "files": {},
-                     "conversions": {}, "history": [], "turns": [], "turn_index": {},
-                     "chat_lock": threading.Lock(), "chat_times": []}
+                      "conversions": {}, "history": [], "turns": [], "turn_index": {},
+                      "agent_turns": [], "agent_previous": {}, "agent_requests": {},
+                      "chat_lock": threading.Lock(), "chat_times": []}
             sessions[sid] = state
             g.session_id = sid
             return sid, state, True
@@ -221,7 +233,10 @@ def create_app(site_dir=None, data_dir=None, temp_dir=None, provider=None):
                            validation.get("scores", {}).get("zh-Hant", 0) >= 27 and
                            validation.get("invented_visible_facts") == 0 and validation.get("questions") == 60
                            else "unverified" if provider_name == "deepseek" else "experimental"),
-                       features={"search": True, "map_query": True, "conversion": True},
+                        features={"search": True, "map_query": True, "conversion": True,
+                                  "search_agent": bool(search_agent)},
+                        agent={"framework": "LangGraph", "storage": "in-memory",
+                               "prototype": True, "survives_restart": False},
                        metadata_coverage=coverage, places=len(places),
                        artifact_ttl_seconds=TTL)
 
@@ -528,9 +543,125 @@ def create_app(site_dir=None, data_dir=None, temp_dir=None, provider=None):
                 raise ApiError("turn_in_progress", "Wait for the current chat reply", 409)
             state = sessions.pop(sid, None)
         if state:
+            if search_agent:
+                for turn in state["agent_turns"]:
+                    search_agent.forget(turn["thread_id"])
             shutil.rmtree(state["path"], ignore_errors=True)
         response = jsonify(status="reset")
         response.delete_cookie("svgcad_session", path="/api")
         return response
+
+    def public_agent_turn(turn):
+        return {key: value for key, value in turn.items() if key != "thread_id"}
+
+    @app.get("/api/agent/history")
+    def agent_history():
+        try:
+            _, state, _ = session(create=False)
+        except ApiError as error:
+            if error.code == "not_found":
+                return jsonify(turns=[])
+            raise
+        with session_lock:
+            return jsonify(turns=[public_agent_turn(turn) for turn in state["agent_turns"]])
+
+    @app.post("/api/agent/search")
+    @app.post("/api/agent/resume")
+    @app.post("/api/agent/cancel")
+    def agent_search():
+        if not search_agent:
+            raise ApiError("provider_unavailable", "The search agent needs a configured model service.", 503)
+        args = _payload()
+        operation = request.path.rsplit("/", 1)[-1]
+        raw_id = args.get("request_id")
+        try:
+            request_id = str(uuid.UUID(raw_id)) if isinstance(raw_id, str) else ""
+        except ValueError:
+            request_id = ""
+        if not request_id or raw_id.lower() != request_id:
+            raise ApiError("invalid_argument", "request_id must be a standard UUID")
+        _, state, _ = session()
+        if not state["chat_lock"].acquire(blocking=False):
+            raise ApiError("turn_in_progress", "Wait for the current assistant request", 429)
+        slot = False
+        try:
+            # Cache snapshots, not mutable turns: a replay must not execute anything again.
+            cached = state["agent_requests"].get(request_id)
+            if cached:
+                return jsonify(cached)
+            turn = None
+            if operation == "search":
+                if any(t["status"] == "waiting" for t in state["agent_turns"]):
+                    raise ApiError("selection_pending", "Choose a result or cancel the pending search first", 409)
+                message = args.get("message")
+                language = args.get("language", "en")
+                if not isinstance(message, str) or not 1 <= len(message.strip()) <= 2000:
+                    raise ApiError("invalid_argument", "Message must be 1–2000 characters")
+                if language not in ("en", "zh-Hant"):
+                    raise ApiError("invalid_argument", "Language must be en or zh-Hant")
+                context = validate_context(args.get("context"))
+            else:
+                turn = next((t for t in state["agent_turns"] if t["id"] == args.get("turn_id")), None)
+                if not turn or turn["status"] != "waiting":
+                    raise ApiError("stale_selection", "That search is no longer waiting for a selection", 409)
+                if args.get("interrupt_id") != turn["pending"]["interrupt_id"]:
+                    raise ApiError("stale_selection", "That selection is no longer pending", 409)
+                if operation == "resume" and (not isinstance(args.get("choice_id"), str) or
+                        args["choice_id"] not in {c["id"] for c in turn["pending"]["choices"]}):
+                    raise ApiError("invalid_argument", "Choose one of the offered results")
+            if operation != "cancel":
+                if not model_slots.acquire(blocking=False):
+                    raise ApiError("busy", "The assistant is busy. Try shortly.", 503)
+                slot = True
+                now = time.time()
+                with session_lock:
+                    state["chat_times"] = [t for t in state["chat_times"] if now - t < 60]
+                    global_chat_times[:] = [t for t in global_chat_times if now - t < 3600]
+                    if len(state["chat_times"]) >= 5 or len(global_chat_times) >= 60:
+                        raise ApiError("chat_limit", "Assistant request limit reached. Try again later.", 429)
+                    state["chat_times"].append(now)
+                    global_chat_times.append(now)
+            if operation == "search":
+                turn = {"id": request_id, "thread_id": secrets.token_urlsafe(24),
+                        "message": message.strip(), "language": language, "created_at": time.time(),
+                        "status": "working", "answer": "", "blocks": [], "actions": [],
+                        "pending": None, "trace": [], "search": {}}
+                state["agent_turns"].append(turn)
+                while len(state["agent_turns"]) > 8:
+                    search_agent.forget(state["agent_turns"].pop(0)["thread_id"])
+            if operation == "cancel":
+                search_agent.forget(turn["thread_id"])
+                turn.update(status="cancelled", pending=None, answer="Search cancelled.")
+            else:
+                turn["status"] = "working"
+                try:
+                    if operation == "search":
+                        result = search_agent.start(turn["thread_id"], message.strip(), language,
+                                                    state["agent_previous"], context)
+                    else:
+                        result = search_agent.resume(turn["thread_id"], args["interrupt_id"], args["choice_id"])
+                    description = search_agent.describe(result)
+                    confirmed = description.pop("state")
+                    blocks, actions = present(description["tool_results"])
+                    turn.update(**description, blocks=blocks, actions=actions)
+                    if turn["status"] == "complete" and description["tool_results"]:
+                        state["agent_previous"] = confirmed
+                except (ValueError, TimeoutError) as error:
+                    turn.update(status="failed", pending=None, answer=str(error)[:200])
+                    search_agent.forget(turn["thread_id"])
+                except Exception:
+                    app.logger.exception("Search agent failed")
+                    turn.update(status="failed", pending=None,
+                                answer="The agent could not finish. Manual search is still available.")
+                    search_agent.forget(turn["thread_id"])
+            response = {"turn": public_agent_turn(turn)}
+            state["agent_requests"][request_id] = json.loads(json.dumps(response))
+            while len(state["agent_requests"]) > 64:
+                state["agent_requests"].pop(next(iter(state["agent_requests"])))
+            return jsonify(response)
+        finally:
+            if slot:
+                model_slots.release()
+            state["chat_lock"].release()
 
     return app

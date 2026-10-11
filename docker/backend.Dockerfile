@@ -4,7 +4,7 @@ COPY pyproject.toml ./
 COPY src ./src
 RUN pip install --no-cache-dir \
       svgelements==1.9.6 shapely==2.1.2 ezdxf==1.4.4 Flask==3.1.3 \
-      openai==2.54.0 gunicorn==23.0.0 pyproj==3.7.2 \
+      openai==2.54.0 gunicorn==23.0.0 pyproj==3.7.2 langgraph==1.2.12 \
     && pip install --no-cache-dir --no-deps .
 COPY site/index.json ./site/index.json
 COPY site/map-data ./site/map-data

@@ -62,11 +62,13 @@ class Catalog:
         code = self.by_code.get(normalize_code(query))
         return self._detail(code) if code else None
 
-    def search(self, query, limit=20):
+    def search(self, query, limit=20, category="ALL"):
         code_query = normalize_code(query)
         text_query = normalize_text(query)
         matches = []
         for code in self.entries:
+            if category != "ALL" and self.entries[code]["cat"] != category:
+                continue
             normalized = normalize_code(code)
             meta = self.metadata.get(code)
             fields = []
