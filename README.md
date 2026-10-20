@@ -1,57 +1,89 @@
+<div align="center">
+
+<img src="site/assets/icon.svg" width="72" alt="">
+
 # Hong Kong Traffic Signs and Road Markings
 
-Browse Hong Kong traffic signs and road markings, or explore surveyed traffic signs on a map. The public site is ready to use. A separate Docker version adds an assistant to the map.
+Browse every Hong Kong traffic sign and road marking drawing, download it as SVG or DXF,<br>
+and see where about 157,000 surveyed signs stand on a map.
 
-## Use the public site
+[![Tests](https://github.com/Lecberg/hk-tpdm-traffic-signs-markings/actions/workflows/test.yml/badge.svg)](https://github.com/Lecberg/hk-tpdm-traffic-signs-markings/actions/workflows/test.yml)
+[![Site](https://github.com/Lecberg/hk-tpdm-traffic-signs-markings/actions/workflows/pages.yml/badge.svg)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-0f5fd7)
+![1,327 drawings](https://img.shields.io/badge/drawings-1%2C327-0f5fd7)
 
-**[Open the gallery](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)** to browse 1,327 drawings. Search by code, filter signs and road markings, and download files as SVG or DXF. SVG is an image format. DXF is a drawing format used by design software.
+**[Open the gallery](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)** · **[Open the map](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)** · [Run the assistant](#run-the-assistant-with-docker) · [Convert your own SVGs](#convert-your-own-files)
 
-[![Gallery showing traffic sign drawings and SVG and DXF download buttons](docs/gallery-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)
+<br>
 
-**[Open the map](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)** to explore about 157,000 surveyed traffic sign locations. Zoom in to see sign faces. Select a sign to view its code and available downloads.
+<img src="site/map-icons/TS_101.svg" height="52" alt="Stop">&nbsp;
+<img src="site/map-icons/TS_102.svg" height="52" alt="Give way">&nbsp;
+<img src="site/map-icons/TS_115.svg" height="52" alt="No entry">&nbsp;
+<img src="site/map-icons/TS_116.svg" height="52" alt="All vehicles prohibited">&nbsp;
+<img src="site/map-icons/TS_106.svg" height="52" alt="Go straight ahead only">&nbsp;
+<img src="site/map-icons/TS_108.svg" height="52" alt="Turn right">&nbsp;
+<img src="site/map-icons/TS_182.svg" height="52" alt="One-way traffic">
 
-[![Map search showing the surveyed signs within 500 m of Mong Kok, with a breakdown by drawing](docs/map-current-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
+</div>
 
-Use the map’s search box to find:
+<br>
 
-- **A drawing code**, such as `TS101` or `115`, to show only those signs.
-- **A place**, such as “Mong Kok” or “Queen Mary Hospital”, to count every surveyed sign nearby. A panel lists the count, a breakdown by drawing, and SVG and DXF downloads.
-- **A sign name**, such as “Stop” or “No entry”, for the 100 drawings with checked names.
+## What's included
 
-The filters show as chips above the map. Change the radius from a chip or by dragging the circle’s edge, and remove a chip to drop that filter. Right-click the map to search around any point. Each search is saved in the page link, so you can share it or go back to the previous one.
+| Tool | What it does | Needs |
+| --- | --- | --- |
+| 🗂️ **[Gallery](#gallery)** | Search 1,327 drawings (1,176 signs, 151 road markings) and download SVG or DXF files. | A web browser |
+| 🗺️ **[Map](#map)** | Explore about 157,000 surveyed sign locations. Count signs around any place. | A web browser |
+| 💬 **[Assistant](#run-the-assistant-with-docker)** | Ask for signs in your own words, such as “Stop signs near Mong Kok”. | Docker and a model API key |
+| 📐 **[svg2dxf](#convert-your-own-files)** | Turn your own SVG drawings into clean, fill-ready DXF files. | Python 3.9+ |
 
-The public site needs no installation or API key. It does not include the assistant.
+The gallery and map run on the public site with no installation or API key.
 
-## Run the Docker version with the assistant
+> [!TIP]
+> **SVG** is an image format that stays sharp at any size. **DXF** is a drawing format that CAD software such as AutoCAD can open.
 
-The Docker version runs on your computer. It has the same Gallery and Map, and adds an assistant that understands requests in your own words. The assistant lives in the map’s results panel.
+## Gallery
 
-![Assistant search showing surveyed Stop signs within 1 km of Mong Kok](docs/assistant-screenshot.png)
+**[Open the gallery →](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)**
 
-This example asks “Stop signs near Mong Kok within 500 metres”, then “Make it 1 kilometre”. It finds 36 surveyed Stop signs and shows them on the map.
+Search by code, such as `TS 101` or `1032`. Filter by traffic signs or road markings. Every card has **SVG** and **DXF** download buttons.
 
-Ask from the map’s search box (choose **Ask the assistant**) or from the box at the bottom of the panel. On the gallery, type a question and choose **Ask on the map**. When a place name matches several locations, pick one from the list or from the numbered pins on the map. A finished search is applied to the map, and follow-ups such as “Make it 1 kilometre” refine what the map shows, including any changes you made with the chips.
+[![Gallery of traffic sign drawings, each with SVG and DXF download buttons](docs/gallery-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/)
 
-The assistant needs a configured model service. The model only interprets the request: counts come from the surveyed records, and drawings and downloads come from the catalog. Road-marking drawings are searchable by code, but surveyed road-marking locations are not available.
+## Map
 
-Assistant state is held in memory for the current session (one-hour inactivity expiry). Page refreshes keep it; restarting the backend or choosing **New session** clears it. The panel shows the steps a search took, not private model reasoning. Requests go to your configured provider; no additional tracing service is enabled.
+**[Open the map →](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)**
 
-### Run the prototype without Docker
+Zoom in to see each sign's face. Select a sign to see its code and downloads.
 
-Use Python 3.10+ (3.12 recommended), install the agent extras, and configure `.env` as below:
+[![Map search showing the 2,080 surveyed signs within 500 m of Mong Kok, with a breakdown by drawing](docs/map-current-screenshot.png)](https://lecberg.github.io/hk-tpdm-traffic-signs-markings/map.html)
 
-```sh
-pip install -e ".[agent]"
-python scripts/run_agent_prototype.py --port 8518
-```
+One search box handles three kinds of search:
 
-Open **http://localhost:8518/map.html?agent=1**. This development server binds only to localhost and leaves the public site's API disabled. Use Docker for the normal deployment.
+| Type | Example | What you get |
+| --- | --- | --- |
+| A drawing code | `TS101`, `115` | Only those signs on the map |
+| A place | “Mong Kok”, “Queen Mary Hospital” | A count of every surveyed sign nearby, a breakdown by drawing, and downloads |
+| A sign name | “Stop”, “No entry” | Matching signs, for the 100 drawings with checked names |
 
-### Start it
+- **Filters show as chips** above the map. Remove a chip to drop that filter.
+- **Change the radius** from its chip, or drag the circle's edge.
+- **Right-click the map** to search around any point.
+- **Share a search** by copying the page link. The browser's Back button returns to the previous search.
 
-1. Install Docker Desktop or another Docker engine with Compose.
-2. Copy `.env.example` to `.env`.
-3. Run:
+## Run the assistant with Docker
+
+The Docker version runs on your computer. It has the same gallery and map, and adds an assistant to the map's results panel.
+
+![Map assistant showing 36 surveyed Stop signs within 1 km of Mong Kok](docs/assistant-screenshot.png)
+
+<sub>Asked “Stop signs near Mong Kok within 500 metres”, then “Make it 1 kilometre”. It found 36 surveyed Stop signs and showed them on the map.</sub>
+
+### Quick start
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) or another Docker engine with Compose.
+2. Copy `.env.example` to `.env`, then add a model key (see below).
+3. Start it:
 
    ```sh
    docker compose up --build -d
@@ -59,42 +91,102 @@ Open **http://localhost:8518/map.html?agent=1**. This development server binds o
 
 4. Open **http://localhost:8517**.
 
-Stop the site with `docker compose down`.
+Stop it with `docker compose down`.
 
-### Set up the assistant
+### Choose a model service
 
-In `.env`, choose one provider with `AI_PROVIDER`. Add that provider’s key and model. The available choices are `openai`, `deepseek`, `vercel`, and `custom`.
-
-For example:
+In `.env`, set `AI_PROVIDER` to one of `openai`, `deepseek`, `vercel` or `custom`, then add that provider's key and model:
 
 ```text
 AI_PROVIDER=deepseek
 DEEPSEEK_API_KEY=your-key
 ```
 
-For another service that accepts OpenAI-style chat requests, choose `custom`. Set `CUSTOM_API_BASE_URL`, `CUSTOM_MODEL`, and `CUSTOM_API_KEY`. The model must support tool calls so it can request sign and map data.
+<details>
+<summary><b>Use another OpenAI-compatible service</b></summary>
 
-After changing `.env`, run:
+<br>
+
+Choose `custom`, then set `CUSTOM_API_BASE_URL`, `CUSTOM_MODEL` and `CUSTOM_API_KEY`. Use the API base URL, not the full `/chat/completions` URL. The model must support tool calls, so it can request sign and map data.
+
+</details>
+
+After you change `.env`, restart the backend and refresh the page:
 
 ```sh
 docker compose up -d --force-recreate backend
 ```
 
-Then refresh the page. Keep `.env` private; Git ignores it.
+> [!IMPORTANT]
+> Keep `.env` private. Git already ignores it.
 
-Assistant requests and their search results go to the chosen model service. Place searches outside the saved list go to the Lands Department’s location service, on both the public site and the Docker version. Map tiles require internet access.
+### Using the assistant
 
-## About the data
+- **Ask** from the map's search box (choose **Ask the assistant**) or from the box at the bottom of the panel. On the gallery, type a question and choose **Ask on the map**.
+- **Pick a place** from the list or from the numbered pins when a name matches several locations.
+- **Refine** with follow-ups such as “Make it 1 kilometre”. Follow-ups build on what the map shows, including changes you made with the chips.
 
-The drawings follow Hong Kong traffic sign and road marking standards. Map locations come from the Transport Department’s [Traffic Aids Drawings open data](https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2). Some surveyed signs may have no matching drawing available for download.
+<details>
+<summary><b>How the assistant handles your data</b></summary>
 
-## Convert your own files without Docker
+<br>
 
-The project also includes a small SVG-to-DXF converter:
+- The model only interprets your request. Counts come from the surveyed records. Drawings and downloads come from the catalog.
+- Road-marking drawings can be searched by code, but surveyed road-marking locations are not available.
+- The session lives in memory and expires after one hour without activity. Refreshing the page keeps it. Restarting the backend or choosing **New session** clears it.
+- The panel shows the steps a search took, not private model reasoning.
+- Requests and their search results go to your chosen model service. No other tracing service is enabled.
+
+</details>
+
+<details>
+<summary><b>Run the assistant without Docker (for development)</b></summary>
+
+<br>
+
+Use Python 3.10+ (3.12 recommended). Set up `.env` as above, then run:
+
+```sh
+pip install -e ".[agent]"
+python scripts/run_agent_prototype.py --port 8518
+```
+
+Open **http://localhost:8518/map.html?agent=1**. This server listens only on your computer and leaves the public site's API turned off. Use Docker for normal use.
+
+</details>
+
+## Convert your own files
+
+The project includes `svg2dxf`, a small SVG-to-DXF converter. It needs Python 3.9+ and no Docker.
 
 ```sh
 pip install -e .
 svg2dxf sign.svg
 ```
 
-The command writes `sign.dxf` beside the source file.
+This writes `sign.dxf` next to `sign.svg`.
+
+## About the data
+
+- **Drawings** follow Hong Kong traffic sign and road marking standards.
+- **Map locations** come from the Transport Department's [Traffic Aids Drawings open data](https://data.gov.hk/en-data/dataset/hk-td-tis_16-traffic-aids-drawings-v2). Some surveyed signs have no matching drawing to download.
+- **Place search** uses a saved list first. Other place names go to the Lands Department's location service, on both the public site and the Docker version.
+- **Map tiles** need an internet connection.
+
+## For developers
+
+| Folder | Contents |
+| --- | --- |
+| `site/` | The public site: pages, drawings, map data. Pushes to `main` that change it deploy to GitHub Pages. |
+| `src/svg2dxf/` | The converter, web app and assistant backend. |
+| `scripts/` | Scripts that build the site, map data and search indexes. |
+| `data/` | Place names and checked sign names. |
+| `docker/`, `compose.yaml` | The Docker version. |
+| `tests/` | Tests. |
+
+Run the tests:
+
+```sh
+pip install -e ".[dev,agent]"
+python -m pytest tests/ -q
+```
