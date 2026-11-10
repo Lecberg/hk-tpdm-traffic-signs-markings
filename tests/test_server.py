@@ -10,6 +10,7 @@ from svg2dxf.server import create_app
 from svg2dxf.server.catalog import Catalog
 from svg2dxf.server.geo import MapData
 from svg2dxf.server.agent import provider_from_env
+from svg2dxf.server.tools import TOOLS
 
 
 @pytest.fixture
@@ -126,25 +127,32 @@ def test_provider_selection_and_request_options(monkeypatch, tmp_path):
 
         def complete(self, **options):
             self.request = options
-            call = SimpleNamespace(function=SimpleNamespace(name='plan_search', arguments='{}'))
-            return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(tool_calls=[call]))])
+            call = SimpleNamespace(id='call_1', function=SimpleNamespace(name='search_signs', arguments='{}'))
+            message = SimpleNamespace(content=None, tool_calls=[call])
+            return SimpleNamespace(choices=[SimpleNamespace(message=message)])
 
     monkeypatch.setitem(sys.modules, 'openai', SimpleNamespace(OpenAI=FakeOpenAI))
     name, model, provider = provider_from_env({'AI_PROVIDER': 'openai', 'OPENAI_API_KEY': 'test-openai'})
     assert (name, model) == ('openai', 'gpt-4.1-mini')
     assert 'base_url' not in created[-1].options
-    assert provider.plan_search('hello', {}, 3) == {}
+    hello = [{'role': 'user', 'content': 'hello'}]
+    assert provider.complete(hello, TOOLS, 3) == {
+        'content': '', 'tool_calls': [{'id': 'call_1', 'name': 'search_signs', 'arguments': '{}'}]}
     assert created[-1].request['parallel_tool_calls'] is False
-    assert created[-1].request['tool_choice'] == 'required'
-    assert created[-1].request['tools'][0]['function']['name'] == 'plan_search'
+    assert created[-1].request['tool_choice'] == 'auto'
+    assert created[-1].request['max_completion_tokens'] == 800
+    assert [t['function']['name'] for t in created[-1].request['tools']] == [
+        'search_signs', 'get_sign', 'resolve_place', 'find_nearby_signs', 'choose_drawing']
+    provider.complete(hello, TOOLS, 3, final=True)
+    assert created[-1].request['tool_choice'] == 'none'
 
     name, model, provider = provider_from_env({'AI_PROVIDER': 'deepseek',
         'OPENAI_API_KEY': 'ignored', 'DEEPSEEK_API_KEY': 'test-deepseek'})
     assert (name, model) == ('deepseek', 'deepseek-flash')
     assert created[-1].options['base_url'] == 'https://api.deepseek.com'
     assert created[-1].options['api_key'] == 'test-deepseek'
-    provider.plan_search('hello', {}, 3)
-    assert created[-1].request['max_tokens'] == 500
+    provider.complete(hello, TOOLS, 3)
+    assert created[-1].request['max_tokens'] == 800
     assert created[-1].request['extra_body'] == {'thinking': {'type': 'disabled'}}
     assert 'parallel_tool_calls' not in created[-1].request
 
@@ -152,8 +160,8 @@ def test_provider_selection_and_request_options(monkeypatch, tmp_path):
         'AI_GATEWAY_API_KEY': 'test-gateway', 'AI_GATEWAY_MODEL': 'openai/gpt-6-astra'})
     assert (name, model) == ('vercel', 'openai/gpt-6-astra')
     assert created[-1].options['base_url'] == 'https://ai-gateway.vercel.sh/v1'
-    provider.plan_search('hello', {}, 3)
-    assert created[-1].request['max_completion_tokens'] == 500
+    provider.complete(hello, TOOLS, 3)
+    assert created[-1].request['max_completion_tokens'] == 800
 
     name, model, provider = provider_from_env({'AI_PROVIDER': 'custom',
         'CUSTOM_API_BASE_URL': 'https://models.example.test/v1',
@@ -162,9 +170,9 @@ def test_provider_selection_and_request_options(monkeypatch, tmp_path):
     assert (name, model) == ('custom', 'my-model')
     assert created[-1].options['base_url'] == 'https://models.example.test/v1'
     assert created[-1].options['api_key'] == 'test-custom'
-    provider.plan_search('hello', {}, 3)
-    assert created[-1].request['max_tokens'] == 500
-    assert created[-1].request['tool_choice'] == 'required'
+    provider.complete(hello, TOOLS, 3)
+    assert created[-1].request['max_tokens'] == 800
+    assert created[-1].request['tool_choice'] == 'auto'
     assert 'parallel_tool_calls' not in created[-1].request
 
     _, _, provider = provider_from_env({'AI_PROVIDER': 'deepseek', 'OPENAI_API_KEY': 'ignored'})

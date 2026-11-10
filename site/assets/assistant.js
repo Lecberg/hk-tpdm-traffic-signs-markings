@@ -88,11 +88,11 @@
         noAgent: 'The assistant needs a configured model service. Map search still works.',
         request: 'Ask the assistant', refine: 'Continue or refine', run: 'Run search',
         placeholder: 'Find signs near a place, or ask for a drawing…', examples: 'Examples',
-        about: 'LangGraph · session memory', reset: 'New session',
+        about: 'LangGraph · tool-calling agent', reset: 'New session',
         memory: 'Search settings stay in this session. Restarting the backend clears them.',
         pickAbove: 'Choose a result above, or a numbered pin on the map.',
         emptyTitle: 'Ask in your own words.',
-        emptyBody: 'Try “stop signs near Mong Kok within 500 metres”, then refine it.',
+        emptyBody: 'Try “stop signs near Mong Kok within 500 metres”, then refine it, or compare two places.',
         askLabel: 'Ask the assistant', showOnMap: 'Show on map', viewDrawings: 'View drawings' },
       'zh-Hant': { title: '地圖助手', reopen: '助手', records: '個已測量的標誌紀錄',
         incomplete: '資料不完整', selected: '已選位置', choosePlace: '請選擇地點',
@@ -106,11 +106,11 @@
         noAgent: '助手需要設定模型服務。地圖搜尋仍可使用。',
         request: '詢問助手', refine: '繼續或調整搜尋', run: '執行搜尋',
         placeholder: '搜尋某地點附近的標誌，或查詢圖紙…', examples: '例子',
-        about: 'LangGraph · 工作階段記憶', reset: '新工作階段',
+        about: 'LangGraph · 工具調用代理', reset: '新工作階段',
         memory: '搜尋設定只保留在此工作階段，重新啟動後端會清除。',
         pickAbove: '請選擇上方結果，或地圖上的編號標記。',
         emptyTitle: '用你自己的話提問。',
-        emptyBody: '例如「旺角 500 米內的停車標誌」，然後再調整。',
+        emptyBody: '例如「旺角 500 米內的停車標誌」，然後再調整，或比較兩個地點。',
         askLabel: '詢問助手', showOnMap: '在地圖顯示', viewDrawings: '查看圖紙' }
     };
     function t(key) { return words[language][key]; }
@@ -176,7 +176,9 @@
     var examplesSummary = el('summary');
     examples.appendChild(examplesSummary);
     var exampleList = el('div');
-    ['Stop signs near Mong Kok within 500 metres', 'Show drawing RM1001', 'Make it 1 kilometre'].forEach(function (text) {
+    ['Stop signs near Mong Kok within 500 metres', 'Make it 1 kilometre',
+     'Compare Stop signs near Mong Kok and Tsim Sha Tsui', 'Which sign is most common near Causeway Bay?',
+     'Show drawing RM1001'].forEach(function (text) {
       exampleList.appendChild(button(text, function () { input.value = text; examples.open = false; input.focus(); }));
     });
     examples.appendChild(exampleList);
@@ -294,27 +296,13 @@
 
       var card = el('div', 'assistant-agent-result-card');
       entry.appendChild(card);
-      var mapBlock = (turn.blocks || []).find(function (b) { return b.type === 'map'; });
-      var scope = turn.search || {};
-      if (mapBlock) {
-        card.appendChild(el('h4', '', placeText(scope.place || {}, 'name') || t('selected')));
-        var scopeRow = el('div', 'assistant-agent-scope');
-        scopeRow.appendChild(el('span', '', scope.radius_km + ' km'));
-        scopeRow.appendChild(el('span', '', scope.drawing && scope.drawing.code || (zh() ? '全部交通標誌' : 'All traffic signs')));
-        card.appendChild(scopeRow);
-        var count = el('div', 'assistant-agent-count');
-        count.appendChild(el('strong', '', mapBlock.matched_total.toLocaleString()));
-        count.appendChild(el('span', '', t('records')));
-        card.appendChild(count);
-        if (!mapBlock.data_complete) card.appendChild(el('p', 'assistant-agent-warning', t('incomplete')));
-        var actions = el('div', 'assistant-agent-actions');
-        renderActions(turn, actions);
-        card.appendChild(actions);
-      } else if (!turn.pending) {
-        card.appendChild(el('p', 'assistant-agent-answer', turn.answer));
-      }
+      var mapBlocks = mapBlocksOf(turn);
+      var choosing = !!(turn.pending && turn.status === 'waiting');
+      // The model's reply; every number in it was checked against the results.
+      if (turn.answer && !choosing) card.appendChild(el('p', 'assistant-agent-answer', turn.answer));
+      mapBlocks.forEach(function (block) { card.appendChild(renderMapResult(block)); });
 
-      if (turn.pending && turn.status === 'waiting') {
+      if (choosing) {
         card.appendChild(el('h4', '', turn.pending.kind === 'place' ? t('choosePlace') : t('chooseDrawing')));
         var list = el('ol', 'assistant-agent-choices');
         turn.pending.choices.forEach(function (choice) {
@@ -356,16 +344,17 @@
       });
       if (drawings.children.length) card.appendChild(drawings);
 
-      if (mapBlock) {
+      if (!choosing) {
+        var more = el('div', 'assistant-agent-actions');
+        renderActions(turn, more);
+        if (more.children.length) card.appendChild(more);
+      }
+      if (mapBlocks.length) {
         var notes = el('details', 'assistant-agent-data-notes');
         notes.appendChild(el('summary', '', zh() ? '資料說明' : 'Data notes'));
         notes.appendChild(el('p', '', zh() ? '紀錄數量並非獨立路牌數量。' : 'Counts are surveyed records, not necessarily unique physical signs.'));
-        if (mapBlock.truncated) notes.appendChild(el('p', '', t('limits')));
+        if (mapBlocks.some(function (b) { return b.truncated; })) notes.appendChild(el('p', '', t('limits')));
         card.appendChild(notes);
-      } else if (!turn.pending) {
-        var drawingActions = el('div', 'assistant-agent-actions');
-        renderActions(turn, drawingActions);
-        card.appendChild(drawingActions);
       }
 
       if ((turn.trace || []).length) {
@@ -382,6 +371,29 @@
         entry.appendChild(trace);
       }
       return entry;
+    }
+
+    function mapBlocksOf(turn) {
+      return (turn.blocks || []).filter(function (b) { return b.type === 'map'; });
+    }
+
+    // One result row per area the agent counted (a comparison has several).
+    function renderMapResult(block) {
+      var box = el('div', 'assistant-agent-map-result');
+      box.appendChild(el('h4', '', placeText(block.place || {}, 'name') || t('selected')));
+      var scopeRow = el('div', 'assistant-agent-scope');
+      scopeRow.appendChild(el('span', '', block.query_scope.radius_km + ' km'));
+      scopeRow.appendChild(el('span', '', block.drawing ? block.drawing.code : (zh() ? '全部交通標誌' : 'All traffic signs')));
+      box.appendChild(scopeRow);
+      var count = el('div', 'assistant-agent-count');
+      count.appendChild(el('strong', '', block.matched_total.toLocaleString()));
+      count.appendChild(el('span', '', t('records')));
+      box.appendChild(count);
+      if (!block.data_complete) box.appendChild(el('p', 'assistant-agent-warning', t('incomplete')));
+      var actions = el('div', 'assistant-agent-actions');
+      actions.appendChild(button(t('showOnMap'), function () { applyBlock(block); }, 'assistant-primary'));
+      box.appendChild(actions);
+      return box;
     }
 
     function placeSources(items) {
@@ -403,27 +415,26 @@
       return note;
     }
 
-    function mapActionOf(turn) {
-      return (turn.actions || []).find(function (a) { return a.type === 'open_map'; });
+    // A finished turn shows the area it counted last.
+    function applyTurn(turn) {
+      var blocks = mapBlocksOf(turn);
+      return blocks.length ? applyBlock(blocks[blocks.length - 1]) : false;
     }
 
-    function applyTurn(turn) {
-      var action = mapActionOf(turn);
-      if (!action) return false;
+    function applyBlock(block) {
+      var scope = block.query_scope || {};
+      if (!scope.center) return false;
       return mapApi.applyQuery({
-        latitude: action.latitude, longitude: action.longitude,
-        radius_km: action.radius_km || 0.5, code: action.code || null,
-        place: (turn.search && turn.search.place) || null
+        latitude: scope.center[0], longitude: scope.center[1],
+        radius_km: scope.radius_km || 0.5, code: scope.code || null,
+        place: block.place || null
       });
     }
 
+    // Map rows carry their own "Show on map"; this adds the drawing links.
     function renderActions(turn, target) {
-      (turn.actions || []).slice().sort(function (a, b) {
-        return (a.type === 'open_map' ? 0 : 1) - (b.type === 'open_map' ? 0 : 1);
-      }).forEach(function (action) {
-        if (action.type === 'open_map') {
-          target.appendChild(button(t('showOnMap'), function () { applyTurn(turn); }, 'assistant-primary'));
-        } else if (action.type === 'show_gallery') {
+      (turn.actions || []).forEach(function (action) {
+        if (action.type === 'show_gallery') {
           target.appendChild(button(t('viewDrawings'), function () {
             sessionStorage.setItem('svgcad_gallery_codes', JSON.stringify(action.codes));
             location.href = 'index.html';

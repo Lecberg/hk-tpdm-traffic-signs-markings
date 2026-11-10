@@ -34,7 +34,7 @@ and see where about 157,000 surveyed signs stand on a map.
 | --- | --- | --- |
 | 🗂️ **[Gallery](#gallery)** | Search 1,327 drawings (1,176 signs, 151 road markings) and download SVG or DXF files. | A web browser |
 | 🗺️ **[Map](#map)** | Explore about 157,000 surveyed sign locations. Count signs around any place. | A web browser |
-| 💬 **[Assistant](#run-the-assistant-with-docker)** | Ask for signs in your own words, such as “Stop signs near Mong Kok”. | Docker and a model API key |
+| 💬 **[Assistant](#run-the-assistant-with-docker)** | An agent that answers in your own words, such as “Compare Stop signs near Mong Kok and Tsim Sha Tsui”. | Docker and a model API key |
 | 📐 **[svg2dxf](#convert-your-own-files)** | Turn your own SVG drawings into clean, fill-ready DXF files. | Python 3.9+ |
 
 The gallery and map run on the public site with no installation or API key.
@@ -107,7 +107,7 @@ DEEPSEEK_API_KEY=your-key
 
 <br>
 
-Choose `custom`, then set `CUSTOM_API_BASE_URL`, `CUSTOM_MODEL` and `CUSTOM_API_KEY`. Use the API base URL, not the full `/chat/completions` URL. The model must support tool calls, so it can request sign and map data.
+Choose `custom`, then set `CUSTOM_API_BASE_URL`, `CUSTOM_MODEL` and `CUSTOM_API_KEY`. Use the API base URL, not the full `/chat/completions` URL. The model must handle several tool calls in a row, because the assistant looks up signs, places and map data step by step. Small local models may struggle; `python scripts/eval_agent.py` checks a model with about 20 questions.
 
 </details>
 
@@ -123,19 +123,25 @@ docker compose up -d --force-recreate backend
 ### Using the assistant
 
 - **Ask** from the map's search box (choose **Ask the assistant**) or from the box at the bottom of the panel. On the gallery, type a question and choose **Ask on the map**.
-- **Pick a place** from the list or from the numbered pins when a name matches several locations.
+- **Ask more than one thing.** “Compare Stop signs near Mong Kok and Tsim Sha Tsui” gives one result row per place. “Which sign is most common near Causeway Bay?” reads the counts for you.
+- **Pick a place** from the list or from the numbered pins when a name matches several locations, such as “Tuen Mun” (the town or the district).
 - **Refine** with follow-ups such as “Make it 1 kilometre”. Follow-ups build on what the map shows, including changes you made with the chips.
 
 <details>
-<summary><b>How the assistant handles your data</b></summary>
+<summary><b>How the assistant works</b></summary>
 
 <br>
 
-- The model only interprets your request. Counts come from the surveyed records. Drawings and downloads come from the catalog.
+The assistant is a tool-calling agent. The model chooses which lookups to run, reads each result, and decides when it has enough to answer. It can search the drawing catalog, find a place, count surveyed signs around a place, and ask you to pick when a place or drawing is ambiguous.
+
+- **The model never handles coordinates.** A place lookup returns a short handle such as `p1`, and the map count only accepts handles from this session.
+- **Result cards come only from the data.** Counts come from the surveyed records. Drawings and downloads come from the catalog.
+- **The reply is checked.** Every number in the model's reply must appear in the lookup results. If one does not, the panel shows a standard summary instead.
+- **Each question has limits:** at most 6 model calls, 10 lookups and 60 seconds. One question can therefore use several model calls; the limit of 5 questions a minute still applies.
+- **How it ran** under each answer lists the lookups the agent made, not private model reasoning.
 - Road-marking drawings can be searched by code, but surveyed road-marking locations are not available.
 - The session lives in memory and expires after one hour without activity. Refreshing the page keeps it. Restarting the backend or choosing **New session** clears it.
-- The panel shows the steps a search took, not private model reasoning.
-- Requests and their search results go to your chosen model service. No other tracing service is enabled.
+- Requests, lookup results and your last few questions in the session go to your chosen model service. No other tracing service is enabled.
 
 </details>
 

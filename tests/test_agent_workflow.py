@@ -9,17 +9,16 @@ from svg2dxf.server import create_app
 from svg2dxf.server.presentation import present
 
 
-HELP = {"action": "help", "place_query": "", "sign_query": "", "radius_km": 0, "category": "ALL",
-        "use_map_point": False, "clear_sign_filter": False}
+HELP = {"content": "I find drawings and count surveyed signs near a place.", "tool_calls": []}
 
 
 class HelpPlanner:
-    """Answers every request with a help plan, which finishes without map work."""
+    """Answers every request with text, which finishes without map work."""
 
     def __init__(self):
         self.calls = 0
 
-    def plan_search(self, message, previous, timeout):
+    def complete(self, messages, tools, timeout, final=False):
         self.calls += 1
         return dict(HELP)
 
@@ -80,8 +79,8 @@ def test_one_active_request_per_visit_and_two_model_calls_overall():
             self.two_started = threading.Event()
             self.release = threading.Event()
 
-        def plan_search(self, message, previous, timeout):
-            if message == "warm-up":
+        def complete(self, messages, tools, timeout, final=False):
+            if messages[-1]["content"] == "warm-up":
                 return dict(HELP)
             with self.lock:
                 self.calls += 1
@@ -131,7 +130,7 @@ def test_all_result_block_shapes():
             "missing_cells": ["example"], "available_drawings": ["TS_101"], "query_scope": scope}},
         {"tool": "summarize_area", "result": {"matched_total": 5,
             "truncated": False, "data_complete": True, "missing_cells": [],
-            "available_drawings": [], "query_scope": scope}},
+            "available_drawings": [], "query_scope": {**scope, "radius_km": 1}}},
         {"tool": "turn_status", "result": {"error": "turn_timeout"}},
     ]
     blocks, actions = present(results)
@@ -139,6 +138,22 @@ def test_all_result_block_shapes():
     assert any(action['type'] == 'show_gallery' for action in actions)
     assert any(action['type'] == 'open_map' and action['code'] == 'TS101' for action in actions)
     assert json.dumps(blocks).count('TS_101') >= 1
+    assert 'scope_key' not in json.dumps([blocks, actions])
+
+
+def test_same_area_twice_shows_one_map_row():
+    scope = {"bounds": [22.2, 114.1, 22.3, 114.2], "center": [22.28, 114.15], "radius_km": 0.5, "code": None}
+    area = {"matched_total": 5, "truncated": False, "data_complete": True, "missing_cells": [],
+            "available_drawings": [], "query_scope": scope, "code_counts": {"TS101": 3, "TS115": 2},
+            "place": {"name_en": "Central", "latitude": 22.28, "longitude": 114.15}}
+    other = {**area, "query_scope": {**scope, "radius_km": 1}}
+    blocks, actions = present([{"tool": "find_nearby_signs", "result": area},
+                               {"tool": "find_nearby_signs", "result": other},
+                               {"tool": "find_nearby_signs", "result": area}])
+    assert [b['query_scope']['radius_km'] for b in blocks] == [1, 0.5]
+    assert [a['radius_km'] for a in actions] == [1, 0.5]
+    assert blocks[0]['code_counts'][0] == {"code": "TS101", "count": 3}
+    assert blocks[0]['place'] == {"name_en": "Central"}
 
 
 def test_reviewed_queue_and_districts():
