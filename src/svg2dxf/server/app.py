@@ -85,12 +85,10 @@ def create_app(site_dir=None, data_dir=None, provider=None):
     provider_name, model, configured_provider = provider_from_env(os.environ)
     provider = provider or configured_provider
     search_agent = None
-    if provider and hasattr(provider, "plan_search"):
+    if provider and hasattr(provider, "complete"):
         from .search_agent import SearchAgent
-        search_agent = SearchAgent(provider,
-                                   lambda query, category: catalog.search(query, 20, category),
-                                   lambda query, remaining: place_lookup.search(query, remaining),
-                                   lambda args: map_query(args))
+        from .tools import Toolbox
+        search_agent = SearchAgent(provider, Toolbox(catalog, place_lookup, lambda args: map_query(args)))
 
     def expire():
         now = time.time()
@@ -104,6 +102,9 @@ def create_app(site_dir=None, data_dir=None, provider=None):
         if search_agent:
             for turn in state["agent_turns"]:
                 search_agent.forget(turn["thread_id"])
+
+    def new_memory():
+        return {"places": {}, "current": None, "turns": []}
 
     def session(create=True):
         expire()
@@ -119,7 +120,7 @@ def create_app(site_dir=None, data_dir=None, provider=None):
             if len(sessions) >= MAX_SESSIONS:
                 raise ApiError("busy", "Too many active sessions. Try later.", 503)
             sid = secrets.token_urlsafe(24)
-            state = {"seen": time.time(), "agent_turns": [], "agent_previous": {},
+            state = {"seen": time.time(), "agent_turns": [], "agent_memory": new_memory(),
                      "agent_requests": {}, "lock": threading.Lock(), "request_times": []}
             sessions[sid] = state
             g.session_id = sid
@@ -166,11 +167,13 @@ def create_app(site_dir=None, data_dir=None, provider=None):
     @app.get("/api/capabilities")
     def capabilities():
         coverage = catalog.search("", 1)["coverage"]
-        return jsonify(api_version=1, version="0.2.0", provider=provider_name if provider else None,
+        from .search_agent import MAX_MODEL_CALLS, MAX_TOOL_CALLS
+        return jsonify(api_version=1, version="0.3.0", provider=provider_name if provider else None,
                        configured_provider=provider_name, model=model if provider else None,
                        features={"search": True, "map_query": True, "search_agent": bool(search_agent)},
-                       agent={"framework": "LangGraph", "storage": "in-memory",
-                              "prototype": True, "survives_restart": False},
+                       agent={"framework": "LangGraph", "loop": "tool-calling",
+                              "max_model_calls": MAX_MODEL_CALLS, "max_tool_calls": MAX_TOOL_CALLS,
+                              "storage": "in-memory", "survives_restart": False},
                        metadata_coverage=coverage, places=len(places), session_ttl_seconds=TTL)
 
     @app.get("/api/signs")
@@ -282,7 +285,7 @@ def create_app(site_dir=None, data_dir=None, provider=None):
         response.delete_cookie("svgcad_session", path="/api")
         return response
 
-    def previous_search(previous, context):
+    def current_search(memory, context):
         """The search to refine: what is on the map now, if the page sent it.
 
         The chips and the radius handle change the map without asking the
@@ -292,21 +295,21 @@ def create_app(site_dir=None, data_dir=None, provider=None):
         """
         scope = context.get("scope")
         if not scope:
-            return previous
-        location = previous.get("location") or {}
-        if not location or abs(location.get("latitude", 0) - scope["latitude"]) > 1e-6 or \
-                abs(location.get("longitude", 0) - scope["longitude"]) > 1e-6:
-            name = scope["place"] or "Selected map point"
-            location = {"latitude": scope["latitude"], "longitude": scope["longitude"],
-                        "name_en": name, "name_zh_hant": scope["place"] or "已選位置", "kind": "map_point"}
-        drawing = {}
-        if scope["code"]:
-            old = previous.get("drawing") or {}
-            drawing = old if normalize_code(old.get("code", "")) == scope["code"] else catalog.detail(scope["code"]) or {}
-        plan = {"action": "nearby", "place_query": "", "sign_query": drawing.get("code", ""),
-                "radius_km": scope["radius_km"], "category": "TS",
-                "use_map_point": False, "clear_sign_filter": False}
-        return {"plan": plan, "location": location, "drawing": drawing}
+            return memory.get("current")
+        place = (memory.get("current") or {}).get("place") or {}
+        if not place or abs(place.get("latitude", 0) - scope["latitude"]) > 1e-6 or \
+                abs(place.get("longitude", 0) - scope["longitude"]) > 1e-6:
+            place = {"latitude": scope["latitude"], "longitude": scope["longitude"],
+                     "name_en": scope["place"] or "Selected map point",
+                     "name_zh_hant": scope["place"] or "已選位置", "kind": "map_point"}
+        drawing = catalog.detail(scope["code"]) if scope["code"] else None
+        return {"place": place, "radius_km": scope["radius_km"], "code": drawing["code"] if drawing else None}
+
+    def remember(memory, turn, learned):
+        memory["places"] = learned["places"]
+        if learned["current"]:
+            memory["current"] = learned["current"]
+        memory["turns"] = (memory["turns"] + [{"message": turn["message"], "answer": turn["answer"]}])[-4:]
 
     def public_agent_turn(turn):
         return {key: value for key, value in turn.items() if key != "thread_id"}
@@ -393,16 +396,17 @@ def create_app(site_dir=None, data_dir=None, provider=None):
                 turn["status"] = "working"
                 try:
                     if operation == "search":
-                        result = search_agent.start(turn["thread_id"], message.strip(), language,
-                                                    previous_search(state["agent_previous"], context), context)
+                        memory = {**state["agent_memory"],
+                                  "current": current_search(state["agent_memory"], context)}
+                        result = search_agent.start(turn["thread_id"], message.strip(), language, memory, context)
                     else:
                         result = search_agent.resume(turn["thread_id"], args["interrupt_id"], args["choice_id"])
                     description = search_agent.describe(result)
-                    confirmed = description.pop("state")
+                    learned = description.pop("memory")
                     blocks, actions = present(description["tool_results"])
                     turn.update(**description, blocks=blocks, actions=actions)
-                    if turn["status"] == "complete" and description["tool_results"]:
-                        state["agent_previous"] = confirmed
+                    if turn["status"] == "complete":
+                        remember(state["agent_memory"], turn, learned)
                 except (ValueError, TimeoutError) as error:
                     turn.update(status="failed", pending=None, answer=str(error)[:200])
                     search_agent.forget(turn["thread_id"])

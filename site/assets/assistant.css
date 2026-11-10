@@ -230,6 +230,17 @@
   white-space: pre-wrap;
 }
 
+/* One row per counted area; a comparison stacks several. */
+.assistant-agent-answer + .assistant-agent-map-result { margin-top: 14px; }
+
+.assistant-agent-map-result + .assistant-agent-map-result {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.assistant-agent-result-card > .assistant-agent-actions { margin-top: 12px; }
+
 .assistant-agent-warning {
   margin: 10px 0 0;
   padding: 8px 11px;

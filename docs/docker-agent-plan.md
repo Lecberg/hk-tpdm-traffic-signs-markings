@@ -2,6 +2,7 @@
 
 ## Status and resumption notes
 
+- **Status (2026-11-10):** the map assistant is now a tool-calling agent: the model chooses lookups in a loop instead of filling one fixed search plan. See the 2026-11-10 section at the end.
 - **Status (2026-09-24):** grounded local chat, page actions, and a recorded DeepSeek live check are implemented. Human sign-name approval remains open.
 - **Agreed goal:** add an agent-enabled, locally hosted Docker edition of the existing static website.
 - **Current limits:** all top-100 sign names have draft bilingual proposals, but every one still needs human approval. No label is verified.
@@ -215,7 +216,7 @@ convert_uploaded_svg
 
 Proposed initial defaults, to validate during implementation:
 
-- At most four model calls and eight tool calls per user turn.
+- At most four model calls and eight tool calls per user turn. (Since 2026-11-10: six model calls and ten tool calls; the last allowed model call cannot request tools.)
 - Approximately 60 seconds total turn budget, with remaining time propagated to provider/tool calls.
 - Bounded input, history, tool-result, and output sizes.
 - Explicit handling for rate limits, malformed arguments, unavailable tools, and timeouts.
@@ -597,3 +598,48 @@ The record is `docs/evaluations/deepseek-20260924-085242.json`.
 The English miss asked for help but received sign search. The help routing
 instruction was clarified and a focused live retest passed. The retest is in
 `docs/evaluations/deepseek-help-followup.json`.
+
+### 2026-11-10 tool-calling agent
+
+The map assistant was an LLM-assisted workflow: one forced `plan_search` call
+filled a search plan, then a fixed LangGraph pipeline ran it and a template
+wrote the reply. It is now a tool-calling agent, so it can answer multi-part
+questions such as comparisons and "which sign is most common".
+
+- **Loop:** `model ⇄ tools → finish`, with a `choose` node that pauses for the
+  user's pick (`search_agent.py`). At most 6 model calls, 10 tool calls and
+  60 seconds per turn; the last allowed model call cannot request tools.
+- **Tools** (`tools.py`): `search_signs`, `get_sign`, `resolve_place`,
+  `find_nearby_signs`, `choose_drawing`. Bad arguments return an error to the
+  model instead of failing the turn.
+- **No coordinates from the model:** `resolve_place` issues handles (`p1`, …);
+  `find_nearby_signs` accepts only those, plus `current` (the search on the
+  map, including hand edits) and `map_point` when the page sent one.
+- **Ambiguous places:** one result, or exactly one exact name/alias match, is
+  used directly; otherwise the user picks. Before, every place was confirmed.
+- **Reply:** written by the model. Every number must appear in a tool result,
+  the user's words or the session digest (km/m conversions and real catalog
+  codes allowed); otherwise the fixed summary is shown and the trace says why.
+- **Memory:** the session keeps known places, the current search and the last
+  four questions and answers, which go back to the model as conversation.
+- **UI:** the reply sits above the cards; each counted area gets its own row
+  with its own "Show on map" button.
+
+Evidence:
+
+- `python -m pytest tests/ -q`: 65 passed, with a scripted model
+  (`tests/fakes.py`).
+- `python scripts/check_agent_ui.py`: passed offline, including a pause with
+  two numbered pins, reload and resume, a hand-edited radius refinement and a
+  two-place comparison.
+- Live DeepSeek (`deepseek-flash`) with `scripts/eval_agent.py`, 22 questions
+  (13 English, 9 Chinese): the first run passed 21/22
+  (`agent-deepseek-20261110-110734.json`). A Chinese road-marking question
+  counted all traffic signs instead, and an off-topic reply fell back to an
+  unhelpful summary. After a prompt fix, a better no-result summary and the
+  catalog-code allowance, the final run passed 22/22 with every model reply
+  kept (`agent-deepseek-20261110-111152.json`). It averaged 2.5 model calls
+  and 2.5 seconds per question, with a maximum of 4 calls and 4.0 seconds.
+- Not yet checked: an OpenAI model (no key was configured), and the Docker
+  images (Docker Desktop was not running). Streaming each step to the panel
+  is planned as a later change.

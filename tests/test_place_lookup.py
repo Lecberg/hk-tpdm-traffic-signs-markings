@@ -4,6 +4,7 @@ import io
 import json
 import uuid
 
+from fakes import ScriptedModel, call, say, tool_results, tools
 from svg2dxf.server import create_app
 from svg2dxf.server import places as places_module
 
@@ -99,26 +100,14 @@ def test_no_match_failure_and_rate_limit(tmp_path, monkeypatch):
     assert other.get('/api/places?q=').status_code == 400
 
 
-class Planner:
-    def __init__(self, plan):
-        self.plan = plan
-
-    def plan_search(self, message, previous, timeout):
-        return dict(self.plan)
-
-
-NEARBY = {"action": "nearby", "place_query": "Queen Mary Hospital", "sign_query": "",
-          "radius_km": 0.5, "category": "TS", "use_map_point": False, "clear_sign_filter": False}
-
-
 def search(client, message):
     return client.post('/api/agent/search', json={"request_id": str(uuid.uuid4()), "message": message})
 
 
 def test_agent_place_choices_come_from_the_lookup_service(tmp_path, monkeypatch):
-    fake_service(monkeypatch, [row()])
-    client = create_app(provider=Planner(NEARBY)).test_client()
-    turn = search(client, 'Signs near Queen Mary Hospital').json['turn']
+    fake_service(monkeypatch, [row(), row(name="QUEEN MARY HOSPITAL CAR PARK", x=831600.0)])
+    client = create_app(provider=ScriptedModel(tools(call("resolve_place", query="Queen Mary")))).test_client()
+    turn = search(client, 'Signs near Queen Mary').json['turn']
     assert turn['status'] == 'waiting'
     item = turn['pending']['choices'][0]['item']
     assert item['name_en'] == 'QUEEN MARY HOSPITAL'
@@ -127,10 +116,23 @@ def test_agent_place_choices_come_from_the_lookup_service(tmp_path, monkeypatch)
     assert not turn['actions']  # A place choice never moves the map by itself.
 
 
-def test_agent_plan_cannot_carry_guessed_coordinates(tmp_path):
-    guessed = {**NEARBY, "latitude": 22.2704, "longitude": 114.1305}
-    client = create_app(provider=Planner(guessed)).test_client()
-    turn = search(client, 'How many signs are near Queen Mary Hospital?').json['turn']
-    assert turn['status'] == 'failed'
+def test_one_exact_match_is_used_without_asking(tmp_path, monkeypatch):
+    fake_service(monkeypatch, [row(), row(name="QUEEN MARY HOSPITAL CAR PARK", x=831600.0)])
+    model = ScriptedModel(tools(call("resolve_place", query="Queen Mary Hospital")),
+                          tools(call("find_nearby_signs", place_id="p1", radius_km=0.5, code="")),
+                          say("Done."))
+    turn = search(create_app(provider=model).test_client(), 'Signs near Queen Mary Hospital').json['turn']
+    assert turn['status'] == 'complete'
+    assert turn['search']['place']['name_en'] == 'QUEEN MARY HOSPITAL'
+
+
+def test_agent_cannot_pass_guessed_coordinates(tmp_path):
+    model = ScriptedModel(tools(call("find_nearby_signs", place_id="p1", radius_km=0.5, code="",
+                                     latitude=22.2704, longitude=114.1305)),
+                          say("I need the place name first."))
+    turn = search(create_app(provider=model).test_client(),
+                  'How many signs are near Queen Mary Hospital?').json['turn']
+    assert turn['status'] == 'complete'
     assert not turn['blocks'] and not turn['actions']
     assert '22.2704' not in json.dumps(turn)
+    assert 'never as coordinates' in tool_results(model.requests[-1]['messages'])[-1]['error']

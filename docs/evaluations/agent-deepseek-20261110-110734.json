@@ -1,0 +1,376 @@
+{
+ "checked_at": "2026-11-10T03:07:34.920738+00:00",
+ "provider": "deepseek",
+ "model": "deepseek-flash",
+ "summary": {
+  "en": "13/13",
+  "zh-Hant": "8/9",
+  "model_reply_kept": "21/22"
+ },
+ "cases": [
+  {
+   "case": 1,
+   "message": "Stop signs near Mong Kok within 500 metres",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.7,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "search_signs",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "There are 10 surveyed Stop sign records (drawing TS_101) within 0.5 km of Mong Kok; these are surveyed records, not necessarily unique physical signs."
+  },
+  {
+   "case": 1,
+   "message": "Make it 1 kilometre",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 2.0,
+   "reply_checked": true,
+   "tools": [
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "Within 1 km of Mong Kok there are 36 surveyed Stop sign records (drawing TS_101), all the same drawing."
+  },
+  {
+   "case": 2,
+   "message": "How many signs are within 300 m of Causeway Bay?",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.1,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "There are 320 surveyed sign records within 300 m of Causeway Bay, across 84 distinct drawings. The most common is \"No entry\" with 31 records."
+  },
+  {
+   "case": 3,
+   "message": "Compare Stop signs near Mong Kok and Tsim Sha Tsui",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.8,
+   "reply_checked": true,
+   "tools": [
+    "search_signs",
+    "resolve_place",
+    "resolve_place",
+    "find_nearby_signs",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "Within 0.5 km, there are 10 surveyed Stop sign (TS_101) records near Mong Kok and 3 near Tsim Sha Tsui. These are surveyed records, not necessarily unique physical signs."
+  },
+  {
+   "case": 4,
+   "message": "Which sign is most common near Causeway Bay?",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 2.4,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "Within 0.5 km of Causeway Bay, the most common is \"No entry\" (TS_115) with 84 surveyed records, out of 953 total across 139 distinct drawings. Next come \"One-way traffic\" (48) and \"Except taxi drop off\" (43)."
+  },
+  {
+   "case": 5,
+   "message": "Show drawing RM1001",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 2.1,
+   "reply_checked": true,
+   "tools": [
+    "get_sign",
+    "reply"
+   ],
+   "answer": "Drawing RM1001 is a road marking (RM) drawing, available in DXF and SVG. Note that surveyed locations are not available for road markings."
+  },
+  {
+   "case": 6,
+   "message": "No entry signs near Sha Tin",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 4,
+   "seconds": 4.2,
+   "reply_checked": true,
+   "tools": [
+    "search_signs",
+    "resolve_place",
+    "choice",
+    "choose_drawing",
+    "choice",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "There are 9 surveyed No entry (TS_115) records within 0.5 km of Sha Tin. These are surveyed records, not necessarily unique physical signs."
+  },
+  {
+   "case": 7,
+   "message": "Road markings near Mong Kok",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 2.1,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "search_signs",
+    "reply"
+   ],
+   "answer": "Some checks came back without road-marking matches, so a code is the reliable way to search. Which road marking do you mean: for example a box junction, a yellow zig-zag or a stud line?"
+  },
+  {
+   "case": 8,
+   "message": "Give way signs within 1 km of Tsuen Wan",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.1,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "choice",
+    "search_signs",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "Within 1 km of Tsuen Wan there are 78 surveyed Give Way (TS_102) sign records. These are surveyed records, not necessarily unique physical signs."
+  },
+  {
+   "case": 9,
+   "message": "What can you do?",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 1,
+   "seconds": 1.0,
+   "reply_checked": true,
+   "tools": [
+    "reply"
+   ],
+   "answer": "I find Hong Kong traffic-sign and road-marking drawings by code or name, and count surveyed signs near a place within a radius. For a count, give me a place and radius, and optionally a sign type."
+  },
+  {
+   "case": 10,
+   "message": "Show the TS 106 drawing",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 1.7,
+   "reply_checked": true,
+   "tools": [
+    "get_sign",
+    "reply"
+   ],
+   "answer": "TS 106 is \"Go straight ahead only\" (只准駛前), available as DXF and SVG downloads."
+  },
+  {
+   "case": 11,
+   "message": "All signs near Yuen Long within 2 km",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.2,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "choice",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "Within 2 km of Yuen Long there are 6547 surveyed sign records across 242 distinct drawings. The most common are Pedestrians on the road ahead (369), No entry (350) and Give Way (309). Note these are surveyed records, not necessarily unique physical signs."
+  },
+  {
+   "case": 12,
+   "message": "What's the weather today?",
+   "language": "en",
+   "pass": true,
+   "problems": [],
+   "model_calls": 1,
+   "seconds": 1.3,
+   "reply_checked": false,
+   "tools": [
+    "reply"
+   ],
+   "answer": "I could not verify that from the catalog. Give a drawing code or choose a map point."
+  },
+  {
+   "case": 13,
+   "message": "旺角500米內的停車標誌",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 2.8,
+   "reply_checked": true,
+   "tools": [
+    "search_signs",
+    "resolve_place",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "旺角500米範圍內，「停車」（Stop，TS_101）標誌共有10個記錄。如你所指是「不准停車」等其他標誌，請告知代碼，我再查。"
+  },
+  {
+   "case": 13,
+   "message": "改為一公里",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 1.8,
+   "reply_checked": true,
+   "tools": [
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "旺角1公里範圍內的「停車」標誌（TS_101）共有36個記錄。"
+  },
+  {
+   "case": 14,
+   "message": "銅鑼灣附近有多少個交通標誌？",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.5,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "銅鑼灣半徑0.5公里範圍內共有953個交通標誌記錄，涉及139種圖則。最常見的是「禁止駛入」（TS_115），有84個。"
+  },
+  {
+   "case": 15,
+   "message": "比較旺角和尖沙咀的停車標誌",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.6,
+   "reply_checked": true,
+   "tools": [
+    "search_signs",
+    "resolve_place",
+    "resolve_place",
+    "find_nearby_signs",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "在0.5公里範圍內，旺角有10個「停車」（TS_101）標誌記錄，尖沙咀有3個。旺角的數目較多。"
+  },
+  {
+   "case": 16,
+   "message": "顯示RM1001圖紙",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 2,
+   "seconds": 2.1,
+   "reply_checked": true,
+   "tools": [
+    "get_sign",
+    "reply"
+   ],
+   "answer": "RM_1001 屬道路標記圖紙，可下載 dxf 及 svg 格式。"
+  },
+  {
+   "case": 17,
+   "message": "沙田一公里內的禁止駛入標誌",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 4,
+   "seconds": 4.1,
+   "reply_checked": true,
+   "tools": [
+    "search_signs",
+    "resolve_place",
+    "choose_drawing",
+    "choice",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "沙田1公里範圍內，TS_115「不准駛入」標誌共有95條實測記錄，全部屬同一款圖號。這些是測量記錄，未必等於獨立實體標誌。"
+  },
+  {
+   "case": 18,
+   "message": "尖沙咀最常見的標誌是甚麼？",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 3,
+   "seconds": 3.5,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "尖沙咀0.5公里範圍內共有1160個已普查標誌紀錄，最常見的是「Except taxi drop off」(TS_860)，有114個。其次是「No entry」(TS_115) 102個及「One-way traffic」(TS_182) 75個。"
+  },
+  {
+   "case": 19,
+   "message": "旺角附近的路面標記",
+   "language": "zh-Hant",
+   "pass": false,
+   "problems": [
+    "unexpected map result"
+   ],
+   "model_calls": 5,
+   "seconds": 5.3,
+   "reply_checked": true,
+   "tools": [
+    "resolve_place",
+    "search_signs",
+    "search_signs",
+    "search_signs",
+    "find_nearby_signs",
+    "reply"
+   ],
+   "answer": "旺角 0.5 公里範圍內有 2080 條已測量標誌記錄，涵蓋 119 款圖則，但路面標記（RM）圖則的實地位置資料並未提供，所以無法在旺角點算路面標記。你可以提供想找的 RM 圖則編號（例如 RM_1001），我幫你查該圖則資料。"
+  },
+  {
+   "case": 20,
+   "message": "你可以做甚麼？",
+   "language": "zh-Hant",
+   "pass": true,
+   "problems": [],
+   "model_calls": 1,
+   "seconds": 1.1,
+   "reply_checked": true,
+   "tools": [
+    "reply"
+   ],
+   "answer": "我可以按編號或名稱查詢香港交通標誌及道路標記圖則，並在某地點附近統計實地調查的標誌數量。告訴我地點或圖則編號即可。"
+  }
+ ]
+}

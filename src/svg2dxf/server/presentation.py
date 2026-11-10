@@ -1,4 +1,8 @@
-"""Turn checked tool output into the only factual cards the assistant shows."""
+"""Turn checked tool output into the only factual cards the assistant shows.
+
+The model's reply is shown above these cards, but the cards themselves are
+built only from tool results.
+"""
 
 
 def present(tool_results):
@@ -31,15 +35,32 @@ def present(tool_results):
                            "truncated": result.get("truncated", False),
                            "lookup_status": result.get("lookup_status", "local")})
         elif name in ("find_nearby_signs", "summarize_area"):
-            blocks.append({"type": "map", "matched_total": result["matched_total"],
+            scope = result["query_scope"]
+            key = (tuple(scope["center"] or ()), scope["radius_km"], scope["code"])
+            # Asking for the same area twice shows it once, where it was last asked.
+            for index, old in enumerate(blocks):
+                if old["type"] == "map" and old["scope_key"] == key:
+                    del blocks[index]
+                    break
+            actions[:] = [a for a in actions if a.get("scope_key") != key]
+            place = result.get("place") or {}
+            drawing = result.get("drawing") or {}
+            counts = sorted((result.get("code_counts") or {}).items(), key=lambda kv: (-kv[1], kv[0]))
+            blocks.append({"type": "map", "scope_key": key, "matched_total": result["matched_total"],
                            "returned_records": result.get("returned_records", []),
                            "truncated": result["truncated"], "data_complete": result["data_complete"],
                            "missing_cells": result["missing_cells"],
                            "available_drawings": result["available_drawings"],
-                           "query_scope": result["query_scope"]})
-            scope = result["query_scope"]
+                           "query_scope": scope,
+                           "place": {k: place[k] for k in ("name_en", "name_zh_hant", "kind", "source") if k in place},
+                           "drawing": {"code": drawing["code"], **{
+                               k: drawing["metadata"][k] for k in ("name_en", "name_zh_hant")
+                               if k in (drawing.get("metadata") or {})}} if drawing else None,
+                           "code_counts": [{"code": code, "count": count} for code, count in counts[:10]]})
             if scope["center"] and scope["radius_km"]:
-                actions.append({"type": "open_map", "latitude": scope["center"][0],
+                actions.append({"type": "open_map", "scope_key": key, "latitude": scope["center"][0],
                                 "longitude": scope["center"][1], "radius_km": scope["radius_km"],
-                                "code": scope["code"]})
+                                "code": scope["code"], "place": blocks[-1]["place"] or None})
+    for item in blocks + actions:
+        item.pop("scope_key", None)
     return blocks, actions

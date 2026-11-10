@@ -1,11 +1,13 @@
-"""Model provider setup and the search agent's planning call.
+"""Model provider setup for the tool-calling search agent.
 
-The model only turns a request into a search plan; every visible fact comes
-from the catalog, place lookup or map data afterwards.
+The model chooses which lookups to run and writes the reply. Every fact it
+can see comes from the catalog, place lookup or map data, and the agent
+checks the numbers in its reply against those results.
 """
 
-import json
 from urllib.parse import urlsplit
+
+MAX_TOKENS = 800
 
 
 class ChatCompletionsProvider:
@@ -18,37 +20,27 @@ class ChatCompletionsProvider:
         self.model = model
         self.provider_name = provider_name
 
-    def plan_search(self, message, previous, timeout):
-        from .search_agent import SEARCH_TOOL
-        prompt = (
-            "Interpret a Hong Kong traffic-sign/road-marking search. Call plan_search exactly once. "
-            "Use action nearby for counts or sign locations near a place; drawings for artwork searches; "
-            "refine for changes to the previous search; help for help or unrelated requests. "
-            "place_query and sign_query are short search terms, not whole sentences. "
-            "Never invent a drawing code: use the user's code or a plain description for catalog lookup. "
-            "Use singular descriptions (e.g. stop signs -> Stop). Empty query strings mean unspecified. "
-            "For all signs/any signs with no particular drawing type, leave sign_query empty. "
-            "radius_km is kilometres (500 metres = 0.5); use 0 when not specified. "
-            "category is TS for traffic signs, RM for road-marking drawings, ALL if unspecified. "
-            "use_map_point only if the user explicitly refers to the pin, selected point, or map centre. "
-            "clear_sign_filter only when the user asks to remove the sign filter/show all signs. "
-            "For refinements retain other settings by leaving queries empty and radius_km 0. "
-            "Road-marking locations are unavailable, but drawing-code search is supported. "
-            "Previous confirmed search: " + json.dumps(previous, ensure_ascii=False))
-        options = {"model": self.model, "messages": [
-            {"role": "system", "content": prompt}, {"role": "user", "content": message}],
-            "tools": [SEARCH_TOOL], "tool_choice": "required", "timeout": timeout}
+    def complete(self, messages, tools, timeout, final=False):
+        """One chat-completions step. ``final`` forbids further tool calls.
+
+        Returns ``{"content": str, "tool_calls": [{"id", "name", "arguments"}]}``
+        with ``arguments`` left as the raw JSON text; the agent parses it so a
+        malformed call becomes an error the model can see and fix.
+        """
+        options = {"model": self.model, "messages": messages, "tools": tools,
+                   "tool_choice": "none" if final else "auto", "timeout": timeout}
         if self.provider_name == "deepseek":
-            options.update(max_tokens=500, extra_body={"thinking": {"type": "disabled"}})
+            options.update(max_tokens=MAX_TOKENS, extra_body={"thinking": {"type": "disabled"}})
         elif self.provider_name == "custom":
-            options.update(max_tokens=500)
+            options.update(max_tokens=MAX_TOKENS)
         else:
-            options.update(max_completion_tokens=500, parallel_tool_calls=False)
+            options.update(max_completion_tokens=MAX_TOKENS, parallel_tool_calls=False)
         response = self.client.chat.completions.create(**options)
-        calls = response.choices[0].message.tool_calls or []
-        if len(calls) != 1 or calls[0].function.name != "plan_search":
-            raise ValueError("The model did not return a search plan. Please retry.")
-        return json.loads(calls[0].function.arguments)
+        message = response.choices[0].message
+        calls = [{"id": getattr(call, "id", None) or "", "name": call.function.name,
+                  "arguments": call.function.arguments or ""}
+                 for call in (getattr(message, "tool_calls", None) or [])]
+        return {"content": getattr(message, "content", None) or "", "tool_calls": calls}
 
 
 def provider_from_env(environ):
@@ -85,8 +77,9 @@ def provider_from_env(environ):
 def _summary(tool_results, language):
     zh = language == "zh-Hant"
     if not tool_results:
-        return ("未能從資料核實答案，請提供標誌編號或選擇地圖位置。" if zh else
-                "I could not verify that from the catalog. Give a drawing code or choose a map point.")
+        return ("我可以按編號或名稱查找圖紙，並點算某地點附近已測量的標誌，例如「旺角附近的停車標誌」。" if zh else
+                "I can find drawings by code or name and count surveyed signs near a place, "
+                "such as “Stop signs near Mong Kok”.")
     parts = []
     for item in tool_results:
         name, result = item["tool"], item["result"]
